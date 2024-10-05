@@ -176,7 +176,7 @@ export function CanBoulderMove(tileAtOrigin: TerrainType, tileAtLocation: Terrai
     }
 
     if (tileAtMoveTarget === 'water') {
-        if (entitiesAtTarget.find((x) => x.type === 'turtle')) {
+        if (!entitiesAtTarget.filter((x) => x.type !== 'turtle').length) {
             bCanMoveToTarget = true;
         }
     }
