@@ -7,7 +7,7 @@ entity layer
 3: the third creature (bird)
 4: the fourth creature (frog)
 G: goal zone
-R: rock
+R: boulder
 
 terrain layer
 ,: ground

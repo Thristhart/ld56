@@ -30,4 +30,6 @@ switch: this can toggle gates when you bump into it
 
 bridge: this can open/close. when closed it acts as a chasm, when open it acts as a floor.
 
-log - knock this down to make a bridge
+log - knock this down to make a bridge over water or chasm
+
+boulder - you can push these around, if you push one into water it becomes floor. if you push one into a chasm it disappears
