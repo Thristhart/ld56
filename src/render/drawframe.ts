@@ -1,7 +1,6 @@
 import { currentLevel, LevelContent } from "~/game/levels";
-import { getCurrentMessage } from "~/story";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor } from "./colors";
-// import { getCurrentBeat } from "~/story";
+import { drawDialog } from "./drawdialog";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -65,14 +64,6 @@ export function drawFrame() {
     context.save();
     context.translate(canvas.width / 2 - camera.x * camera.scale, canvas.height / 2 - camera.y * camera.scale);
 
-    // render story bits
-    const currentBeat = getCurrentMessage();
-
-    if (currentBeat) {
-        context.fillText(currentBeat.message, 0, 0);
-    }
-
-
     if (currentLevel) {
         camera.x = 0;
         camera.y = 0;
@@ -80,6 +71,9 @@ export function drawFrame() {
     }
 
     context.restore();
+
+    // render story bits
+    drawDialog(context);
 }
 
 

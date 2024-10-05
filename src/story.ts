@@ -16,12 +16,12 @@ const story = [
     },
     {
         type: "message",
-        speaker: "cat",
+        speaker: "turtle",
         message: "hi world",
     },
     {
         type: "message",
-        speaker: "cat",
+        speaker: "turtle",
         message: "it's me",
     },
 ] as const satisfies Array<StoryBeat>
@@ -32,7 +32,7 @@ if (import.meta.env.DEV) {
     window.DEBUG_STORY = story;
 }
 
-export type Speaker = "none" | "cat" | "cattruck" | "rat" | "cop" | "frog" | "bear" | "clown" | "leslie";
+export type Speaker = "none" | "turtle";
 
 export interface StoryMessage {
     readonly type: "message";
@@ -53,8 +53,7 @@ const speakers: [Speaker?, Speaker?] = [];
 export const getCurrentMessage = (): StoryMessage | undefined => log[log.length - 1];
 export const getCurrentSpeakers = () => speakers;
 
-function getNextBeat()
-{
+function getNextBeat() {
     if (storyIndex < story.length) {
         const nextBeat = story[storyIndex + 1];
         return nextBeat;
@@ -65,8 +64,7 @@ export function continueStory() {
     const nextBeat = getNextBeat();
     if (nextBeat) {
         storyIndex++;
-        switch(nextBeat.type)
-        {
+        switch (nextBeat.type) {
             case "startlevel":
                 startLevel(nextBeat.level);
                 continueStory();
