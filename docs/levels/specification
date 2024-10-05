@@ -11,11 +11,24 @@ R: boulder
 H: gate
 L: log
 
+
 terrain layer
 ,: ground
 W: water (for frog)
 X: wall
 C: chasm (for bird)
 T: tunnel (for rat)
+
+
 B: button
 S: switch
+H: bridge/Gate
+
+[ ] - button + gate/bridge
+{ } - button + gate/bridge
+( ) - switch + gate/bridge
+< > - switch + gate/bridge
+
+[ - this is the button 
+] - this is the bridge
+
