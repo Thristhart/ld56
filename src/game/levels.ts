@@ -133,7 +133,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
     // parse and set initial entities
     const entityRows = level.entities.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);
     for (const entityRowIndex in entityRows) {
-        const entityTiles = entityRows[entityRowIndex].split(',');
+        const entityTiles = entityRows[entityRowIndex].split('');
         if (levelContent.columns !== entityTiles.length) {
             console.log('WARNING: MISMATCHED ENTITY COLUMNS');
         }
