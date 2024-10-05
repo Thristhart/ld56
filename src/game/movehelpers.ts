@@ -48,13 +48,12 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
     if (canEntityMove) {
         const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
 
-        if (boulder && (tileAtMoveTarget === 'ground')) // boulders can only move on ground
-        {
+        if (boulder) {
             const boulderTileAtLocation = tileAtMoveTarget;
             const boulderMoveTarget = GetLocationInDirection(boulder.location, direction);
             const boulderTileAtMoveTarget = GetTileAtLocation(levelState, boulderMoveTarget);
             const boulderEntitiesAtMoveTarget = GetEntitiesAtLocation(levelState, boulderMoveTarget);
-            const canBoulderMove = CanBoulderMove(boulderTileAtLocation, boulderTileAtMoveTarget, entitiesAtMoveTarget, boulderEntitiesAtMoveTarget);
+            const canBoulderMove = CanBoulderMove(tileAtMoveTarget, boulderTileAtLocation, boulderTileAtMoveTarget, entitiesAtMoveTarget, boulderEntitiesAtMoveTarget);
             if (canBoulderMove) {
                 entityMovementActions.push(
                     {
@@ -123,7 +122,7 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarge
         return false;
     }
 
-    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'water') {
+    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'water' || tileAtMoveTarget === 'button') {
         if (originHasOtherEntity && tileAtMoveTarget !== 'water') {
             triggers.emit("turtleCannotMove")
             return false;
@@ -158,29 +157,34 @@ export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget
         return false;
     }
 
-    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'tunnel') {
+    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'tunnel' || tileAtMoveTarget === 'button' || tileAtMoveTarget === 'bridge') {
         return true;
     }
     return false;
 }
 
-export function CanBoulderMove(tileAtLocation: TerrainType, tileAtMoveTarget: TerrainType, entitiesAtOrigin: EntityData[], entitiesAtTarget: EntityData[]) {
-    if (tileAtLocation !== 'ground') {
-        if (entitiesAtOrigin.find((x) => x.type === 'turtle') && tileAtLocation === 'water') {
-            return true;
+export function CanBoulderMove(tileAtOrigin: TerrainType, tileAtLocation: TerrainType, tileAtMoveTarget: TerrainType, entitiesAtOrigin: EntityData[], entitiesAtTarget: EntityData[]) {
+
+    let bCanMoveFromOrigin = false;
+    let bCanMoveToTarget = false;
+
+    if (tileAtOrigin === 'ground' ||
+        tileAtOrigin === 'water' && entitiesAtOrigin.find((x) => x.type === 'turtle') ||
+        tileAtOrigin === 'button'
+    ) {
+        bCanMoveFromOrigin = true;
+    }
+
+    if (tileAtMoveTarget === 'water') {
+        if (entitiesAtTarget.find((x) => x.type === 'turtle')) {
+            bCanMoveToTarget = true;
         }
-        return false;
     }
-
-    if (entitiesAtTarget.length) {
-        if (entitiesAtTarget.filter((x) => x.type !== 'turtle').length && tileAtMoveTarget === 'water') {
-            return false;
+    else if (tileAtMoveTarget === 'chasm' || tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'button') {
+        if (!entitiesAtTarget.length) {
+            bCanMoveToTarget = true;
         }
     }
 
-    if (tileAtMoveTarget === 'chasm' || tileAtMoveTarget === 'water' || tileAtMoveTarget === 'ground') {
-        return true;
-    }
-
-    return false
+    return bCanMoveToTarget && bCanMoveFromOrigin;
 }
