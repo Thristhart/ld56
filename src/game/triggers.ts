@@ -19,7 +19,6 @@ triggers.on("creatureOnGoal", () => {
         return;
     }
     const creatures = currentLevelState.entities.filter(ent => IsCreatureEntity(ent.type))
-    console.log(creatures);
     const anyNotOnGoal = creatures.some(entity => {
         const entitiesAtLocation = GetEntitiesAtLocation(currentLevelState!, entity.location);
         return !entitiesAtLocation.some(ent => ent.type === "goal");
