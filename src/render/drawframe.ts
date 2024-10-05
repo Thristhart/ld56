@@ -1,4 +1,4 @@
-import { currentLevel, LevelContent } from "~/game/levels";
+import { currentLevel, currentLevelState, LevelContent } from "~/game/levels";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
 import { GetEntityPortrait } from "./images";
@@ -17,10 +17,10 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
 
     // fill out the ground squares
     for (let row = 0; row < height; row++) {
-        const groundRow = level.ground.get(row);
-        if (groundRow && groundRow.size) {
+        const groundRow = level.groundGrid[row];
+        if (groundRow && groundRow.length) {
             for (let col = 0; col < width; col++) {
-                const terrainType = groundRow.get(col);
+                const terrainType = groundRow[col];
                 if (terrainType) {
                     context.fillStyle = GetTerrainColor(terrainType);
                     context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
@@ -66,12 +66,12 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
 
 function fitLevelToCamera()
 {
-    if(!currentLevel)
+    if(!currentLevelState)
     {
         return;
     }
-    const width = currentLevel.columns * GRID_SQUARE_WIDTH;
-    const height= currentLevel.rows * GRID_SQUARE_HEIGHT;
+    const width = currentLevelState.columns * GRID_SQUARE_WIDTH;
+    const height= currentLevelState.rows * GRID_SQUARE_HEIGHT;
     const scale = Math.min(canvas.width / width, canvas.height / height);
     camera.x = width / 2;
     camera.y = height / 2;
@@ -90,8 +90,8 @@ export function drawFrame() {
     context.translate(canvas.width / 2 - camera.x * camera.scale, canvas.height / 2 - camera.y * camera.scale);
     context.scale(camera.scale, camera.scale);
 
-    if (currentLevel) {
-        drawGrid(context, currentLevel);
+    if (currentLevelState) {
+        drawGrid(context, currentLevelState);
     }
 
     context.restore();

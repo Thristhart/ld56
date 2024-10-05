@@ -2,8 +2,9 @@ import testingEntities from '../levels/testing.entities?raw';
 import testingGround from '../levels/testing.ground?raw';
 
 export function startLevel(levelname: keyof typeof levels) {
-    const level = new LevelContent(levelname)
+    const level = constructLevelContent(levelname)
     currentLevel = level;
+    currentLevelState = level;
 }
 
 export function endLevel() {
@@ -16,6 +17,11 @@ interface LevelDescription {
 }
 
 export let currentLevel: LevelContent | undefined;
+export function setCurrentLevelState( newState: LevelContent | undefined )
+{
+    currentLevelState = newState;
+}
+export let currentLevelState: LevelContent | undefined;
 
 export const levels = {
     testing: {
@@ -27,76 +33,100 @@ export const levels = {
 export type TerrainType = 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel';
 export type EntityType = 'empty' | 'mouse' | 'turtle' | 'bird' | 'frog' | 'goal' | 'boulder';
 export interface EntityData {
-    type: EntityType,
-    location: {
-        row: number,
-        column: number,
-    }
+    type: EntityType;
+    location: Location;
+    id: number;
+}
+export interface Location {
+    row: number;
+    column: number;
 }
 
 // first number is row
 // second number is column
-export type IGridMap<T> = Map<number, Map<number, T>>;
+export type IGridMap<T> = T[][];
 
-export class LevelContent {
-    private numRows: number;
-    private numColumns: number;
-    private groundGrid: IGridMap<TerrainType> = new Map();
-    private entitiesArray: EntityData[] = [];
+export interface LevelContent {
+    rows: number;
+    columns: number;
+    readonly groundGrid: IGridMap<TerrainType>;
+    readonly entities: EntityData[];
+}
 
-    constructor(levelname: keyof typeof levels) {
-        const level = levels[levelname];
-        const ground = level.ground;
+let gEntityId = 0;
+function getEntityId()
+{
+    return gEntityId++;
+}
 
-        const groundRows = ground.split(/\r?\n|\r|\n/g);
-        this.numRows = groundRows.length;
-        this.numColumns = groundRows[0].trim().split(',').length
+function constructLevelContent(levelname: keyof typeof levels)
+{
+    const level = levels[levelname];
+    const ground = level.ground;
 
-        // parse initial ground
-        for (const groundRowIndex in groundRows) {
-            const terrainRowMap: Map<number, TerrainType> = new Map();
-            const tiles = groundRows[groundRowIndex].split(',');
-            if (this.numColumns !== tiles.length) {
-                console.log('WARNING: MISMATCHED GROUND COLUMNS');
-            }
+    const levelContent: LevelContent = {
+        rows: 0,
+        columns: 0,
+        groundGrid: [],
+        entities: [],
+    }
 
-            for (const tileIndex in tiles) {
-                const terrainTile = GetTerrainType(tiles[tileIndex]);
-                terrainRowMap.set(parseInt(tileIndex), terrainTile)
-            }
-            this.groundGrid.set(parseInt(groundRowIndex), terrainRowMap)
+    const groundRows = ground.split(/\r?\n|\r|\n/g);
+    levelContent.rows = groundRows.length;
+    levelContent.columns = groundRows[0].trim().split(',').length
+
+    // parse initial ground
+    for (const groundRowIndex in groundRows) {
+        const terrainRowMap: Array<TerrainType> = [];
+        const tiles = groundRows[groundRowIndex].split(',');
+        if (levelContent.columns !== tiles.length) {
+            console.log('WARNING: MISMATCHED GROUND COLUMNS');
         }
 
+        for (const tileIndex in tiles) {
+            const terrainTile = GetTerrainType(tiles[tileIndex]);
+            terrainRowMap[parseInt(tileIndex)] = terrainTile;
+        }
+        levelContent.groundGrid[parseInt(groundRowIndex)] = terrainRowMap;
+    }
 
-        // parse and set initial entities
-        const entityRows = level.entities.split(/\r?\n|\r|\n/g);
-        for (const entityRowIndex in entityRows) {
-            const entityTiles = entityRows[entityRowIndex].split(',');
-            if (this.numColumns !== entityTiles.length) {
-                console.log('WARNING: MISMATCHED ENTITY COLUMNS');
-            }
 
-            for (const entityTileIndex in entityTiles) {
-                const entityTile = GetEntityType(entityTiles[entityTileIndex]);
-                if (entityTile !== 'empty') {
-                    this.entitiesArray.push(
-                        {
-                            type: entityTile,
-                            location: {
-                                row: parseInt(entityRowIndex),
-                                column: parseInt(entityTileIndex)
-                            }
-                        }
-                    )
-                }
+    // parse and set initial entities
+    const entityRows = level.entities.split(/\r?\n|\r|\n/g);
+    for (const entityRowIndex in entityRows) {
+        const entityTiles = entityRows[entityRowIndex].split(',');
+        if (levelContent.columns !== entityTiles.length) {
+            console.log('WARNING: MISMATCHED ENTITY COLUMNS');
+        }
+
+        for (const entityTileIndex in entityTiles) {
+            const entityTile = GetEntityType(entityTiles[entityTileIndex]);
+            if (entityTile !== 'empty') {
+                levelContent.entities.push(
+                    {
+                        type: entityTile,
+                        location: {
+                            row: parseInt(entityRowIndex),
+                            column: parseInt(entityTileIndex)
+                        },
+                        id: getEntityId()
+                    }
+                )
             }
         }
     }
 
-    get rows(): number { return this.numRows }
-    get columns(): number { return this.numColumns }
-    get ground(): IGridMap<TerrainType> { return this.groundGrid }
-    get entities(): EntityData[] { return this.entitiesArray }
+    return levelContent;
+}
+
+export function GetTileAtLocation(level: LevelContent, location: Location)
+{
+    return level.groundGrid[location.row][location.column];
+}
+
+export function GetEntityAtLocation(level: LevelContent, location: Location)
+{
+    return level.entities.find(entity => entity.location.column === location.column && entity.location.row === location.row);
 }
 
 function GetTerrainType(terrainCode: string): TerrainType {

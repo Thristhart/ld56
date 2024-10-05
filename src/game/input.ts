@@ -1,3 +1,5 @@
+import { fireAction } from "./actions";
+
 const canvas = document.querySelector("canvas")!;
 
 const inputs = ["w", "a", "s", "d"] as const;
@@ -29,7 +31,25 @@ document.body.addEventListener("keyup", onKeyUp);
 
 function onInput(input: Input)
 {
-    console.log("input", input);
+    switch(input)
+    {
+        case "w": {
+            fireAction({type: "MoveTurtle", direction: "up"});
+            break;
+        }
+        case "a": {
+            fireAction({type: "MoveTurtle", direction: "left"});
+            break;
+        }
+        case "s": {
+            fireAction({type: "MoveTurtle", direction: "down"});
+            break;
+        }
+        case "d": {
+            fireAction({type: "MoveTurtle", direction: "right"});
+            break;
+        }
+    }
 }
 
 
