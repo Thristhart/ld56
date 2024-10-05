@@ -14,6 +14,7 @@ interface MoveEntityResult
 {
     type: "MoveEntity";
     entityid: number;
+    oldLocation: Location;
     newLocation: Location;
 }
 export type ActionResult = MoveEntityResult;
@@ -77,13 +78,19 @@ export function ComputeStateFromActionLog()
         let result = applyAction(levelState, action);
         if(result)
         {
-            levelState = applyActionResult(levelState, result);
+            if(!Array.isArray(result))
+            {
+                result = [result];
+            }
+            for(let actionResult of result) {
+                levelState = applyActionResult(levelState, actionResult);
+            }
         }
     }
     return levelState;
 }
 
-export function applyAction(levelState: LevelContent, action: Action): ActionResult | undefined
+export function applyAction(levelState: LevelContent, action: Action): ActionResult | Array<ActionResult> | undefined
 {
     switch(action.type)
     {
@@ -107,6 +114,7 @@ export function applyAction(levelState: LevelContent, action: Action): ActionRes
             return {
                 type: "MoveEntity",
                 entityid: turtle.id,
+                oldLocation: turtle.location,
                 newLocation: moveTarget
             }
         }
