@@ -5,6 +5,10 @@ import introEntities from '../levels/intro.entities?raw';
 import introTerrain from '../levels/intro.terrain?raw';
 import introCircuit from '../levels/intro.circuit?raw';
 
+import flower2Terrain from '../levels/frog_bird/flower_2/flower_2.terrain?raw';
+import flower2Entities from '../levels/frog_bird/flower_2/flower_2.entities?raw';
+import flower2Circuit from '../levels/frog_bird/flower_2/flower_2.circuit?raw';
+
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
 
@@ -41,6 +45,11 @@ export const levels = {
         entities: introEntities,
         terrain: introTerrain,
         circuit: introCircuit
+    },
+    flower2: {
+        entities: flower2Entities,
+        terrain: flower2Terrain,
+        circuit: flower2Circuit,
     }
 } as const satisfies Record<string, LevelDescription>;
 
@@ -102,7 +111,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
         currentEntityId: 0,
     }
 
-    const groundRows = ground.split(/\r?\n|\r|\n/g);
+    const groundRows = ground.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);
     levelContent.rows = groundRows.length;
     levelContent.columns = groundRows[0].trim().split('').length
 
@@ -122,7 +131,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
     }
 
     // parse and set initial entities
-    const entityRows = level.entities.split(/\r?\n|\r|\n/g);
+    const entityRows = level.entities.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);
     for (const entityRowIndex in entityRows) {
         const entityTiles = entityRows[entityRowIndex].split(',');
         if (levelContent.columns !== entityTiles.length) {
@@ -152,7 +161,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
 
 
     // parse initial circuits
-    const circuitRows = level.circuit.split(/\r?\n|\r|\n/g);
+    const circuitRows = level.circuit.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);
     for (const circuitRowIndex in circuitRows) {
         const circuits = circuitRows[circuitRowIndex].split('');
         if (levelContent.columns !== circuits.length) {
