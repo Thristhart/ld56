@@ -17,8 +17,7 @@ interface LevelDescription {
 }
 
 export let currentLevel: LevelContent | undefined;
-export function setCurrentLevelState( newState: LevelContent | undefined )
-{
+export function setCurrentLevelState(newState: LevelContent | undefined) {
     currentLevelState = newState;
 }
 export let currentLevelState: LevelContent | undefined;
@@ -54,13 +53,11 @@ export interface LevelContent {
 }
 
 let gEntityId = 0;
-function getEntityId()
-{
+function getEntityId() {
     return gEntityId++;
 }
 
-function constructLevelContent(levelname: keyof typeof levels)
-{
+function constructLevelContent(levelname: keyof typeof levels) {
     const level = levels[levelname];
     const ground = level.ground;
 
@@ -119,13 +116,11 @@ function constructLevelContent(levelname: keyof typeof levels)
     return levelContent;
 }
 
-export function GetTileAtLocation(level: LevelContent, location: Location)
-{
+export function GetTileAtLocation(level: LevelContent, location: Location) {
     return level.groundGrid[location.row][location.column];
 }
 
-export function GetEntityAtLocation(level: LevelContent, location: Location)
-{
+export function GetEntityAtLocation(level: LevelContent, location: Location) {
     return level.entities.find(entity => entity.location.column === location.column && entity.location.row === location.row);
 }
 
@@ -147,6 +142,8 @@ function GetEntityType(entityCode: string) {
         case '2': return 'turtle';
         case '3': return 'bird';
         case '4': return 'frog';
+        case 'B': return 'boulder';
+        case 'G': return 'goal';
         default: return 'empty';
     }
 }
