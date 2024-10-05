@@ -30,9 +30,8 @@ triggers.on("creatureOnGoal", () => {
     }
 })
 
-triggers.once("alargeratappears", () => {
-    if(!currentLevelState)
-    {
+triggers.once("turtleCannotMove", () => {
+    if (!currentLevelState) {
         return;
     }
     displayDialog({

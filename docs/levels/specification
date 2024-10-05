@@ -2,7 +2,7 @@
 
 entity layer
 _: empty (no entity)
-M: the first creature (rat)
+M: the first creature (mouse)
 T: the second creature (turtle)
 B: the third creature (bird)
 F: the fourth creature (frog)
@@ -15,7 +15,7 @@ W: water (for frog)
 X: wall
 C: chasm (for bird)
 H: bridge (chasm)
-T: tunnel (for rat)
+T: tunnel (for mouse)
 B: button
 D: door  (wall)
 
