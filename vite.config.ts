@@ -9,8 +9,8 @@ export default defineConfig({
         },
     },
     plugins: [
-      nodePolyfills(),
+        nodePolyfills(),
     ],
     base: "/ld56/",
-    assetsInclude: ["**/*.entities", "**/*.ground"],
+    assetsInclude: ["**/*.entities", "**/*.terrain", "**/*.circuit"],
 });

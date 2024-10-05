@@ -1,6 +1,7 @@
 
-import { currentLevel, currentLevelState, IsCreatureEntity, LevelContent, Location, setCurrentLevelState } from "./levels";
+import { currentLevel, currentLevelState, LevelContent, Location, setCurrentLevelState } from "./levels";
 import { Direction, GetEntityMovementActions } from "./movehelpers";
+import { IsCreatureEntity } from "./specifications";
 import { checkForTriggersAfterAnimation } from "./triggers";
 
 
@@ -110,50 +111,42 @@ export function applyAction(levelState: LevelContent, action: Action): ActionRes
 
 export let lastActionResults: Array<ActionResult> | undefined;
 export let lastActionTimestamp: number | undefined;
-export function fireAction(action: Action)
-{
-    if(!currentLevelState)
-    {
+export function fireAction(action: Action) {
+    if (!currentLevelState) {
         return;
     }
     const result = applyAction(currentLevelState, action);
-    if(result && !(Array.isArray(result) && result.length === 0)) {
+    if (result && !(Array.isArray(result) && result.length === 0)) {
         lastActionResults = Array.isArray(result) ? result : [result];
         lastActionTimestamp = performance.now();
         setTimeout(() => {
-            for(const actionResult of lastActionResults ?? [])
-            {
+            for (const actionResult of lastActionResults ?? []) {
                 checkForTriggersAfterAnimation(currentLevelState!, actionResult);
             }
         }, 100);
         actionLog.push(action);
     }
-    setCurrentLevelState( ComputeStateFromActionLog() );
+    setCurrentLevelState(ComputeStateFromActionLog());
 }
 export let lastUndoActionResults: Array<ActionResult> | undefined;
 export let lastUndoTimestamp: number | undefined;
-export function undo()
-{
-    if(!currentLevelState)
-    {
+export function undo() {
+    if (!currentLevelState) {
         return;
     }
     const undoneAction = actionLog.pop();
-    if(!undoneAction)
-    {
+    if (!undoneAction) {
         return;
     }
-    setCurrentLevelState( ComputeStateFromActionLog() );
+    setCurrentLevelState(ComputeStateFromActionLog());
     const resultOfUndoneAction = applyAction(currentLevelState, undoneAction);
-    if(resultOfUndoneAction)
-    {
+    if (resultOfUndoneAction) {
         lastUndoActionResults = Array.isArray(resultOfUndoneAction) ? resultOfUndoneAction : [resultOfUndoneAction];
         lastUndoTimestamp = performance.now();
     }
 }
 
-export function clearActions()
-{
+export function clearActions() {
     actionLog.splice(0);
     clearActionAnimations();
     clearUndoAnimations();
