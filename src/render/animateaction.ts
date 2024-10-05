@@ -12,7 +12,7 @@ export function clamp(n: number, min = 0, max = 1) {
     return Math.min(max, Math.max(min, n));
 }
 
-const MOVE_ANIMATION_DURATION_MS = 90;
+const MOVE_ANIMATION_DURATION_MS = 144;
 
 export function animateActionResult(actionResult: ActionResult, dt: number)
 {

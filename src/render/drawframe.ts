@@ -1,7 +1,7 @@
 import { currentLevel, currentLevelState, EntityData, LevelContent } from "~/game/levels";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation, GetSpriteForEntity } from "./images";
+import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation, GetSpriteForEntity, treeImage } from "./images";
 import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
 import { animateActionResult, animateActionResultUndo } from "./animateaction";
 import { drawSprite, SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
@@ -18,6 +18,14 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
     const width = level.columns;
     const height = level.rows;
 
+    // draw the foresty background
+    for (let row = -10; row < height + 10; row++) {
+        for (let col = -10; col < width + 10; col++) {
+            context.drawImage(GetTerrainBackground("wall")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+        }
+    }
+
+
     // fill out the ground squares
     for (let row = 0; row < height; row++) {
         const groundRow = level.groundGrid[row];
@@ -25,6 +33,33 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
             for (let col = 0; col < width; col++) {
                 const terrainType = groundRow[col];
                 if (terrainType) {
+                    if(terrainType === "wall")
+                    {
+                        context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        const parts: Array<TreeFragment> = []
+                        if(col === 0)
+                        {
+                            parts.push("tl", "bl");
+                        }
+                        if(col === groundRow.length - 1)
+                        {
+                            parts.push("tr", "br");
+                        }
+                        if(row === 0)
+                        {
+                            parts.push("tl", "tr");
+                        }
+                        if(row === height - 1)
+                        {
+                            parts.push("bl", "br");
+                        }
+                        const topParts = parts.filter(part => part.startsWith("t"));
+                        const bottomParts = parts.filter(part => part.startsWith("b"));
+                        topParts.forEach(frag => drawTreeFragment(col, row, frag));
+                        drawTreeFragment(col, row, "center");
+                        bottomParts.forEach(frag => drawTreeFragment(col, row, frag));
+                        continue;
+                    }
                     const terrainAnimation = GetTerrainAnimation(terrainType);
                     if (terrainAnimation) {
                         drawSprite(context, terrainAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
@@ -45,27 +80,41 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
 
     context.lineWidth = 0.4;
     // fill out grid lines
-    for (let x = 0; x <= width; x++) {
+    for (let x = -10; x <= width + 10; x++) {
         context.strokeStyle = COLOR_GRID_LINE_LIGHT;
-        if (x === 0 || x === width) {
-            context.strokeStyle = COLOR_GRID_LINE_DARK;
-        }
         context.beginPath();
-        context.moveTo(x * GRID_SQUARE_WIDTH, 0);
-        context.lineTo(x * GRID_SQUARE_WIDTH, height * GRID_SQUARE_HEIGHT);
+        context.moveTo(x * GRID_SQUARE_WIDTH, -10 * GRID_SQUARE_HEIGHT);
+        context.lineTo(x * GRID_SQUARE_WIDTH, (height + 10) * GRID_SQUARE_HEIGHT);
         context.closePath();
         context.stroke();
     }
-    for (let y = 0; y <= height; y++) {
+    for (let y = -10; y <= height + 10; y++) {
         context.strokeStyle = COLOR_GRID_LINE_LIGHT;
-        if (y === 0 || y === height) {
-            context.strokeStyle = COLOR_GRID_LINE_DARK;
-        }
         context.beginPath();
-        context.moveTo(0, y * GRID_SQUARE_HEIGHT);
-        context.lineTo(width * GRID_SQUARE_WIDTH, y * GRID_SQUARE_HEIGHT);
+        context.moveTo(-10 * GRID_SQUARE_WIDTH, y * GRID_SQUARE_HEIGHT);
+        context.lineTo((width + 10) * GRID_SQUARE_WIDTH, y * GRID_SQUARE_HEIGHT);
         context.closePath();
         context.stroke();
+    }
+}
+
+type TreeFragment = "tl" | "tr" | "bl" | "br" | "center";
+function drawTreeFragment(col: number, row: number, fragment: TreeFragment)
+{
+    if(fragment === "tl") {
+        context.drawImage(treeImage, 16, 16, 16, 16, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 16, 16 );
+    }
+    if(fragment === "tr") {
+        context.drawImage(treeImage, 0, 16, 16, 16, col * GRID_SQUARE_WIDTH + 16, row * GRID_SQUARE_HEIGHT, 16, 16 );
+    }
+    if(fragment === "bl") {
+        context.drawImage(treeImage, 16, 0, 16, 16, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT + 16, 16, 16 );
+    }
+    if(fragment === "br") {
+        context.drawImage(treeImage, 0, 0, 16, 16, col * GRID_SQUARE_WIDTH + 16, row * GRID_SQUARE_HEIGHT + 16, 16, 16 );
+    }
+    if(fragment === "center") {
+        context.drawImage(treeImage, 0, 0, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 32, 32 );
     }
 }
 
@@ -74,11 +123,11 @@ function fitLevelToCamera() {
     if (!currentLevelState) {
         return;
     }
-    const width = currentLevelState.columns * GRID_SQUARE_WIDTH;
-    const height = currentLevelState.rows * GRID_SQUARE_HEIGHT;
+    const width = ( currentLevelState.columns + 2) * GRID_SQUARE_WIDTH;
+    const height = ( currentLevelState.rows + 2) * GRID_SQUARE_HEIGHT;
     const scale = Math.min(canvas.width / width, canvas.height / height);
-    camera.x = width / 2;
-    camera.y = height / 2;
+    camera.x = width / 2 - GRID_SQUARE_WIDTH;
+    camera.y = height / 2 - GRID_SQUARE_HEIGHT;
     camera.scale = scale;
 }
 

@@ -15,7 +15,9 @@ import doorOpenBackgroundUrl from "~/assets/door_open_background.png";
 import doorClosedBackgroundUrl from "~/assets/door_closed_background.png";
 import bridgeOpenBackgroundUrl from "~/assets/bridge_open_background.png";
 import bridgeClosedBackgroundUrl from "~/assets/bridge_closed_background.png";
-import wallBackgroundUrl from "~/assets/wall_background.png";
+import wallBackgroundUrl from "~/assets/tree_wall.png";
+
+import treeImageUrl from "~/assets/tree.png";
 
 import { currentLevelState, EntityData, GetTileAtLocation } from "~/game/levels";
 import { SpriteAnimation, SpriteAnimationDetails, SpriteSheet } from "./spritesheet";
@@ -77,12 +79,12 @@ const boulderRollImage = new Image();
 boulderRollImage.src = boulderRollUrl;
 const boulderRollSprite: SpriteSheet = {
     image: boulderRollImage,
-    spriteWidth: 32,
-    spriteHeight: 32,
-    width: 4,
+    spriteWidth: 40,
+    spriteHeight: 40,
+    width: 6,
     height: 1
 }
-export const boulderRollAnimation = standardSpriteAnimation(boulderRollSprite, 60);
+export const boulderRollAnimation = standardSpriteAnimation(boulderRollSprite, 24);
 
 export const mousePortraitImage = new Image();
 mousePortraitImage.src = mousePortraitUrl;
@@ -136,6 +138,9 @@ const waterBackgroundAnimation: SpriteAnimation = {
         return [Math.floor((timestamp % (waterBackgroundSprite.width * 200)) / 200), 0];
     },
 }
+
+export const treeImage = new Image();
+treeImage.src = treeImageUrl;
 
 export function GetEntityPortrait(entity: EntityType) {
     switch (entity) {
