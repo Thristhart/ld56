@@ -43,6 +43,7 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
         }
     }
 
+    context.lineWidth = 0.4;
     // fill out grid lines
     for (let x = 0; x <= width; x++) {
         context.strokeStyle = COLOR_GRID_LINE_LIGHT;
