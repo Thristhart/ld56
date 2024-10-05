@@ -25,9 +25,9 @@ function GetLocationInDirection(startLocation: Location, direction: Direction, d
     }
 }
 
-export function CanEntityMove(entityType: EntityType, tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[]) {
+export function CanEntityMove(entityType: EntityType, tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[], entitiesAtMoveOrigin: EntityData[]) {
     switch (entityType) {
-        case 'turtle': return CanTurtleMove(tileAtMoveTarget, entitiesAtMoveTarget);
+        case 'turtle': return CanTurtleMove(tileAtMoveTarget, entitiesAtMoveTarget, entitiesAtMoveOrigin);
         case 'mouse': return CanMouseMove(tileAtMoveTarget, entitiesAtMoveTarget);
         default: return false;
     }
@@ -42,17 +42,17 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
     const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTarget);
     const entitiesAtMoveOrigin = GetEntitiesAtLocation(levelState, entity.location);
     
-    const canEntityMove = CanEntityMove(entity.type, tileAtMoveTarget, entitiesAtMoveTarget);
+    const canEntityMove = CanEntityMove(entity.type, tileAtMoveTarget, entitiesAtMoveTarget, entitiesAtMoveOrigin);
 
     if (canEntityMove) {
         const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
-        if (boulder && tileAtMoveTarget === 'ground') // boulders can only move on ground
+        if (boulder && ( tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'water')) // boulders can only move on ground (and sometimes water)
         {
             const boulderTileAtLocation = tileAtMoveTarget;
             const boulderMoveTarget = GetLocationInDirection(boulder.location, direction);
             const boulderTileAtMoveTarget = GetTileAtLocation(levelState, boulderMoveTarget);
             const boulderEntitiesAtMoveTarget = GetEntitiesAtLocation(levelState, boulderMoveTarget);
-            const canBoulderMove = CanBoulderMove(boulderTileAtLocation, boulderTileAtMoveTarget, boulderEntitiesAtMoveTarget);
+            const canBoulderMove = CanBoulderMove(boulderTileAtLocation, boulderTileAtMoveTarget, entitiesAtMoveTarget, boulderEntitiesAtMoveTarget);
             if (canBoulderMove) {
                 entityMovementActions.push(
                     {
@@ -78,10 +78,9 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
             }
         )
         
-
         const isTurtle = entity.type === 'turtle';
         if(isTurtle){
-            const carriedObjects = entitiesAtMoveOrigin.filter((x) => x.type !== 'turtle');
+            const carriedObjects = entitiesAtMoveOrigin.filter((x) => x.type !== 'turtle' && x.type !== 'goal');
             for(const object of carriedObjects)
             {
                 entityMovementActions.push(
@@ -99,10 +98,14 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
     return entityMovementActions;
 }
 
-export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[]) {
-    const hasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
-    if(hasCreature)
+export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[], entitiesAtMoveOrigin: EntityData[]) {
+    const targetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
+    if(targetHasCreature)
     {
+        return false;
+    }
+    const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle')
+    if(originHasOtherEntity && tileAtMoveTarget !== 'water'){
         return false;
     }
     if (tileAtMoveTarget === 'chasm') {
@@ -156,9 +159,22 @@ export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget
     return false
 }
 
-export function CanBoulderMove(tileAtLocation: TerrainType, tileAtMoveTarget: TerrainType, entities: EntityData[]) {
-    if (tileAtLocation !== 'ground' || entities.length) {
+export function CanBoulderMove(tileAtLocation: TerrainType, tileAtMoveTarget: TerrainType, entitiesAtOrigin: EntityData[], entitiesAtTarget: EntityData[]) {
+    if (tileAtLocation !== 'ground') {
+        if(entitiesAtOrigin.find((x) => x.type === 'turtle') && tileAtLocation === 'water')
+        {
+            return true;
+        }
         return false;
+    }
+    
+    if(entitiesAtTarget.length)
+    {
+        console.log(entitiesAtTarget);
+        if(entitiesAtTarget.filter((x) => x.type !== 'turtle').length && tileAtMoveTarget === 'water')
+        {
+            return false;
+        }
     }
 
     if (tileAtMoveTarget === 'chasm' || tileAtMoveTarget === 'water' || tileAtMoveTarget === 'ground') {
