@@ -124,7 +124,6 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarge
 }
 
 export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[]) {
-    console.log("Mouse Move Logic start.");
     const creaturesAtMoveTarget = entitiesAtMoveTarget.filter((entity) => creatures.includes(entity.type as CreatureType))
     if(creaturesAtMoveTarget.length > 0)
     {
@@ -132,7 +131,6 @@ export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget
         {
             return true;
         }
-        console.log("whatever the top logic is.");
         return false;
     }
     if (tileAtMoveTarget === 'chasm') {
@@ -140,25 +138,20 @@ export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget
         if (hasBoulder) {
             return true;
         }
-        console.log("chasm :(");
         return false;
     }
 
     if (tileAtMoveTarget === 'water') {
         const hasStep = entitiesAtMoveTarget.find((entity) => entity.type === 'turtle' || entity.type === 'boulder')
         if (hasStep) {
-            console.log("returning true.");
             return true;
         }
-        console.log("Has no step.");
-        console.log(entitiesAtMoveTarget);
         return false;
     }
 
     if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'tunnel') {
         return true;
     }
-    console.log("false by default.");
     return false;
 }
 
