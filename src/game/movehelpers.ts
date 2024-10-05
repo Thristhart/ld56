@@ -1,5 +1,6 @@
 import { ActionResult } from "./actions";
 import { EntityData, EntityType, TerrainType, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, creatures, CreatureType } from "./levels";
+import { triggers } from "./triggers";
 
 export type Direction = "up" | "down" | "left" | "right";
 export function GetLocationInDirection(startLocation: Location, direction: Direction, distance = 1): Location {
@@ -103,6 +104,7 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarge
     }
     const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle')
     if(originHasOtherEntity && tileAtMoveTarget !== 'water'){
+        triggers.emit("alargeratappears")
         return false;
     }
     if (tileAtMoveTarget === 'chasm') {

@@ -31,6 +31,18 @@ triggers.on("creatureOnGoal", () => {
     }
 })
 
+triggers.on("alargeratappears", () => {
+    if(!currentLevelState)
+    {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "turtle",
+        message: "you're large and that's ground."
+    })
+})
+
 
 export function checkForTriggersAfterAnimation(levelState: LevelContent, actionResult: ActionResult)
 {
