@@ -84,15 +84,6 @@ function fitLevelToCamera() {
 
 function sortEntities(a: EntityData, b: EntityData)
 {
-    // goal always renders on the bottom
-    if(a.type === "goal")
-    {
-        return -1;
-    }
-    if(b.type === "goal")
-    {
-        return 1;
-    }
 
     // otherwise turtle should be most-bottom
     if(a.type === "turtle")

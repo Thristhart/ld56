@@ -20,8 +20,9 @@ triggers.on("creatureOnGoal", () => {
     }
     const creatures = currentLevelState.entities.filter(ent => IsCreatureEntity(ent.type))
     const anyNotOnGoal = creatures.some(entity => {
-        const entitiesAtLocation = GetEntitiesAtLocation(currentLevelState!, entity.location);
-        return !entitiesAtLocation.some(ent => ent.type === "goal");
+        
+        const tileAtLocation = GetTileAtLocation(currentLevelState!, entity.location);
+        return !(tileAtLocation == "goal");
     })
     // all creatures on goal
     if (!anyNotOnGoal) {
@@ -67,7 +68,7 @@ function creatureMoveTriggers(levelState: LevelContent, actionResult: MoveEntity
             triggers.emit("turtleOnWater");
         }
     }
-    if (entitiesAtMoveTarget.some(entity => entity.type === "goal")) {
+    if (tileAtMoveTarget == "goal") {
         triggers.emit("creatureOnGoal");
     }
 }

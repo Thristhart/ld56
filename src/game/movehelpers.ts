@@ -82,7 +82,7 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
 
         const isTurtle = entity.type === 'turtle';
         if (isTurtle) {
-            const carriedObjects = entitiesAtMoveOrigin.filter((x) => x.type !== 'turtle' && x.type !== 'goal');
+            const carriedObjects = entitiesAtMoveOrigin.filter((x) => x.type !== 'turtle');
             for (const object of carriedObjects) {
                 entityMovementActions.push(
                     {
@@ -104,7 +104,7 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarge
     if (targetHasCreature) {
         return false;
     }
-    const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle' && entity.type !== 'goal')
+    const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle')
     if (originHasOtherEntity && tileAtMoveTarget !== 'water') {
         triggers.emit("turtleCannotMove")
         return false;
@@ -122,7 +122,7 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarge
         return false;
     }
 
-    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'water' || tileAtMoveTarget === 'button') {
+    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'water' || tileAtMoveTarget === 'button' || tileAtMoveTarget === 'goal') {
         if (originHasOtherEntity && tileAtMoveTarget !== 'water') {
             triggers.emit("turtleCannotMove")
             return false;
@@ -157,7 +157,7 @@ export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget
         return false;
     }
 
-    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'tunnel' || tileAtMoveTarget === 'button' || tileAtMoveTarget === 'bridge') {
+    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'tunnel' || tileAtMoveTarget === 'button' || tileAtMoveTarget === 'bridge' || tileAtMoveTarget === 'goal') {
         return true;
     }
     return false;
