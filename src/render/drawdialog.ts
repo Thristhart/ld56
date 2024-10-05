@@ -8,6 +8,10 @@ export function drawDialog(context: CanvasRenderingContext2D) {
     if (!currentBeat) {
         return;
     }
+    if(currentBeat.type == "cleardialog")
+    {
+        return;
+    }
 
     context.save();
     const scale = (window.innerWidth - 200) / dialogBackgroundImage.width;

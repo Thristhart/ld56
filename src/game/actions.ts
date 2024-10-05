@@ -1,6 +1,7 @@
 
 import { currentLevel, currentLevelState, IsCreatureEntity, LevelContent, Location, setCurrentLevelState } from "./levels";
 import { Direction, GetEntityMovementActions } from "./movehelpers";
+import { checkForTriggersAfterAnimation } from "./triggers";
 
 
 export interface MoveCreatureAction {
@@ -15,14 +16,14 @@ export interface SwitchCreatureAction {
 export type Action = MoveCreatureAction | SwitchCreatureAction;
 
 
-interface MoveEntityResult {
+export interface MoveEntityResult {
     type: "MoveEntity";
     entityid: number;
     oldLocation: Location;
     newLocation: Location;
 }
 
-interface SwitchEntityResult {
+export interface SwitchEntityResult {
     type: "SwitchEntity";
     newEntityId: number;
     oldEntityId: number;
@@ -119,6 +120,12 @@ export function fireAction(action: Action)
     if(result && !(Array.isArray(result) && result.length === 0)) {
         lastActionResults = Array.isArray(result) ? result : [result];
         lastActionTimestamp = performance.now();
+        setTimeout(() => {
+            for(const actionResult of lastActionResults ?? [])
+            {
+                checkForTriggersAfterAnimation(currentLevelState!, actionResult);
+            }
+        }, 100);
         actionLog.push(action);
     }
     setCurrentLevelState( ComputeStateFromActionLog() );
@@ -143,4 +150,13 @@ export function undo()
         lastUndoActionResults = Array.isArray(resultOfUndoneAction) ? resultOfUndoneAction : [resultOfUndoneAction];
         lastUndoTimestamp = performance.now();
     }
+}
+
+export function clearActions()
+{
+    actionLog.splice(0);
+    lastActionResults = undefined;
+    lastActionTimestamp = undefined;
+    lastUndoActionResults = undefined;
+    lastUndoTimestamp = undefined;
 }

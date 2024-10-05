@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import path from "node:path";
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 export default defineConfig({
     resolve: {
@@ -7,6 +8,9 @@ export default defineConfig({
             "~": path.resolve(__dirname, "src"),
         },
     },
+    plugins: [
+      nodePolyfills(),
+    ],
     base: "/ld56/",
     assetsInclude: ["**/*.entities", "**/*.ground"],
 });

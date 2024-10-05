@@ -2,7 +2,7 @@ import { ActionResult } from "./actions";
 import { EntityData, EntityType, TerrainType, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, creatures, CreatureType } from "./levels";
 
 export type Direction = "up" | "down" | "left" | "right";
-function GetLocationInDirection(startLocation: Location, direction: Direction, distance = 1): Location {
+export function GetLocationInDirection(startLocation: Location, direction: Direction, distance = 1): Location {
     let dx = 0;
     let dy = 0;
     switch (direction) {

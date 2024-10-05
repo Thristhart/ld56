@@ -1,8 +1,8 @@
-X, X , X , X , X , X , X , X , X , X 
-X, _ , _ , _ , W , _ , _ , _ , _ , X 
-X, _ , _ , _ , W , _ , X , _ , _ , X 
-X, _ , _ , _ , W , _ , X , _ , _ , X 
-X, _ , _ , _ , W , _ , X , T , X , X 
-X, _ , _ , _ , W , _ , _ , C , _ , X 
-X, _ , _ , _ , W , _ , _ , _ , _ , X 
-X, X , X , X , X , X , X , X , X , X 
+XXXXXXXXXX
+X___W____X
+X___W_X__X
+X___W_X__X
+X___W_XTXX
+X___W__C_X
+X___W____X
+XXXXXXXXXX

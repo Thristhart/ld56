@@ -1,4 +1,4 @@
-import { currentLevel, currentLevelState, LevelContent } from "~/game/levels";
+import { currentLevel, currentLevelState, EntityData, LevelContent } from "~/game/levels";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
 import { drawDialog } from "./drawdialog";
 import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation } from "./images";
@@ -81,6 +81,31 @@ function fitLevelToCamera() {
     camera.scale = scale;
 }
 
+function sortEntities(a: EntityData, b: EntityData)
+{
+    // goal always renders on the bottom
+    if(a.type === "goal")
+    {
+        return -1;
+    }
+    if(b.type === "goal")
+    {
+        return 1;
+    }
+
+    // otherwise turtle should be most-bottom
+    if(a.type === "turtle")
+    {
+        return -1;
+    }
+    if(b.type === "turtle")
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
 export function drawFrame(timestamp: number) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -100,8 +125,8 @@ export function drawFrame(timestamp: number) {
             ...lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [],
             ...lastUndoActionResults?.map(result => animateActionResultUndo(result, timestamp - lastUndoTimestamp!)) ?? [],
         ];
-        // fill out the entities
-        for (const entity of currentLevelState.entities) {
+        const sortedEntities = [...currentLevelState.entities].sort(sortEntities);
+        for (const entity of sortedEntities) {
             const portrait = GetEntityPortrait(entity.type);
             if (portrait) {
                 const positionModification = {column: 0, row: 0};

@@ -1,10 +1,14 @@
 import testingEntities from '../levels/testing.entities?raw';
 import testingGround from '../levels/testing.ground?raw';
+import introEntities from '../levels/intro.entities?raw';
+import introGround from '../levels/intro.ground?raw';
+import { clearActions } from './actions';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
     currentLevel = level;
     currentLevelState = level;
+    clearActions();
 }
 
 export function endLevel() {
@@ -26,6 +30,10 @@ export const levels = {
     testing: {
         entities: testingEntities,
         ground: testingGround,
+    },
+    intro: {
+        entities: introEntities,
+        ground: introGround,
     }
 } as const satisfies Record<string, LevelDescription>;
 
@@ -74,12 +82,12 @@ function constructLevelContent(levelname: keyof typeof levels) {
 
     const groundRows = ground.split(/\r?\n|\r|\n/g);
     levelContent.rows = groundRows.length;
-    levelContent.columns = groundRows[0].trim().split(',').length
+    levelContent.columns = groundRows[0].trim().split('').length
 
     // parse initial ground
     for (const groundRowIndex in groundRows) {
         const terrainRowMap: Array<TerrainType> = [];
-        const tiles = groundRows[groundRowIndex].split(',');
+        const tiles = groundRows[groundRowIndex].split('');
         if (levelContent.columns !== tiles.length) {
             console.log('WARNING: MISMATCHED GROUND COLUMNS');
         }
