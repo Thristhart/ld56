@@ -9,22 +9,22 @@ const sounds: { [key: string]: Howl } = {
 };
 
 let storyIndex = -1;
-const story = [
+const story: Array<StoryBeat> = [
     {
         type: "startlevel",
         level: "testing"
     },
-    {
-        type: "message",
-        speaker: "turtle",
-        message: "hi world",
-    },
-    {
-        type: "message",
-        speaker: "turtle",
-        message: "it's me",
-    },
-] as const satisfies Array<StoryBeat>
+    // {
+    //     type: "message",
+    //     speaker: "turtle",
+    //     message: "hi world",
+    // },
+    // {
+    //     type: "message",
+    //     speaker: "turtle",
+    //     message: "it's me",
+    // },
+]
 
 
 if (import.meta.env.DEV) {
