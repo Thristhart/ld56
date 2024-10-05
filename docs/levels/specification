@@ -20,3 +20,9 @@ T: tunnel (for rat)
 B: button
 S: switch
 H: bridge
+
+
+BY THE WAY TOM AND I DECIDED THAT WE WERE GOING TO HAVE BRIDGE+GATE EXIST ON ONLY "WALL" or "CHASM" respectively and move to the terrain layer
+button also now is on terrain layer
+and then we do like (){}[]<> or something to specify channels in the entity layer
+TODO(flower):write this into the specialization for real
