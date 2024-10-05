@@ -105,7 +105,11 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarge
     if (targetHasCreature) {
         return false;
     }
-    const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle');
+    const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle' && entity.type !== 'goal')
+    if (originHasOtherEntity && tileAtMoveTarget !== 'water') {
+        triggers.emit("alargeratappears")
+        return false;
+    }
     if (tileAtMoveTarget === 'chasm') {
         const hasBoulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder')
         if (hasBoulder) {
