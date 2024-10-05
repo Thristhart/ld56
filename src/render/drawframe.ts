@@ -2,6 +2,8 @@ import { currentLevel, currentLevelState, LevelContent } from "~/game/levels";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
 import { drawDialog } from "./drawdialog";
 import { GetEntityPortrait, GetTerrainBackground } from "./images";
+import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
+import { animateActionResult, animateActionResultUndo } from "./animateaction";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -32,31 +34,6 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
                     }
                 }
             }
-        }
-    }
-
-    // fill out the entities
-    for (const entity of level.entities) {
-        const portrait = GetEntityPortrait(entity.type);
-
-        if (level.currentEntityId === entity.id) {
-            context.strokeStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
-            context.fillStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
-            context.beginPath();
-            context.ellipse(
-                entity.location.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
-                entity.location.row * GRID_SQUARE_HEIGHT + 0.75 * GRID_SQUARE_HEIGHT,
-                0.125 * GRID_SQUARE_HEIGHT,
-                0.35 * GRID_SQUARE_WIDTH,
-                Math.PI / 2,
-                0,
-                2 * Math.PI
-            );
-            context.fill();
-        }
-
-        if (portrait) {
-            context.drawImage(portrait, entity.location.column * GRID_SQUARE_WIDTH, entity.location.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
         }
     }
 
@@ -98,7 +75,7 @@ function fitLevelToCamera() {
     camera.scale = scale;
 }
 
-export function drawFrame() {
+export function drawFrame(timestamp: number) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -112,6 +89,47 @@ export function drawFrame() {
 
     if (currentLevelState) {
         drawGrid(context, currentLevelState);
+
+        const animations = [
+            ...lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [],
+            ...lastUndoActionResults?.map(result => animateActionResultUndo(result, timestamp - lastUndoTimestamp!)) ?? [],
+        ];
+        // fill out the entities
+        for (const entity of currentLevelState.entities) {
+            const portrait = GetEntityPortrait(entity.type);
+            if (portrait) {
+                const positionModification = {column: 0, row: 0};
+                animations?.forEach(animation => {
+                    const mod = animation.entityPositionModifications.get(entity.id);
+                    if(mod)
+                    {
+                        positionModification.column += mod.column;
+                        positionModification.row += mod.row;
+                    }
+                })
+                const entityLocation = {
+                    column: entity.location.column + positionModification.column,
+                    row: entity.location.row + positionModification.row,
+                }
+
+                if (currentLevelState.currentEntityId === entity.id) {
+                    context.strokeStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
+                    context.fillStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
+                    context.beginPath();
+                    context.ellipse(
+                        entityLocation.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
+                        entityLocation.row * GRID_SQUARE_HEIGHT + 0.75 * GRID_SQUARE_HEIGHT,
+                        0.125 * GRID_SQUARE_HEIGHT,
+                        0.35 * GRID_SQUARE_WIDTH,
+                        Math.PI / 2,
+                        0,
+                        2 * Math.PI
+                    );
+                    context.fill();
+                }
+                context.drawImage(portrait, entityLocation.column * GRID_SQUARE_WIDTH, entityLocation.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+            }
+        }
     }
 
     context.restore();

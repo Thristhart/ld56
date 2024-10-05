@@ -1,9 +1,9 @@
-import { fireAction } from "./actions";
+import { fireAction, undo } from "./actions";
 import { currentLevelState } from "./levels";
 
 const canvas = document.querySelector("canvas")!;
 
-const inputs = ["w", "a", "s", "d", "e"] as const;
+const inputs = ["w", "a", "s", "d", "e", "z"] as const;
 
 function isSupportedInput(input: string): input is Input {
     return inputs.includes(input as Input);
@@ -50,6 +50,10 @@ function onInput(input: Input) {
         }
         case "e": {
             fireAction({ type: "SwitchCreature" });
+            break;
+        }
+        case "z": {
+            undo();
             break;
         }
     }

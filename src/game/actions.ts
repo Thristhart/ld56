@@ -107,13 +107,40 @@ export function applyAction(levelState: LevelContent, action: Action): ActionRes
     return undefined;
 }
 
-export function fireAction(action: Action) {
-    if (!currentLevelState) {
+export let lastActionResults: Array<ActionResult> | undefined;
+export let lastActionTimestamp: number | undefined;
+export function fireAction(action: Action)
+{
+    if(!currentLevelState)
+    {
         return;
     }
     const result = applyAction(currentLevelState, action);
-    if (result) {
+    if(result && !(Array.isArray(result) && result.length === 0)) {
+        lastActionResults = Array.isArray(result) ? result : [result];
+        lastActionTimestamp = performance.now();
         actionLog.push(action);
     }
-    setCurrentLevelState(ComputeStateFromActionLog());
+    setCurrentLevelState( ComputeStateFromActionLog() );
+}
+export let lastUndoActionResults: Array<ActionResult> | undefined;
+export let lastUndoTimestamp: number | undefined;
+export function undo()
+{
+    if(!currentLevelState)
+    {
+        return;
+    }
+    const undoneAction = actionLog.pop();
+    if(!undoneAction)
+    {
+        return;
+    }
+    setCurrentLevelState( ComputeStateFromActionLog() );
+    const resultOfUndoneAction = applyAction(currentLevelState, undoneAction);
+    if(resultOfUndoneAction)
+    {
+        lastUndoActionResults = Array.isArray(resultOfUndoneAction) ? resultOfUndoneAction : [resultOfUndoneAction];
+        lastUndoTimestamp = performance.now();
+    }
 }

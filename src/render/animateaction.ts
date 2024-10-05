@@ -31,3 +31,24 @@ export function animateActionResult(actionResult: ActionResult, dt: number)
     }
     return {entityPositionModifications};
 }
+
+export function animateActionResultUndo(actionResult: ActionResult, dt: number)
+{
+    const entityPositionModifications = new Map<number, {row: number, column: number}>();
+    switch(actionResult.type)
+    {
+        case "MoveEntity": {
+            // Undoing the entity moving to a new location, so we want to lerp
+            // from the new location (0) to the old location (diff * -1)
+            let t = clamp(dt / MOVE_ANIMATION_DURATION_MS);
+            const diff = {
+                row: actionResult.newLocation.row - actionResult.oldLocation.row,
+                column: actionResult.newLocation.column - actionResult.oldLocation.column,
+            };
+            const lerped = lerp(1, 0, t);
+            entityPositionModifications.set(actionResult.entityid, {row: diff.row * lerped, column: diff.column * lerped})
+            break;
+        }
+    }
+    return {entityPositionModifications};
+}
