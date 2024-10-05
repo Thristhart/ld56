@@ -19,7 +19,6 @@
     "vite": "^5.2.8"
   },
   "dependencies": {
-    "howler": "^2.2.3",
-    "inkjs": "^2.3.0"
+    "howler": "^2.2.3"
   }
 }

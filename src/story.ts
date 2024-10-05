@@ -1,5 +1,4 @@
 import { Howl } from "howler";
-import { Story } from "inkjs/engine/Story";
 import { levels, startLevel } from "./game/levels";
 
 const sounds: { [key: string]: Howl } = {
