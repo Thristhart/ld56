@@ -12,6 +12,6 @@ export function tick(timestamp: number) {
 if (import.meta.hot) {
     import.meta.hot.accept((main) => {
         cancelAnimationFrame(animationFrame);
-        requestAnimationFrame(main.tick);
+        requestAnimationFrame(main?.tick);
     });
 }
