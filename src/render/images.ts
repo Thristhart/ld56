@@ -14,7 +14,7 @@ import buttonBackgroundUrl from "~/assets/button_background.png";
 import { currentLevelState, EntityData, GetTileAtLocation } from "~/game/levels";
 import { SpriteAnimation, SpriteAnimationDetails, SpriteSheet } from "./spritesheet";
 import { lerp } from "./animateaction";
-import { EntityType } from "~/game/specifications";
+import { EntityType, TerrainType } from "~/game/specifications";
 
 export const turtlePortraitImage = new Image();
 turtlePortraitImage.src = turtlePortraitUrl;

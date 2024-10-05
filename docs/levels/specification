@@ -14,12 +14,10 @@ _: ground
 W: water (for frog)
 X: wall
 C: chasm (for bird)
-H: bridge closed (chasm)
-I: bridge open (chasm)
+H: bridge (chasm)
 T: tunnel (for rat)
 B: button
-O: door open (wall)
-D: door closed (wall)
+D: door  (wall)
 
 circuit layer
 0-9: circuit identifier that indicates what group a circuit is in
