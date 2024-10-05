@@ -29,6 +29,7 @@ export function drawDialog(context: CanvasRenderingContext2D) {
     context.fillRect(95, 200, 120, 40);
     context.fillStyle = "white";
     context.fillText("turtle", 110, 233);
+    context.fillStyle = "black";
     context.fillText(currentBeat.message, 100, 300);
 
     context.restore();
