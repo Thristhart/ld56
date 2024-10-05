@@ -4,11 +4,20 @@ export interface SpriteSheet {
     readonly spriteHeight: number;
     readonly width: number;
     readonly height: number;
+    readonly xOffset?: number;
+    readonly yOffset?: number;
 }
 
 export interface SpriteAnimation {
     readonly spritesheet: SpriteSheet;
-    readonly getFrame: (timestamp: number) => readonly [x: number, y: number];
+    readonly getFrame: (dt: number, spriteDetails?: SpriteAnimationDetails) => readonly [x: number, y: number];
+}
+
+export interface SpriteAnimationDetails {
+    sprite: SpriteAnimation;
+    direction: number;
+    startTime: number;
+    onComplete?: () => void;
 }
 
 export function drawSprite(
@@ -25,8 +34,8 @@ export function drawSprite(
         frame[1] * sheet.spriteHeight,
         sheet.spriteWidth,
         sheet.spriteHeight,
-        x,
-        y,
+        x + (sheet.xOffset ?? 0) - (renderDimensions?.width ?? sheet.spriteWidth) / 2,
+        y + (sheet.yOffset ?? 0) - (renderDimensions?.height ?? sheet.spriteHeight) / 2,
         renderDimensions?.width ?? sheet.spriteWidth,
         renderDimensions?.height ?? sheet.spriteHeight
     );

@@ -30,7 +30,7 @@ triggers.on("creatureOnGoal", () => {
     }
 })
 
-triggers.on("alargeratappears", () => {
+triggers.once("alargeratappears", () => {
     if(!currentLevelState)
     {
         return;
