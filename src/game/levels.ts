@@ -41,7 +41,7 @@ export class LevelContent {
         const level = levels[levelname];
         const ground = level.ground;
 
-        const groundRows = ground.split('\r\n');
+        const groundRows = ground.split(/\r?\n|\r|\n/g);
         this.numRows = groundRows.length;
         this.numColumns = groundRows[0].trim().split(',').length
 
@@ -64,7 +64,7 @@ export class LevelContent {
         // parse initial entities
         const entities = level.entities;
 
-        const entityRows = entities.split('\n');
+        const entityRows = entities.split(/\r?\n|\r|\n/g);
         for (const entityRowIndex in entityRows) {
             const entityRowMap: Map<number, EntityType> = new Map();
             const entityTiles = entityRows[entityRowIndex].split(',');
