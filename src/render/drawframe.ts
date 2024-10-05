@@ -64,19 +64,33 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
 }
 
 
+function fitLevelToCamera()
+{
+    if(!currentLevel)
+    {
+        return;
+    }
+    const width = currentLevel.columns * GRID_SQUARE_WIDTH;
+    const height= currentLevel.rows * GRID_SQUARE_HEIGHT;
+    const scale = Math.min(canvas.width / width, canvas.height / height);
+    camera.x = width / 2;
+    camera.y = height / 2;
+    camera.scale = scale;
+}
+
 export function drawFrame() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.imageSmoothingEnabled = false;
 
+    fitLevelToCamera();
 
     context.save();
-    context.translate(canvas.width / 8 - camera.x * camera.scale, canvas.height / 8 - camera.y * camera.scale);
+    context.translate(canvas.width / 2 - camera.x * camera.scale, canvas.height / 2 - camera.y * camera.scale);
+    context.scale(camera.scale, camera.scale);
 
     if (currentLevel) {
-        camera.x = 0;
-        camera.y = 0;
         drawGrid(context, currentLevel);
     }
 
