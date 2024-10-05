@@ -47,8 +47,8 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
 
     if (canEntityMove) {
         const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
-        
-        if (boulder && ( tileAtMoveTarget === 'ground')) // boulders can only move on ground
+
+        if (boulder && (tileAtMoveTarget === 'ground')) // boulders can only move on ground
         {
             const boulderTileAtLocation = tileAtMoveTarget;
             const boulderMoveTarget = GetLocationInDirection(boulder.location, direction);
@@ -68,7 +68,7 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
             else {
                 return entityMovementActions;
             }
-            
+
         }
 
         entityMovementActions.push(

@@ -11,6 +11,12 @@ import dialogBackgroundUrl from "~/assets/dialog_panel.png";
 import waterBackgroundSpriteUrl from "~/assets/water_animated.png";
 import buttonBackgroundUrl from "~/assets/button_background.png";
 
+import doorOpenBackgroundUrl from "~/assets/door_open_background.png";
+import doorClosedBackgroundUrl from "~/assets/door_closed_background.png";
+import bridgeOpenBackgroundUrl from "~/assets/bridge_open_background.png";
+import bridgeClosedBackgroundUrl from "~/assets/bridge_closed_background.png";
+import wallBackgroundUrl from "~/assets/wall_background.png";
+
 import { currentLevelState, EntityData, GetTileAtLocation } from "~/game/levels";
 import { SpriteAnimation, SpriteAnimationDetails, SpriteSheet } from "./spritesheet";
 import { lerp } from "./animateaction";
@@ -92,6 +98,21 @@ waterBackgroundSpriteImage.src = waterBackgroundSpriteUrl;
 export const buttonBackgroundImage = new Image();
 buttonBackgroundImage.src = buttonBackgroundUrl;
 
+export const doorOpenBackgroundImage = new Image();
+doorOpenBackgroundImage.src = doorOpenBackgroundUrl;
+
+export const doorClosedBackgroundImage = new Image();
+doorClosedBackgroundImage.src = doorClosedBackgroundUrl;
+
+export const bridgeOpenBackgroundImage = new Image();
+bridgeOpenBackgroundImage.src = bridgeOpenBackgroundUrl;
+
+export const bridgeClosedBackgroundImage = new Image();
+bridgeClosedBackgroundImage.src = bridgeClosedBackgroundUrl;
+
+export const wallBackgroundImage = new Image();
+wallBackgroundImage.src = wallBackgroundUrl;
+
 const waterBackgroundSprite: SpriteSheet = {
     image: waterBackgroundSpriteImage,
     spriteWidth: 32,
@@ -122,6 +143,8 @@ export function GetTerrainBackground(terrain: TerrainType) {
         case 'ground': return grassBackgroundImage;
         case 'tunnel': return tunnelBackgroundImage;
         case 'button': return buttonBackgroundImage;
+        case 'door': return doorOpenBackgroundImage;
+        case 'bridge': return bridgeOpenBackgroundImage;
         default: return undefined;
     }
 }
