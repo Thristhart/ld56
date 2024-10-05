@@ -155,8 +155,17 @@ export function undo()
 export function clearActions()
 {
     actionLog.splice(0);
+    clearActionAnimations();
+    clearUndoAnimations();
+}
+
+export function clearActionAnimations()
+{
     lastActionResults = undefined;
     lastActionTimestamp = undefined;
+}
+export function clearUndoAnimations()
+{   
     lastUndoActionResults = undefined;
     lastUndoTimestamp = undefined;
 }

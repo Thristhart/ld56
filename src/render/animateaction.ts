@@ -1,19 +1,23 @@
-import { ActionResult } from "~/game/actions";
+import { ActionResult, clearActionAnimations, clearUndoAnimations, lastActionTimestamp, lastUndoTimestamp } from "~/game/actions";
+import { currentLevelState, GetTileAtLocation } from "~/game/levels";
+import { SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
+import { turtleHideAnimation, turtleUnhideAnimation } from "./images";
 
-function lerp(a: number, b: number, t: number)
+export function lerp(a: number, b: number, t: number)
 {
     return a * (1 - t) + b * t;
 }
 
-function clamp(n: number, min = 0, max = 1) {
+export function clamp(n: number, min = 0, max = 1) {
     return Math.min(max, Math.max(min, n));
 }
 
-const MOVE_ANIMATION_DURATION_MS = 100;
+const MOVE_ANIMATION_DURATION_MS = 60;
 
 export function animateActionResult(actionResult: ActionResult, dt: number)
 {
     const entityPositionModifications = new Map<number, {row: number, column: number}>();
+    const entitySpriteAnimations = new Map<number, SpriteAnimationDetails>();
     switch(actionResult.type)
     {
         case "MoveEntity": {
@@ -26,15 +30,49 @@ export function animateActionResult(actionResult: ActionResult, dt: number)
             };
             const lerped = lerp(-1, 0, t);
             entityPositionModifications.set(actionResult.entityid, {row: diff.row * lerped, column: diff.column * lerped})
+
+            if(!currentLevelState)
+            {
+                break;
+            }
+            const entity = currentLevelState.entities.find(ent => ent.id === actionResult.entityid);
+            if(entity?.type === "turtle")
+            {
+                const prevTile = GetTileAtLocation(currentLevelState, actionResult.oldLocation);
+                const nextTile = GetTileAtLocation(currentLevelState, actionResult.newLocation);
+                if(prevTile !== "water" && nextTile === "water")
+                {
+                    entitySpriteAnimations.set(entity.id, {
+                        sprite: turtleHideAnimation,
+                        direction: 1,
+                        startTime: lastActionTimestamp!,
+                        onComplete() {
+                            clearActionAnimations();
+                        },
+                    });
+                }
+                else if(prevTile === "water" && nextTile !== "water")
+                {
+                    entitySpriteAnimations.set(entity.id, {
+                        sprite: turtleUnhideAnimation,
+                        direction: 1,
+                        startTime: lastActionTimestamp!,
+                        onComplete() {
+                            clearActionAnimations();
+                        },
+                    });
+                }
+            }
             break;
         }
     }
-    return {entityPositionModifications};
+    return {entityPositionModifications, entitySpriteAnimations};
 }
 
 export function animateActionResultUndo(actionResult: ActionResult, dt: number)
 {
     const entityPositionModifications = new Map<number, {row: number, column: number}>();
+    const entitySpriteAnimations = new Map<number, SpriteAnimationDetails>();
     switch(actionResult.type)
     {
         case "MoveEntity": {
@@ -47,8 +85,41 @@ export function animateActionResultUndo(actionResult: ActionResult, dt: number)
             };
             const lerped = lerp(1, 0, t);
             entityPositionModifications.set(actionResult.entityid, {row: diff.row * lerped, column: diff.column * lerped})
+            
+            if(!currentLevelState)
+            {
+                break;
+            }
+            const entity = currentLevelState.entities.find(ent => ent.id === actionResult.entityid);
+            if(entity?.type === "turtle")
+            {
+                const prevTile = GetTileAtLocation(currentLevelState, actionResult.oldLocation);
+                const nextTile = GetTileAtLocation(currentLevelState, actionResult.newLocation);
+                if(prevTile !== "water" && nextTile === "water")
+                {
+                    entitySpriteAnimations.set(entity.id, {
+                        sprite: turtleHideAnimation,
+                        direction: -1,
+                        startTime: lastUndoTimestamp!,
+                        onComplete() {
+                            clearUndoAnimations();
+                        },
+                    });
+                }
+                else if(prevTile === "water" && nextTile !== "water")
+                {
+                    entitySpriteAnimations.set(entity.id, {
+                        sprite: turtleUnhideAnimation,
+                        direction: -1,
+                        startTime: lastUndoTimestamp!,
+                        onComplete() {
+                            clearUndoAnimations();
+                        },
+                    });
+                }
+            }
             break;
         }
     }
-    return {entityPositionModifications};
+    return {entityPositionModifications, entitySpriteAnimations};
 }
