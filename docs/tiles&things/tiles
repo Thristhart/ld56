@@ -22,13 +22,11 @@ wall: nobody can walk, fly, or stand on a wall!
 goal zone: both animals go here and you win
 
 ------------------------------------------------------------------------------------------------------------
-gate: this  can open/close when triggered by something to block movement. when closed it acts as a wall, when open it acts as a floor
+gate: this is an entity that is placed on terrain that is normally impassable for some creatures, it might look different based on what terrain it's placed on. when "closed" it behaves as the tile it's placed on and when "open" it behaves as floor. it can be opened/closed by a button or a switch. over wall it forms a "gate" over chasm/water it forms a "drawbridge"
 
-button: this can trigger gates when there's something on it such as a critter or boulder
+button: this can trigger gates when there's something on it such as a critter or boulder. it will open the gates as long as there's something on it
 
 switch: this can toggle gates when you bump into it
-
-bridge: this can open/close. when closed it acts as a chasm, when open it acts as a floor.
 
 log - knock this down to make a bridge over water or chasm
 

@@ -8,6 +8,8 @@ entity layer
 4: the fourth creature (frog)
 G: goal zone
 R: boulder
+H: gate
+L: log
 
 terrain layer
 ,: ground
@@ -17,4 +19,3 @@ C: chasm (for bird)
 T: tunnel (for rat)
 B: button
 S: switch
-H: bridge
