@@ -1,10 +1,10 @@
 import { continueStory, isShowingMessage } from "~/story";
-import { fireAction, undo } from "./actions";
-import { currentLevelState } from "./levels";
+import { clearActions, ComputeStateFromActionLog, fireAction, undo } from "./actions";
+import { currentLevelState, setCurrentLevelState } from "./levels";
 
 const canvas = document.querySelector("canvas")!;
 
-const inputs = ["w", "a", "s", "d", "e", "z", " "] as const;
+const inputs = ["w", "a", "s", "d", "e", "z", " ", "r"] as const;
 
 function isSupportedInput(input: string): input is Input {
     return inputs.includes(input as Input);
@@ -71,6 +71,11 @@ function onInput(input: Input) {
         }
         case "z": {
             undo();
+            break;
+        }
+        case "r": {
+            clearActions();
+            setCurrentLevelState(ComputeStateFromActionLog());
             break;
         }
     }
