@@ -1,7 +1,7 @@
 import { ActionResult, clearActionAnimations, clearUndoAnimations, lastActionTimestamp, lastUndoTimestamp } from "~/game/actions";
 import { currentLevelState, GetTileAtLocation } from "~/game/levels";
 import { SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
-import { turtleHideAnimation, turtleUnhideAnimation } from "./images";
+import { boulderRollAnimation, turtleHideAnimation, turtleUnhideAnimation } from "./images";
 
 export function lerp(a: number, b: number, t: number)
 {
@@ -12,7 +12,7 @@ export function clamp(n: number, min = 0, max = 1) {
     return Math.min(max, Math.max(min, n));
 }
 
-const MOVE_ANIMATION_DURATION_MS = 60;
+const MOVE_ANIMATION_DURATION_MS = 90;
 
 export function animateActionResult(actionResult: ActionResult, dt: number)
 {
@@ -62,6 +62,17 @@ export function animateActionResult(actionResult: ActionResult, dt: number)
                         },
                     });
                 }
+            }
+            if(entity?.type === "boulder")
+            {
+                entitySpriteAnimations.set(entity.id, {
+                    sprite: boulderRollAnimation,
+                    direction: 1,
+                    startTime: lastActionTimestamp!,
+                    onComplete() {
+                        clearActionAnimations();
+                    },
+                })
             }
             break;
         }
@@ -117,6 +128,17 @@ export function animateActionResultUndo(actionResult: ActionResult, dt: number)
                         },
                     });
                 }
+            }
+            if(entity?.type === "boulder")
+            {
+                entitySpriteAnimations.set(entity.id, {
+                    sprite: boulderRollAnimation,
+                    direction: -1,
+                    startTime: lastUndoTimestamp!,
+                    onComplete() {
+                        clearActionAnimations();
+                    },
+                })
             }
             break;
         }

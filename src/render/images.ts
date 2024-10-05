@@ -2,8 +2,8 @@ import turtlePortraitUrl from "~/assets/turtle_portrait.png";
 import turtleHideUrl from "~/assets/turtle_hide_strip8.png";
 import turtleUnhideUrl from "~/assets/turtle_unhide_strip5.png";
 import mousePortraitUrl from "~/assets/mouse_portrait.png";
-import boulderPortraitUrl from "~/assets/boulder_portrait.png";
 import goalPortraitUrl from "~/assets/goal_portrait.png";
+import boulderRollUrl from "~/assets/new_boulder_roll.png";
 
 import grassBackgroundUrl from "~/assets/grass_background.png";
 import tunnelBackgroundUrl from "~/assets/tunnel_background.png";
@@ -33,10 +33,10 @@ function standardSpriteAnimation(sheet: SpriteSheet, msPerFrame: number): Sprite
             const t = Math.min(dt / duration, 1);
             let frame;
             if ((spriteDetails?.direction ?? 1) > 0) {
-                frame = lerp(0, sheet.width, t)
+                frame = lerp(0, sheet.width - 1, t)
             }
             else {
-                frame = lerp(sheet.width, 0, t)
+                frame = lerp(sheet.width - 1, 0, t)
             }
             if (t >= 1) {
                 spriteDetails?.onComplete?.();
@@ -54,7 +54,7 @@ const turtleHideSprite: SpriteSheet = {
     spriteHeight: 40,
     xOffset: 4,
     yOffset: -4,
-    width: 7,
+    width: 8,
     height: 1
 }
 export const turtleHideAnimation = standardSpriteAnimation(turtleHideSprite, 66);
@@ -67,16 +67,25 @@ const turtleUnhideSprite: SpriteSheet = {
     spriteHeight: 40,
     xOffset: 4,
     yOffset: -4,
-    width: 4,
+    width: 5,
     height: 1
 }
 export const turtleUnhideAnimation = standardSpriteAnimation(turtleUnhideSprite, 66);
 
+
+const boulderRollImage = new Image();
+boulderRollImage.src = boulderRollUrl;
+const boulderRollSprite: SpriteSheet = {
+    image: boulderRollImage,
+    spriteWidth: 32,
+    spriteHeight: 32,
+    width: 4,
+    height: 1
+}
+export const boulderRollAnimation = standardSpriteAnimation(boulderRollSprite, 60);
+
 export const mousePortraitImage = new Image();
 mousePortraitImage.src = mousePortraitUrl;
-
-export const boulderPortraitImage = new Image();
-boulderPortraitImage.src = boulderPortraitUrl;
 
 export const goalPortraitImage = new Image();
 goalPortraitImage.src = goalPortraitUrl;
@@ -132,7 +141,7 @@ export function GetEntityPortrait(entity: EntityType) {
     switch (entity) {
         case 'turtle': return turtlePortraitImage;
         case 'mouse': return mousePortraitImage;
-        case 'boulder': return boulderPortraitImage;
+        case 'boulder': return boulderRollImage;
         case 'goal': return goalPortraitImage;
         default: return undefined;
     }
@@ -166,6 +175,9 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
         if (tile === "water") {
             return { sprite: turtleHideAnimation, direction: 1, startTime: 0 } // startTime 0 means this will always be at the last frame
         }
+    }
+    if (entity.type === "boulder") {
+        return { sprite: boulderRollAnimation, direction: -1, startTime: 0 } // startTime 0 means this will always be at the last frame
     }
     return undefined;
 }
