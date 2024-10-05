@@ -30,7 +30,8 @@ export const levels = {
 } as const satisfies Record<string, LevelDescription>;
 
 export type TerrainType = 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel';
-export type CreatureType = 'mouse' | 'turtle' | 'bird' | 'frog'
+export const creatures = ['mouse', 'turtle', 'bird', 'frog'] as const;
+export type CreatureType = typeof creatures[number];
 export type EntityType = CreatureType | 'empty' | 'goal' | 'boulder';
 export interface EntityData {
     type: EntityType;

@@ -1,5 +1,5 @@
 import { ActionResult } from "./actions";
-import { EntityData, EntityType, TerrainType, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation } from "./levels";
+import { EntityData, EntityType, TerrainType, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, creatures, CreatureType } from "./levels";
 
 export type Direction = "up" | "down" | "left" | "right";
 function GetLocationInDirection(startLocation: Location, direction: Direction, distance = 1): Location {
@@ -35,36 +35,40 @@ export function CanEntityMove(entityType: EntityType, tileAtMoveTarget: TerrainT
 
 export function GetEntityMovementActions(levelState: LevelContent, entity: EntityData, direction: Direction) {
     const entityMovementActions: ActionResult[] = [];
+    
 
     const moveTarget = GetLocationInDirection(entity.location, direction);
     const tileAtMoveTarget = GetTileAtLocation(levelState, moveTarget);
     const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTarget);
+    const entitiesAtMoveOrigin = GetEntitiesAtLocation(levelState, entity.location);
+    
+    const canEntityMove = CanEntityMove(entity.type, tileAtMoveTarget, entitiesAtMoveTarget);
 
-    const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
-    if (boulder && tileAtMoveTarget === 'ground') // boulders can only move on ground
-    {
-        const boulderTileAtLocation = tileAtMoveTarget;
-        const boulderMoveTarget = GetLocationInDirection(boulder.location, direction);
-        const boulderTileAtMoveTarget = GetTileAtLocation(levelState, boulderMoveTarget);
-        const boulderEntitiesAtMoveTarget = GetEntitiesAtLocation(levelState, boulderMoveTarget);
-        const canBoulderMove = CanBoulderMove(boulderTileAtLocation, boulderTileAtMoveTarget, boulderEntitiesAtMoveTarget);
-        if (canBoulderMove) {
-            entityMovementActions.push(
-                {
-                    type: "MoveEntity",
-                    entityid: boulder.id,
-                    oldLocation: boulder.location,
-                    newLocation: boulderMoveTarget
-                }
-            )
+    if (canEntityMove) {
+        const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
+        if (boulder && tileAtMoveTarget === 'ground') // boulders can only move on ground
+        {
+            const boulderTileAtLocation = tileAtMoveTarget;
+            const boulderMoveTarget = GetLocationInDirection(boulder.location, direction);
+            const boulderTileAtMoveTarget = GetTileAtLocation(levelState, boulderMoveTarget);
+            const boulderEntitiesAtMoveTarget = GetEntitiesAtLocation(levelState, boulderMoveTarget);
+            const canBoulderMove = CanBoulderMove(boulderTileAtLocation, boulderTileAtMoveTarget, boulderEntitiesAtMoveTarget);
+            if (canBoulderMove) {
+                entityMovementActions.push(
+                    {
+                        type: "MoveEntity",
+                        entityid: boulder.id,
+                        oldLocation: boulder.location,
+                        newLocation: boulderMoveTarget
+                    }
+                )
+            }
+            else {
+                return entityMovementActions;
+            }
         }
-        else {
-            return entityMovementActions;
-        }
-    }
 
-    const canMoveEntity = CanEntityMove(entity.type, tileAtMoveTarget, entitiesAtMoveTarget);
-    if (canMoveEntity) {
+
         entityMovementActions.push(
             {
                 type: "MoveEntity",
@@ -73,14 +77,36 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
                 newLocation: moveTarget
             }
         )
+        
+
+        const isTurtle = entity.type === 'turtle';
+        if(isTurtle){
+            const carriedObjects = entitiesAtMoveOrigin.filter((x) => x.type !== 'turtle');
+            for(const object of carriedObjects)
+            {
+                entityMovementActions.push(
+                    {
+                        type: "MoveEntity",
+                        entityid: object.id,
+                        oldLocation: object.location,
+                        newLocation: moveTarget
+                    }
+                )
+            }
+        }
     }
 
     return entityMovementActions;
 }
 
-export function CanTurtleMove(tileAtMoveTarget: TerrainType, entities: EntityData[]) {
+export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[]) {
+    const hasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
+    if(hasCreature)
+    {
+        return false;
+    }
     if (tileAtMoveTarget === 'chasm') {
-        const hasBoulder = entities.find((entity) => entity.type === 'boulder')
+        const hasBoulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder')
         if (hasBoulder) {
             return true;
         }
@@ -95,9 +121,18 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entities: EntityDat
     return false
 }
 
-export function CanMouseMove(tileAtMoveTarget: TerrainType, entities: EntityData[]) {
+export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[]) {
+    const creaturesAtMoveTarget = entitiesAtMoveTarget.filter((entity) => creatures.includes(entity.type as CreatureType))
+    if(creaturesAtMoveTarget.length > 0)
+    {
+        if(creaturesAtMoveTarget.filter((entity) => entity.type !== 'turtle').length === 0 && tileAtMoveTarget === 'water')
+        {
+            return true;
+        }
+        return false;
+    }
     if (tileAtMoveTarget === 'chasm') {
-        const hasBoulder = entities.find((entity) => entity.type === 'boulder')
+        const hasBoulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder')
         if (hasBoulder) {
             return true;
         }
@@ -106,7 +141,7 @@ export function CanMouseMove(tileAtMoveTarget: TerrainType, entities: EntityData
     }
 
     if (tileAtMoveTarget === 'water') {
-        const hasStep = entities.find((entity) => entity.type === 'turtle' || entity.type === 'boulder')
+        const hasStep = entitiesAtMoveTarget.find((entity) => entity.type === 'turtle' || entity.type === 'boulder')
         if (hasStep) {
             return true;
         }
