@@ -64,3 +64,17 @@ Oh good we have terrain types.
 So, mvp style: there's a guy who can walk to adjacent spaces and push things in those spaces, and there's a guy who can hop over spaces (every move is 2 in a direction) and stomp to push all items out from them?
 
 Okay, so, Turtle and Rat are running from Wild Fire. Bird and Frog(Not sure about Frog?) are running from wild firearms. Then they meet and run from both.
+
+
+adding meaning to water in bird + frog if both are able to cross the tile
+boulders cannot cross water and boulders can be placed on buttons, sometimes this is desirable
+insects also will block boulders
+
+multiple buttons and gates with a complicated dependency tree
+
+a boulder in a corner is "stuck" and cannot be moved. a boulder against a wall is "stuck" against the wall
+but walls can become floor with the use of gates, so we can have boulders which are "stuck" at the start of a level but as the animals progress a gate opens to make an earlier "stuck" boulder moveable. this could be especially useful if there's an early button needed to open a gate so the other animal can go do something, but eventually both animals must be able to move through this early gate. an early "stuck" boulder would be useful to keep the early gate open
+
+
+
+we have a big action log replay, that's fun
