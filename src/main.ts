@@ -6,8 +6,6 @@ if (import.meta.hot) {
     import.meta.hot.accept();
 }
 
-continueStory();
-
 // this is temporary
 document.querySelector("canvas")?.addEventListener("click", () => {
     continueStory();
