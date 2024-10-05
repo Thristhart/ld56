@@ -1,9 +1,10 @@
+import { continueStory, isShowingMessage } from "~/story";
 import { fireAction, undo } from "./actions";
 import { currentLevelState } from "./levels";
 
 const canvas = document.querySelector("canvas")!;
 
-const inputs = ["w", "a", "s", "d", "e", "z"] as const;
+const inputs = ["w", "a", "s", "d", "e", "z", " "] as const;
 
 function isSupportedInput(input: string): input is Input {
     return inputs.includes(input as Input);
@@ -31,7 +32,23 @@ function onInput(input: Input) {
         return;
     }
 
+    // when showing a message, only allow advancing dialog
+    if(isShowingMessage())
+    {
+        switch (input) {
+            case "e":
+            case " ": {
+                continueStory();
+                break;
+            }
+        }
+        return;
+    }
     switch (input) {
+        case " ": {
+            continueStory();
+            break;
+        }
         case "w": {
             fireAction({ type: "MoveCreature", direction: "up" });
             break;

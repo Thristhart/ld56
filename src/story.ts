@@ -13,16 +13,22 @@ const story: Array<StoryBeat> = [
         type: "startlevel",
         level: "testing"
     },
-    // {
-    //     type: "message",
-    //     speaker: "turtle",
-    //     message: "hi world",
-    // },
-    // {
-    //     type: "message",
-    //     speaker: "turtle",
-    //     message: "it's me",
-    // },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "hi world",
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "it's me",
+    },
+    { type: "cleardialog" },
+    { type: "waitforlevelcomplete" },
+    {
+        type: "startlevel",
+        level: "intro"
+    },
 ]
 
 
@@ -43,15 +49,39 @@ export interface LevelStart {
     readonly type: "startlevel";
     readonly level: keyof typeof levels;
 }
+export interface ClearDialog {
+    readonly type: "cleardialog"
+}
+export interface WaitForLevelComplete {
+    readonly type: "waitforlevelcomplete";
+}
 
-export type StoryBeat = StoryMessage | LevelStart;
+export type StoryBeat = StoryMessage | LevelStart | ClearDialog | WaitForLevelComplete;
 
-const log: StoryMessage[] = [];
+const log: ( StoryMessage | ClearDialog )[] = [];
 const speakers: [Speaker?, Speaker?] = [];
 
-export const getCurrentMessage = (): StoryMessage | undefined => log[log.length - 1];
+export const getCurrentMessage = (): StoryMessage | ClearDialog | undefined => log[log.length - 1];
 export const getCurrentSpeakers = () => speakers;
 
+export function isShowingMessage() 
+{
+    return getCurrentMessage()?.type === "message";
+}
+
+export function insertStoryBeats(...beats: Array<StoryBeat>)
+{
+    story.splice(storyIndex + 1, 0, ...beats);
+}
+
+export function displayDialog(...beats: Array<StoryMessage>)
+{
+    insertStoryBeats(
+        ...beats, 
+        { type: "cleardialog", }
+    );
+    continueStory();
+}
 function getNextBeat() {
     if (storyIndex < story.length) {
         const nextBeat = story[storyIndex + 1];
@@ -59,8 +89,12 @@ function getNextBeat() {
     }
     return undefined;
 }
-export function continueStory() {
+export function continueStory(levelComplete = false) {
     const nextBeat = getNextBeat();
+    if(nextBeat?.type === "waitforlevelcomplete" && !levelComplete)
+    {
+        return;
+    }
     if (nextBeat) {
         storyIndex++;
         switch (nextBeat.type) {
@@ -70,6 +104,15 @@ export function continueStory() {
                 break;
             case "message":
                 log.push(nextBeat);
+                break;
+            case "cleardialog":
+                log.push(nextBeat);
+                continueStory();
+                break;
+            case "waitforlevelcomplete":
+                if(levelComplete) {
+                    continueStory();
+                }
                 break;
         }
     }
