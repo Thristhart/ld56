@@ -1,5 +1,6 @@
 import { ActionResult } from "./actions";
-import { EntityData, EntityType, TerrainType, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, creatures, CreatureType } from "./levels";
+import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation } from "./levels";
+import { EntityType, TerrainType, creatures, CreatureType } from "./specifications";
 import { triggers } from "./triggers";
 
 export type Direction = "up" | "down" | "left" | "right";
@@ -36,18 +37,17 @@ export function CanEntityMove(entityType: EntityType, tileAtMoveTarget: TerrainT
 
 export function GetEntityMovementActions(levelState: LevelContent, entity: EntityData, direction: Direction) {
     const entityMovementActions: ActionResult[] = [];
-    
+
 
     const moveTarget = GetLocationInDirection(entity.location, direction);
     const tileAtMoveTarget = GetTileAtLocation(levelState, moveTarget);
     const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTarget);
     const entitiesAtMoveOrigin = GetEntitiesAtLocation(levelState, entity.location);
-    
     const canEntityMove = CanEntityMove(entity.type, tileAtMoveTarget, entitiesAtMoveTarget, entitiesAtMoveOrigin);
 
     if (canEntityMove) {
         const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
-        if (boulder && ( tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'water')) // boulders can only move on ground (and sometimes water)
+        if (boulder && (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'water')) // boulders can only move on ground (and sometimes water)
         {
             const boulderTileAtLocation = tileAtMoveTarget;
             const boulderMoveTarget = GetLocationInDirection(boulder.location, direction);
@@ -75,12 +75,12 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
                 newLocation: moveTarget
             }
         )
-        
+
+
         const isTurtle = entity.type === 'turtle';
-        if(isTurtle){
+        if (isTurtle) {
             const carriedObjects = entitiesAtMoveOrigin.filter((x) => x.type !== 'turtle' && x.type !== 'goal');
-            for(const object of carriedObjects)
-            {
+            for (const object of carriedObjects) {
                 entityMovementActions.push(
                     {
                         type: "MoveEntity",
@@ -98,12 +98,11 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
 
 export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[], entitiesAtMoveOrigin: EntityData[]) {
     const targetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
-    if(targetHasCreature)
-    {
+    if (targetHasCreature) {
         return false;
     }
     const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle')
-    if(originHasOtherEntity && tileAtMoveTarget !== 'water'){
+    if (originHasOtherEntity && tileAtMoveTarget !== 'water') {
         triggers.emit("alargeratappears")
         return false;
     }
@@ -125,10 +124,8 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarge
 
 export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[]) {
     const creaturesAtMoveTarget = entitiesAtMoveTarget.filter((entity) => creatures.includes(entity.type as CreatureType))
-    if(creaturesAtMoveTarget.length > 0)
-    {
-        if(creaturesAtMoveTarget.filter((entity) => entity.type !== 'turtle').length === 0 && tileAtMoveTarget === 'water')
-        {
+    if (creaturesAtMoveTarget.length > 0) {
+        if (creaturesAtMoveTarget.filter((entity) => entity.type !== 'turtle').length === 0 && tileAtMoveTarget === 'water') {
             return true;
         }
         return false;
@@ -157,18 +154,15 @@ export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget
 
 export function CanBoulderMove(tileAtLocation: TerrainType, tileAtMoveTarget: TerrainType, entitiesAtOrigin: EntityData[], entitiesAtTarget: EntityData[]) {
     if (tileAtLocation !== 'ground') {
-        if(entitiesAtOrigin.find((x) => x.type === 'turtle') && tileAtLocation === 'water')
-        {
+        if (entitiesAtOrigin.find((x) => x.type === 'turtle') && tileAtLocation === 'water') {
             return true;
         }
         return false;
     }
-    
-    if(entitiesAtTarget.length)
-    {
+
+    if (entitiesAtTarget.length) {
         console.log(entitiesAtTarget);
-        if(entitiesAtTarget.filter((x) => x.type !== 'turtle').length && tileAtMoveTarget === 'water')
-        {
+        if (entitiesAtTarget.filter((x) => x.type !== 'turtle').length && tileAtMoveTarget === 'water') {
             return false;
         }
     }

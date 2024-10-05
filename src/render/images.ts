@@ -7,9 +7,10 @@ import grassBackgroundUrl from "~/assets/grass_background.png";
 import tunnelBackgroundUrl from "~/assets/tunnel_background.png";
 import dialogBackgroundUrl from "~/assets/dialog_panel.png";
 import waterBackgroundSpriteUrl from "~/assets/water_animated.png";
+import buttonBackgroundUrl from "~/assets/button_background.png";
 
-import { EntityType, TerrainType } from "~/game/levels";
 import { SpriteAnimation, SpriteSheet } from "./spritesheet";
+import { EntityType, TerrainType } from "~/game/specifications";
 
 export const turtlePortraitImage = new Image();
 turtlePortraitImage.src = turtlePortraitUrl;
@@ -23,6 +24,8 @@ boulderPortraitImage.src = boulderPortraitUrl;
 export const goalPortraitImage = new Image();
 goalPortraitImage.src = goalPortraitUrl;
 
+
+// Background Images
 export const grassBackgroundImage = new Image();
 grassBackgroundImage.src = grassBackgroundUrl;
 
@@ -34,6 +37,9 @@ dialogBackgroundImage.src = dialogBackgroundUrl;
 
 const waterBackgroundSpriteImage = new Image();
 waterBackgroundSpriteImage.src = waterBackgroundSpriteUrl;
+
+export const buttonBackgroundImage = new Image();
+buttonBackgroundImage.src = buttonBackgroundUrl;
 
 const waterBackgroundSprite: SpriteSheet = {
     image: waterBackgroundSpriteImage,
@@ -47,7 +53,7 @@ const waterBackgroundSprite: SpriteSheet = {
 const waterBackgroundAnimation: SpriteAnimation = {
     spritesheet: waterBackgroundSprite,
     getFrame(timestamp) {
-        return [Math.floor((timestamp % (waterBackgroundSprite.width * 200))/200), 0];
+        return [Math.floor((timestamp % (waterBackgroundSprite.width * 200)) / 200), 0];
     },
 }
 
@@ -65,12 +71,13 @@ export function GetTerrainBackground(terrain: TerrainType) {
     switch (terrain) {
         case 'ground': return grassBackgroundImage;
         case 'tunnel': return tunnelBackgroundImage;
+        case 'button': return buttonBackgroundImage;
         default: return undefined;
     }
 }
 
 export function GetTerrainAnimation(terrain: TerrainType) {
-    switch(terrain) {
+    switch (terrain) {
         case 'water': return waterBackgroundAnimation;
         default: return undefined;
     }

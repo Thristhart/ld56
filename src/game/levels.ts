@@ -1,8 +1,12 @@
 import testingEntities from '../levels/testing.entities?raw';
-import testingGround from '../levels/testing.ground?raw';
+import testingTerrain from '../levels/testing.terrain?raw';
+import testingCircuit from '../levels/testing.circuit?raw';
 import introEntities from '../levels/intro.entities?raw';
-import introGround from '../levels/intro.ground?raw';
+import introTerrain from '../levels/intro.terrain?raw';
+import introCircuit from '../levels/intro.circuit?raw';
+
 import { clearActions } from './actions';
+import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
@@ -17,7 +21,8 @@ export function endLevel() {
 
 interface LevelDescription {
     entities: string;
-    ground: string;
+    terrain: string;
+    circuit: string;
 }
 
 export let currentLevel: LevelContent | undefined;
@@ -29,18 +34,16 @@ export let currentLevelState: LevelContent | undefined;
 export const levels = {
     testing: {
         entities: testingEntities,
-        ground: testingGround,
+        terrain: testingTerrain,
+        circuit: testingCircuit,
     },
     intro: {
         entities: introEntities,
-        ground: introGround,
+        terrain: introTerrain,
+        circuit: introCircuit
     }
 } as const satisfies Record<string, LevelDescription>;
 
-export type TerrainType = 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel';
-export const creatures = ['mouse', 'turtle', 'bird', 'frog'] as const;
-export type CreatureType = typeof creatures[number];
-export type EntityType = CreatureType | 'empty' | 'goal' | 'boulder';
 export interface EntityData {
     type: EntityType;
     location: Location;
@@ -49,6 +52,23 @@ export interface EntityData {
 export interface Location {
     row: number;
     column: number;
+}
+
+export interface ActivationElement {
+    location: Location;
+    id: number;
+    isActive: boolean
+}
+
+export interface ResponsiveElement {
+    location: Location;
+    id: number;
+}
+
+export interface CircuitData {
+    circuitID: number;
+    activationElements: ActivationElement[],
+    responsiveElements: ResponsiveElement[],
 }
 
 // first number is row
@@ -60,6 +80,7 @@ export interface LevelContent {
     columns: number;
     readonly groundGrid: IGridMap<TerrainType>;
     readonly entities: EntityData[];
+    circuits: CircuitData[];
     currentEntityId: number;
 }
 
@@ -70,13 +91,14 @@ function getEntityId() {
 
 function constructLevelContent(levelname: keyof typeof levels) {
     const level = levels[levelname];
-    const ground = level.ground;
+    const ground = level.terrain;
 
     const levelContent: LevelContent = {
         rows: 0,
         columns: 0,
         groundGrid: [],
         entities: [],
+        circuits: [],
         currentEntityId: 0,
     }
 
@@ -98,7 +120,6 @@ function constructLevelContent(levelname: keyof typeof levels) {
         }
         levelContent.groundGrid[parseInt(groundRowIndex)] = terrainRowMap;
     }
-
 
     // parse and set initial entities
     const entityRows = level.entities.split(/\r?\n|\r|\n/g);
@@ -129,6 +150,64 @@ function constructLevelContent(levelname: keyof typeof levels) {
         }
     }
 
+
+    // parse initial circuits
+    const circuitRows = level.circuit.split(/\r?\n|\r|\n/g);
+    for (const circuitRowIndex in circuitRows) {
+        const circuits = circuitRows[circuitRowIndex].split('');
+        if (levelContent.columns !== circuits.length) {
+            console.log('WARNING: MISMATCHED CIRCUIT COLUMNS');
+        }
+
+        for (const circuitColumnIndex in circuits) {
+            const circuitID = parseInt(circuits[circuitColumnIndex]);
+            if (!isNaN(circuitID)) {
+                let existingCircuit = levelContent.circuits.find((circuit) => circuit.circuitID === circuitID);
+                if (!existingCircuit) {
+                    existingCircuit = {
+                        circuitID: circuitID,
+                        activationElements: [],
+                        responsiveElements: []
+                    };
+
+                    levelContent.circuits.push(existingCircuit);
+                }
+
+                const location = {
+                    row: parseInt(circuitRowIndex),
+                    column: parseInt(circuitColumnIndex)
+                };
+
+                const terrainType = GetTileAtLocation(levelContent, location);
+                if (terrainType == 'button') {
+                    const entities = GetEntitiesAtLocation(levelContent, location);
+
+                    existingCircuit.activationElements.push({
+                        location: {
+                            row: parseInt(circuitRowIndex),
+                            column: parseInt(circuitColumnIndex)
+                        },
+                        id: getEntityId(),
+                        isActive: entities.length > 0,
+                    })
+                }
+                else if (terrainType === 'door' || terrainType === 'bridge') {
+                    existingCircuit.responsiveElements.push({
+                        location: {
+                            row: parseInt(circuitRowIndex),
+                            column: parseInt(circuitColumnIndex)
+                        },
+                        id: getEntityId(),
+                    })
+                }
+                else {
+                    console.log(` WARNING INCORRECT TERRAIN ELEMENT FOR CIRCUIT at row: ${location.row} and column: ${location.column}`)
+                }
+            }
+
+        }
+    }
+
     return levelContent;
 }
 
@@ -140,30 +219,3 @@ export function GetEntitiesAtLocation(level: LevelContent, location: Location) {
     return level.entities.filter(entity => entity.location.column === location.column && entity.location.row === location.row);
 }
 
-function GetTerrainType(terrainCode: string): TerrainType {
-    const strippedCode = terrainCode.trim();
-    switch (strippedCode) {
-        case 'W': return 'water';
-        case 'X': return 'wall';
-        case 'C': return 'chasm';
-        case 'T': return 'tunnel';
-        default: return 'ground';
-    }
-}
-
-function GetEntityType(entityCode: string) {
-    const strippedCode = entityCode.trim();
-    switch (strippedCode) {
-        case '1': return 'mouse';
-        case '2': return 'turtle';
-        case '3': return 'bird';
-        case '4': return 'frog';
-        case 'B': return 'boulder';
-        case 'G': return 'goal';
-        default: return 'empty';
-    }
-}
-
-export function IsCreatureEntity(entity: EntityType) {
-    return entity === 'mouse' || entity === 'turtle' || entity === 'bird' || entity === 'frog';
-}

@@ -8,17 +8,21 @@ B: the third creature (bird)
 F: the fourth creature (frog)
 G: goal zone
 R: boulder
-0-9: circuit identifie
 
 terrain layer
 _: ground
 W: water (for frog)
 X: wall
 C: chasm (for bird)
+H: bridge closed (chasm)
+I: bridge open (chasm)
 T: tunnel (for rat)
 B: button
-H: bridge (chasm/floor)
-D: door (wall/floor)
+O: door open (wall)
+D: door closed (wall)
+
+circuit layer
+0-9: circuit identifier that indicates what group a circuit is in
 
 B: button
 S: switch
