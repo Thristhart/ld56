@@ -7,7 +7,7 @@ export function tick(timestamp: number) {
     const dt = timestamp - lastTickTime;
     lastTickTime = timestamp;
     tickInput(timestamp);
-    drawFrame();
+    drawFrame(timestamp);
     animationFrame = requestAnimationFrame(tick);
 }
 

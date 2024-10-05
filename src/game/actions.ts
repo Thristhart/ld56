@@ -122,6 +122,8 @@ export function applyAction(levelState: LevelContent, action: Action): ActionRes
     return undefined;
 }
 
+export let lastActionResults: Array<ActionResult> | undefined;
+export let lastActionTimestamp: number | undefined;
 export function fireAction(action: Action)
 {
     if(!currentLevelState)
@@ -130,6 +132,8 @@ export function fireAction(action: Action)
     }
     const result = applyAction(currentLevelState, action);
     if(result) {
+        lastActionResults = Array.isArray(result) ? result : [result];
+        lastActionTimestamp = performance.now();
         actionLog.push(action);
     }
     setCurrentLevelState( ComputeStateFromActionLog() );

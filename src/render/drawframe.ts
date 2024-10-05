@@ -2,6 +2,8 @@ import { currentLevel, currentLevelState, LevelContent } from "~/game/levels";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
 import { GetEntityPortrait } from "./images";
+import { animateActionResult } from "./animateaction";
+import { lastActionResults, lastActionTimestamp } from "~/game/actions";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -26,15 +28,6 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
                     context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                 }
             }
-        }
-    }
-
-    // fill out the entities
-    for (const entity of level.entities) {
-        const portrait = GetEntityPortrait(entity.type);
-        if (portrait) {
-
-            context.drawImage(portrait, entity.location.column * GRID_SQUARE_WIDTH, entity.location.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
         }
     }
 
@@ -78,7 +71,7 @@ function fitLevelToCamera()
     camera.scale = scale;
 }
 
-export function drawFrame() {
+export function drawFrame(timestamp: number) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -92,6 +85,24 @@ export function drawFrame() {
 
     if (currentLevelState) {
         drawGrid(context, currentLevelState);
+
+        const animations = lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!));
+        // fill out the entities
+        for (const entity of currentLevelState.entities) {
+            const portrait = GetEntityPortrait(entity.type);
+            if (portrait) {
+                const positionModification = {column: 0, row: 0};
+                animations?.forEach(animation => {
+                    const mod = animation.entityPositionModifications.get(entity.id);
+                    if(mod)
+                    {
+                        positionModification.column += mod.column;
+                        positionModification.row += mod.row;
+                    }
+                })
+                context.drawImage(portrait, (entity.location.column + positionModification.column) * GRID_SQUARE_WIDTH, (entity.location.row + positionModification.row) * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+            }
+        }
     }
 
     context.restore();
