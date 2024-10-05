@@ -145,6 +145,7 @@ export function GetTerrainBackground(terrain: TerrainType) {
         case 'button': return buttonBackgroundImage;
         case 'door': return doorOpenBackgroundImage;
         case 'bridge': return bridgeOpenBackgroundImage;
+        case 'wall': return wallBackgroundImage;
         default: return undefined;
     }
 }
