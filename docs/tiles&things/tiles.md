@@ -37,3 +37,5 @@ boulder - you can push these around, if you push one into water it becomes floor
 bridge is a gate on chasm
 
 door is a gate in a wall
+
+insect is an entity on a chasm or a water or a floor and the frog eats them by bumping into them
