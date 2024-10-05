@@ -78,3 +78,9 @@ but walls can become floor with the use of gates, so we can have boulders which 
 
 
 we have a big action log replay, that's fun
+
+
+frogbird levels the animals move top right to bottom left
+turtlemouse levels the animals move bottom left to top right
+
+^^ this helps with the narritive that it's two groups of lost pals looking for each other that are also moving closer to each other
