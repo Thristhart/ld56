@@ -47,7 +47,7 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
 
     if (canEntityMove) {
         const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
-        
+
         if (boulder && ( tileAtMoveTarget === 'ground')) // boulders can only move on ground
         {
             const boulderTileAtLocation = tileAtMoveTarget;
@@ -105,7 +105,7 @@ export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarge
     if (targetHasCreature) {
         return false;
     }
-    const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle')
+    const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle' && entity.type !== 'goal')
     if (originHasOtherEntity && tileAtMoveTarget !== 'water') {
         triggers.emit("alargeratappears")
         return false;
