@@ -1,9 +1,7 @@
 import { currentLevel, currentLevelState, LevelContent } from "~/game/levels";
-import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor } from "./colors";
+import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { GetEntityPortrait } from "./images";
-import { animateActionResult } from "./animateaction";
-import { lastActionResults, lastActionTimestamp } from "~/game/actions";
+import { GetEntityPortrait, GetTerrainBackground } from "./images";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -24,10 +22,41 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
             for (let col = 0; col < width; col++) {
                 const terrainType = groundRow[col];
                 if (terrainType) {
-                    context.fillStyle = GetTerrainColor(terrainType);
-                    context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                    const terrainBackground = GetTerrainBackground(terrainType)
+                    if (terrainBackground) {
+                        context.drawImage(terrainBackground, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                    }
+                    else {
+                        context.fillStyle = GetTerrainColor(terrainType);
+                        context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                    }
                 }
             }
+        }
+    }
+
+    // fill out the entities
+    for (const entity of level.entities) {
+        const portrait = GetEntityPortrait(entity.type);
+
+        if (level.currentEntityId === entity.id) {
+            context.strokeStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
+            context.fillStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
+            context.beginPath();
+            context.ellipse(
+                entity.location.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
+                entity.location.row * GRID_SQUARE_HEIGHT + 0.75 * GRID_SQUARE_HEIGHT,
+                0.125 * GRID_SQUARE_HEIGHT,
+                0.35 * GRID_SQUARE_WIDTH,
+                Math.PI / 2,
+                0,
+                2 * Math.PI
+            );
+            context.fill();
+        }
+
+        if (portrait) {
+            context.drawImage(portrait, entity.location.column * GRID_SQUARE_WIDTH, entity.location.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
         }
     }
 
@@ -57,21 +86,19 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
 }
 
 
-function fitLevelToCamera()
-{
-    if(!currentLevelState)
-    {
+function fitLevelToCamera() {
+    if (!currentLevelState) {
         return;
     }
     const width = currentLevelState.columns * GRID_SQUARE_WIDTH;
-    const height= currentLevelState.rows * GRID_SQUARE_HEIGHT;
+    const height = currentLevelState.rows * GRID_SQUARE_HEIGHT;
     const scale = Math.min(canvas.width / width, canvas.height / height);
     camera.x = width / 2;
     camera.y = height / 2;
     camera.scale = scale;
 }
 
-export function drawFrame(timestamp: number) {
+export function drawFrame() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -85,24 +112,6 @@ export function drawFrame(timestamp: number) {
 
     if (currentLevelState) {
         drawGrid(context, currentLevelState);
-
-        const animations = lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!));
-        // fill out the entities
-        for (const entity of currentLevelState.entities) {
-            const portrait = GetEntityPortrait(entity.type);
-            if (portrait) {
-                const positionModification = {column: 0, row: 0};
-                animations?.forEach(animation => {
-                    const mod = animation.entityPositionModifications.get(entity.id);
-                    if(mod)
-                    {
-                        positionModification.column += mod.column;
-                        positionModification.row += mod.row;
-                    }
-                })
-                context.drawImage(portrait, (entity.location.column + positionModification.column) * GRID_SQUARE_WIDTH, (entity.location.row + positionModification.row) * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
-            }
-        }
     }
 
     context.restore();

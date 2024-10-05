@@ -30,7 +30,8 @@ export const levels = {
 } as const satisfies Record<string, LevelDescription>;
 
 export type TerrainType = 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel';
-export type EntityType = 'empty' | 'mouse' | 'turtle' | 'bird' | 'frog' | 'goal' | 'boulder';
+export type CreatureType = 'mouse' | 'turtle' | 'bird' | 'frog'
+export type EntityType = CreatureType | 'empty' | 'goal' | 'boulder';
 export interface EntityData {
     type: EntityType;
     location: Location;
@@ -50,9 +51,10 @@ export interface LevelContent {
     columns: number;
     readonly groundGrid: IGridMap<TerrainType>;
     readonly entities: EntityData[];
+    currentEntityId: number;
 }
 
-let gEntityId = 0;
+let gEntityId = 1;
 function getEntityId() {
     return gEntityId++;
 }
@@ -66,6 +68,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
         columns: 0,
         groundGrid: [],
         entities: [],
+        currentEntityId: 0,
     }
 
     const groundRows = ground.split(/\r?\n|\r|\n/g);
@@ -99,6 +102,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
         for (const entityTileIndex in entityTiles) {
             const entityTile = GetEntityType(entityTiles[entityTileIndex]);
             if (entityTile !== 'empty') {
+                const entityID = getEntityId();
                 levelContent.entities.push(
                     {
                         type: entityTile,
@@ -106,9 +110,12 @@ function constructLevelContent(levelname: keyof typeof levels) {
                             row: parseInt(entityRowIndex),
                             column: parseInt(entityTileIndex)
                         },
-                        id: getEntityId()
+                        id: entityID
                     }
                 )
+                if (!levelContent.currentEntityId && IsCreatureEntity(entityTile)) {
+                    levelContent.currentEntityId = entityID;
+                }
             }
         }
     }
@@ -120,8 +127,8 @@ export function GetTileAtLocation(level: LevelContent, location: Location) {
     return level.groundGrid[location.row][location.column];
 }
 
-export function GetEntityAtLocation(level: LevelContent, location: Location) {
-    return level.entities.find(entity => entity.location.column === location.column && entity.location.row === location.row);
+export function GetEntitiesAtLocation(level: LevelContent, location: Location) {
+    return level.entities.filter(entity => entity.location.column === location.column && entity.location.row === location.row);
 }
 
 function GetTerrainType(terrainCode: string): TerrainType {
@@ -146,4 +153,8 @@ function GetEntityType(entityCode: string) {
         case 'G': return 'goal';
         default: return 'empty';
     }
+}
+
+export function IsCreatureEntity(entity: EntityType) {
+    return entity === 'mouse' || entity === 'turtle' || entity === 'bird' || entity === 'frog';
 }

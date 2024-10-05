@@ -1,8 +1,11 @@
 import turtlePortraitUrl from "~/assets/turtle_portrait.png";
 import mousePortraitUrl from "~/assets/mouse_portrait.png";
 import boulderPortraitUrl from "~/assets/boulder_portrait.png";
+import goalPortraitUrl from "~/assets/goal_portrait.png";
+
+import grassBackgroundUrl from "~/assets/grass_background.png";
 import dialogBackgroundUrl from "~/assets/dialog_panel.png";
-import { EntityType } from "~/game/levels";
+import { EntityType, TerrainType } from "~/game/levels";
 
 export const turtlePortraitImage = new Image();
 turtlePortraitImage.src = turtlePortraitUrl;
@@ -13,6 +16,12 @@ mousePortraitImage.src = mousePortraitUrl;
 export const boulderPortraitImage = new Image();
 boulderPortraitImage.src = boulderPortraitUrl;
 
+export const goalPortraitImage = new Image();
+goalPortraitImage.src = goalPortraitUrl;
+
+export const grassBackgroundImage = new Image();
+grassBackgroundImage.src = grassBackgroundUrl;
+
 export const dialogBackgroundImage = new Image();
 dialogBackgroundImage.src = dialogBackgroundUrl;
 
@@ -22,7 +31,14 @@ export function GetEntityPortrait(entity: EntityType) {
         case 'turtle': return turtlePortraitImage;
         case 'mouse': return mousePortraitImage;
         case 'boulder': return boulderPortraitImage;
+        case 'goal': return goalPortraitImage;
         default: return '';
     }
 }
 
+export function GetTerrainBackground(terrain: TerrainType) {
+    switch (terrain) {
+        case 'ground': return grassBackgroundImage;
+        default: return '';
+    }
+}
