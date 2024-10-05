@@ -1,0 +1,28 @@
+land: this is normal ground you can walk on
+bird
+rat
+turtle
+frog
+
+water: this is normalish ground you can only walk on if you can swim (the turtle can swim)
+turtle
+
+chasm: this is weird ground you can only fly over it, but you can't stand on it or walk on it
+bird
+
+tunnel: tight spot only the rat can pass through because it's small (can only exist if you can play a rat)
+rat
+
+fly tile: will eat/hurt anything unless cleared by a frog first
+frog
+
+wall: nobody can walk, fly, or stand on a wall!
+goal zone: both animals go here and you win
+
+gate: this  can open/close when triggered by something
+
+button: this can trigger gates when there's something on it such as a critter or boulder
+
+switch: this can toggle gates when you bump into it
+
+log - knock this down to make a bridge
