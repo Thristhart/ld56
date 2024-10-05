@@ -6,7 +6,10 @@ import goalPortraitUrl from "~/assets/goal_portrait.png";
 import grassBackgroundUrl from "~/assets/grass_background.png";
 import tunnelBackgroundUrl from "~/assets/tunnel_background.png";
 import dialogBackgroundUrl from "~/assets/dialog_panel.png";
+import waterBackgroundSpriteUrl from "~/assets/water_animated.png";
+
 import { EntityType, TerrainType } from "~/game/levels";
+import { SpriteAnimation, SpriteSheet } from "./spritesheet";
 
 export const turtlePortraitImage = new Image();
 turtlePortraitImage.src = turtlePortraitUrl;
@@ -29,6 +32,24 @@ tunnelBackgroundImage.src = tunnelBackgroundUrl;
 export const dialogBackgroundImage = new Image();
 dialogBackgroundImage.src = dialogBackgroundUrl;
 
+const waterBackgroundSpriteImage = new Image();
+waterBackgroundSpriteImage.src = waterBackgroundSpriteUrl;
+
+const waterBackgroundSprite: SpriteSheet = {
+    image: waterBackgroundSpriteImage,
+    spriteWidth: 32,
+    spriteHeight: 32,
+    width: 8,
+    height: 1,
+}
+
+
+const waterBackgroundAnimation: SpriteAnimation = {
+    spritesheet: waterBackgroundSprite,
+    getFrame(timestamp) {
+        return [Math.floor((timestamp % (waterBackgroundSprite.width * 200))/200), 0];
+    },
+}
 
 export function GetEntityPortrait(entity: EntityType) {
     switch (entity) {
@@ -36,7 +57,7 @@ export function GetEntityPortrait(entity: EntityType) {
         case 'mouse': return mousePortraitImage;
         case 'boulder': return boulderPortraitImage;
         case 'goal': return goalPortraitImage;
-        default: return '';
+        default: return undefined;
     }
 }
 
@@ -44,6 +65,13 @@ export function GetTerrainBackground(terrain: TerrainType) {
     switch (terrain) {
         case 'ground': return grassBackgroundImage;
         case 'tunnel': return tunnelBackgroundImage;
-        default: return '';
+        default: return undefined;
+    }
+}
+
+export function GetTerrainAnimation(terrain: TerrainType) {
+    switch(terrain) {
+        case 'water': return waterBackgroundAnimation;
+        default: return undefined;
     }
 }
