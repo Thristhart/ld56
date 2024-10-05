@@ -78,3 +78,18 @@ but walls can become floor with the use of gates, so we can have boulders which 
 
 
 we have a big action log replay, that's fun
+
+
+frogbird levels the animals move top right to bottom left
+turtlemouse levels the animals move bottom left to top right
+
+^^ this helps with the narritive that it's two groups of lost pals looking for each other that are also moving closer to each other
+
+
+buttons only intended to be pressed by an animal standing on it should be in positions where placing a boulder there "loses" it whenever possible.
+
+buttons intended for boulders should not lose the boulder except maybe for some exceptions such as...
+example potential exceptions:
+* the boulder presses a button to open the very last door blocking the exit
+
+ALSO if it's possible to push the boulder along a wall so that it's no longer adjacent to a wall then the boulder isn't considered lost. think hard on whether or not an animal button would actually lose a theoretical boulder, even if there's no boulder that could ever reach that button

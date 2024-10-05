@@ -2,7 +2,7 @@ export type CircuitType = 'button' | 'bridge' | 'door';
 export type TerrainType = CircuitType | 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel';
 export const creatures = ['mouse', 'turtle', 'bird', 'frog'] as const;
 export type CreatureType = typeof creatures[number];
-export type EntityType = CreatureType | 'empty' | 'goal' | 'boulder';
+export type EntityType = CreatureType | 'empty' | 'goal' | 'boulder' | 'insect';
 
 export function GetEntityType(entityCode: string) {
     const strippedCode = entityCode.trim();
@@ -13,6 +13,7 @@ export function GetEntityType(entityCode: string) {
         case 'F': return 'frog';
         case 'R': return 'boulder';
         case 'G': return 'goal';
+        case 'I': return 'insect';
         default: return 'empty';
     }
 }
