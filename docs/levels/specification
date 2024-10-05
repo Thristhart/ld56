@@ -1,19 +1,16 @@
 
 
 entity layer
-': empty (no entity)
+_: empty (no entity)
 1: the first creature (rat)
 2: the second creature (turtle)
 3: the third creature (bird)
 4: the fourth creature (frog)
 G: goal zone
 R: boulder
-H: gate
-L: log
-
 
 terrain layer
-,: ground
+_: ground
 W: water (for frog)
 X: wall
 C: chasm (for bird)
@@ -22,13 +19,4 @@ T: tunnel (for rat)
 
 B: button
 S: switch
-H: bridge/Gate
-
-[ ] - button + gate/bridge
-{ } - button + gate/bridge
-( ) - switch + gate/bridge
-< > - switch + gate/bridge
-
-[ - this is the button 
-] - this is the bridge
-
+H: bridge
