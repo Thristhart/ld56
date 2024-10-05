@@ -72,6 +72,7 @@ export function animateActionResult(actionResult: ActionResult, dt: number)
                     onComplete() {
                         clearActionAnimations();
                     },
+                    renderDimensions: {width: 32, height: 32},
                 })
             }
             break;
@@ -138,6 +139,7 @@ export function animateActionResultUndo(actionResult: ActionResult, dt: number)
                     onComplete() {
                         clearActionAnimations();
                     },
+                    renderDimensions: {width: 32, height: 32},
                 })
             }
             break;

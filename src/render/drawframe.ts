@@ -217,7 +217,8 @@ export function drawFrame(timestamp: number) {
                         spriteDetails.sprite.spritesheet,
                         entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
                         entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
-                        spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails)
+                        spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
+                        spriteDetails.renderDimensions,
                     )
                 }
                 else {

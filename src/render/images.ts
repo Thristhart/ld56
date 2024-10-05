@@ -147,7 +147,6 @@ export function GetEntityPortrait(entity: EntityType) {
         case 'turtle': return turtlePortraitImage;
         case 'mouse': return mousePortraitImage;
         case 'boulder': return boulderRollImage;
-        case 'goal': return goalPortraitImage;
         default: return undefined;
     }
 }
@@ -160,6 +159,7 @@ export function GetTerrainBackground(terrain: TerrainType) {
         case 'door': return doorOpenBackgroundImage;
         case 'bridge': return bridgeOpenBackgroundImage;
         case 'wall': return wallBackgroundImage;
+        case 'goal': return goalPortraitImage;
         default: return undefined;
     }
 }
@@ -182,7 +182,7 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
         }
     }
     if (entity.type === "boulder") {
-        return { sprite: boulderRollAnimation, direction: -1, startTime: 0 } // startTime 0 means this will always be at the last frame
+        return { sprite: boulderRollAnimation, direction: -1, startTime: 0, renderDimensions: {width: 32, height: 32} } // startTime 0 means this will always be at the last frame
     }
     return undefined;
 }
