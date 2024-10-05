@@ -36,6 +36,7 @@ function onInput(input: Input) {
     if(isShowingMessage())
     {
         switch (input) {
+            case "e":
             case " ": {
                 continueStory();
                 break;
