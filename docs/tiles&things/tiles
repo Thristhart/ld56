@@ -1,4 +1,4 @@
-land: this is normal ground you can walk on
+floor: this is normal ground you can walk on
 bird
 rat
 turtle
@@ -16,13 +16,18 @@ rat
 fly tile: will eat/hurt anything unless cleared by a frog first
 frog
 
+------------------------------------------------------------------------------------------------------------
 wall: nobody can walk, fly, or stand on a wall!
+
 goal zone: both animals go here and you win
 
-gate: this  can open/close when triggered by something
+------------------------------------------------------------------------------------------------------------
+gate: this  can open/close when triggered by something to block movement. when closed it acts as a wall, when open it acts as a floor
 
 button: this can trigger gates when there's something on it such as a critter or boulder
 
 switch: this can toggle gates when you bump into it
+
+bridge: this can open/close. when closed it acts as a chasm, when open it acts as a floor.
 
 log - knock this down to make a bridge

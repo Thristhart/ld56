@@ -34,6 +34,7 @@ turtle
 - go from water to land
 - can swim X squares
 - knock down a tree?
+- creature can stand on him and he can move for X spaces
 
 mouse
 - go through small spaces
@@ -42,7 +43,6 @@ mouse
 
 birb
 - fly over X spaces //CD
-- cannot walk on land
 - cannot land on water
 
 frog

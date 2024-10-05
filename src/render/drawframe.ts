@@ -1,5 +1,5 @@
 import { currentLevel } from "~/game/levels";
-import { getCurrentBeat } from "~/story";
+// import { getCurrentBeat } from "~/story";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -57,6 +57,7 @@ function drawGrid(context: CanvasRenderingContext2D, width: number, height: numb
         context.stroke();
     }
 
+    // fill out the squares
     context.fillStyle = COLOR_GRID_SQUARE_FILL_DARK;
     context.strokeStyle = COLOR_GRID_LINE_LIGHT;
     for (let x = 0; x < width; x++) {
@@ -93,11 +94,11 @@ export function drawFrame() {
     context.translate(canvas.width / 2 - camera.x * camera.scale, canvas.height / 2 - camera.y * camera.scale);
 
     // render story bits
-    const currentBeat = getCurrentBeat();
+    // const currentBeat = getCurrentBeat();
 
-    if (currentBeat) {
-        context.fillText(currentBeat.message, 0, 0);
-    }
+    // if (currentBeat) {
+    //     context.fillText(currentBeat.message, 0, 0);
+    // }
 
 
     if (currentLevel) {

@@ -20,6 +20,6 @@
   },
   "dependencies": {
     "howler": "^2.2.3",
-    "inkjs": "^2.2.1"
+    "inkjs": "^2.3.0"
   }
 }
