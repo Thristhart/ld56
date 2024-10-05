@@ -1,9 +1,10 @@
 import { currentLevel, currentLevelState, LevelContent } from "~/game/levels";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { GetEntityPortrait, GetTerrainBackground } from "./images";
+import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation } from "./images";
 import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
 import { animateActionResult, animateActionResultUndo } from "./animateaction";
+import { drawSprite } from "./spritesheet";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -13,7 +14,7 @@ export const camera = { x: 0, y: 0, scale: 1 };
 export const GRID_SQUARE_WIDTH = 32;
 export const GRID_SQUARE_HEIGHT = 32;
 
-function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
+function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timestamp: number) {
     const width = level.columns;
     const height = level.rows;
 
@@ -24,6 +25,11 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
             for (let col = 0; col < width; col++) {
                 const terrainType = groundRow[col];
                 if (terrainType) {
+                    const terrainAnimation = GetTerrainAnimation(terrainType);
+                    if (terrainAnimation) {
+                        drawSprite(context, terrainAnimation.spritesheet, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, terrainAnimation.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        continue;
+                    }
                     const terrainBackground = GetTerrainBackground(terrainType)
                     if (terrainBackground) {
                         context.drawImage(terrainBackground, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
@@ -88,7 +94,7 @@ export function drawFrame(timestamp: number) {
     context.scale(camera.scale, camera.scale);
 
     if (currentLevelState) {
-        drawGrid(context, currentLevelState);
+        drawGrid(context, currentLevelState, timestamp);
 
         const animations = [
             ...lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [],
