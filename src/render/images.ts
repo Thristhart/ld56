@@ -4,6 +4,7 @@ import boulderPortraitUrl from "~/assets/boulder_portrait.png";
 import goalPortraitUrl from "~/assets/goal_portrait.png";
 
 import grassBackgroundUrl from "~/assets/grass_background.png";
+import tunnelBackgroundUrl from "~/assets/tunnel_background.png";
 import dialogBackgroundUrl from "~/assets/dialog_panel.png";
 import { EntityType, TerrainType } from "~/game/levels";
 
@@ -22,6 +23,9 @@ goalPortraitImage.src = goalPortraitUrl;
 export const grassBackgroundImage = new Image();
 grassBackgroundImage.src = grassBackgroundUrl;
 
+export const tunnelBackgroundImage = new Image();
+tunnelBackgroundImage.src = tunnelBackgroundUrl;
+
 export const dialogBackgroundImage = new Image();
 dialogBackgroundImage.src = dialogBackgroundUrl;
 
@@ -39,6 +43,7 @@ export function GetEntityPortrait(entity: EntityType) {
 export function GetTerrainBackground(terrain: TerrainType) {
     switch (terrain) {
         case 'ground': return grassBackgroundImage;
+        case 'tunnel': return tunnelBackgroundImage;
         default: return '';
     }
 }
