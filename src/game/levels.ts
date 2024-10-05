@@ -26,6 +26,13 @@ export const levels = {
 
 export type TerrainType = 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel';
 export type EntityType = 'empty' | 'mouse' | 'turtle' | 'bird' | 'frog' | 'goal' | 'boulder';
+export interface EntityData {
+    type: EntityType,
+    location: {
+        row: number,
+        column: number,
+    }
+}
 
 // first number is row
 // second number is column
@@ -35,7 +42,7 @@ export class LevelContent {
     private numRows: number;
     private numColumns: number;
     private groundGrid: IGridMap<TerrainType> = new Map();
-    private entitiesGrid: IGridMap<EntityType> = new Map();
+    private entitiesArray: EntityData[] = [];
 
     constructor(levelname: keyof typeof levels) {
         const level = levels[levelname];
@@ -61,12 +68,9 @@ export class LevelContent {
         }
 
 
-        // parse initial entities
-        const entities = level.entities;
-
-        const entityRows = entities.split(/\r?\n|\r|\n/g);
+        // parse and set initial entities
+        const entityRows = level.entities.split(/\r?\n|\r|\n/g);
         for (const entityRowIndex in entityRows) {
-            const entityRowMap: Map<number, EntityType> = new Map();
             const entityTiles = entityRows[entityRowIndex].split(',');
             if (this.numColumns !== entityTiles.length) {
                 console.log('WARNING: MISMATCHED ENTITY COLUMNS');
@@ -74,16 +78,25 @@ export class LevelContent {
 
             for (const entityTileIndex in entityTiles) {
                 const entityTile = GetEntityType(entityTiles[entityTileIndex]);
-                entityRowMap.set(parseInt(entityTileIndex), entityTile)
+                if (entityTile !== 'empty') {
+                    this.entitiesArray.push(
+                        {
+                            type: entityTile,
+                            location: {
+                                row: parseInt(entityRowIndex),
+                                column: parseInt(entityTileIndex)
+                            }
+                        }
+                    )
+                }
             }
-            this.entitiesGrid.set(parseInt(entityRowIndex), entityRowMap)
         }
     }
 
     get rows(): number { return this.numRows }
     get columns(): number { return this.numColumns }
     get ground(): IGridMap<TerrainType> { return this.groundGrid }
-    get entities(): IGridMap<EntityType> { return this.entitiesGrid }
+    get entities(): EntityData[] { return this.entitiesArray }
 }
 
 function GetTerrainType(terrainCode: string): TerrainType {
@@ -91,8 +104,8 @@ function GetTerrainType(terrainCode: string): TerrainType {
     switch (strippedCode) {
         case 'W': return 'water';
         case 'X': return 'wall';
-        case 'W': return 'chasm';
-        case 'W': return 'tunnel';
+        case 'C': return 'chasm';
+        case 'T': return 'tunnel';
         default: return 'ground';
     }
 }

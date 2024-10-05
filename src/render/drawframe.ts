@@ -1,6 +1,7 @@
 import { currentLevel, LevelContent } from "~/game/levels";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
+import { GetEntityPortrait } from "./images";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -25,6 +26,15 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent) {
                     context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                 }
             }
+        }
+    }
+
+    // fill out the entities
+    for (const entity of level.entities) {
+        const portrait = GetEntityPortrait(entity.type);
+        if (portrait) {
+
+            context.drawImage(portrait, entity.location.column * GRID_SQUARE_WIDTH, entity.location.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
         }
     }
 
@@ -62,7 +72,7 @@ export function drawFrame() {
 
 
     context.save();
-    context.translate(canvas.width / 2 - camera.x * camera.scale, canvas.height / 2 - camera.y * camera.scale);
+    context.translate(canvas.width / 8 - camera.x * camera.scale, canvas.height / 8 - camera.y * camera.scale);
 
     if (currentLevel) {
         camera.x = 0;

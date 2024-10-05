@@ -1,15 +1,7 @@
 import { getCurrentMessage } from "~/story";
-import dialogBackgroundUrl from "~/assets/dialog_panel.png";
-import turtlePortraitUrl from "~/assets/turtle_portrait.png";
-
-const turtlePortraitImage = new Image();
-turtlePortraitImage.src = turtlePortraitUrl;
-const dialogBackgroundImage = new Image();
-dialogBackgroundImage.src = dialogBackgroundUrl;
+import { dialogBackgroundImage, turtlePortraitImage } from "./images";
 
 const portraitSize = 300;
-
-
 export function drawDialog(context: CanvasRenderingContext2D) {
     const currentBeat = getCurrentMessage();
 
