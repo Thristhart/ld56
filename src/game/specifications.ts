@@ -13,6 +13,7 @@ export function GetEntityType(entityCode: string) {
         case 'F': return 'frog';
         case 'R': return 'boulder';
         case 'G': return 'goal';
+        case 'I': return 'insect';
         default: return 'empty';
     }
 }
