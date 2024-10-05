@@ -1,4 +1,5 @@
 import { currentLevel } from "~/game/levels";
+import { getCurrentMessage } from "~/story";
 // import { getCurrentBeat } from "~/story";
 
 const canvas = document.querySelector("canvas")!;
@@ -94,11 +95,11 @@ export function drawFrame() {
     context.translate(canvas.width / 2 - camera.x * camera.scale, canvas.height / 2 - camera.y * camera.scale);
 
     // render story bits
-    // const currentBeat = getCurrentBeat();
+    const currentBeat = getCurrentMessage();
 
-    // if (currentBeat) {
-    //     context.fillText(currentBeat.message, 0, 0);
-    // }
+    if (currentBeat) {
+        context.fillText(currentBeat.message, 0, 0);
+    }
 
 
     if (currentLevel) {
