@@ -33,3 +33,7 @@ switch: this can toggle gates when you bump into it
 log - knock this down to make a bridge over water or chasm
 
 boulder - you can push these around, if you push one into water it becomes floor. if you push one into a chasm it disappears
+
+bridge is a gate on chasm
+
+door is a gate in a wall
