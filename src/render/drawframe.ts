@@ -3,7 +3,7 @@ import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, Lev
 import { animateActionResult, animateActionResultUndo } from "./animateaction";
 import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_GRID_LINE_LIGHT, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { doorOpenAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
+import { bridgeClosedHorizontalImage, bridgeClosedVerticalImage, bridgeOpenHorizontalImage, bridgeOpenVerticalImage, chasmTopEdgeImage, doorOpenAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
 
 const canvas = document.querySelector("canvas")!;
@@ -195,6 +195,39 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
                     if(terrainType === "goal")
                     {
                         context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                    }
+                    if(terrainType == "chasm")
+                    {
+                        const above = level.groundGrid[row - 1][col];
+                        if(above !== "chasm" && above !== "bridge" && above !== "boulder-chasm")
+                        {
+                            context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                            continue;
+                        }
+                    }
+                    if(terrainType === "bridge")
+                    {
+                        const above = level.groundGrid[row - 1][col];
+                        if(above !== "chasm" && above !== "bridge" && above !== "boulder-chasm")
+                        {
+                            context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
+                        else {
+                            context.fillStyle = "black";
+                            context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
+                        const circuitResponse = GetCircuitResponseElementAtLocation(level, {row, column: col});
+                        
+                        if(above === "chasm")
+                        {
+                            let horizBridgeImage = circuitResponse?.isActive ? bridgeOpenHorizontalImage : bridgeClosedHorizontalImage;
+                            context.drawImage(horizBridgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
+                        else {
+                            let verticalBridgeImage = circuitResponse?.isActive ? bridgeOpenVerticalImage : bridgeClosedVerticalImage;
+                            context.drawImage(verticalBridgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
+                        continue;
                     }
 
                     const activeElement = GetCircuitResponseElementAtLocation(level, { row: row, column: col })
