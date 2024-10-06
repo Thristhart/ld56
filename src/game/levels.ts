@@ -75,7 +75,7 @@ export interface ResponsiveElement {
 }
 
 export interface CircuitData {
-    circuitID: number;
+    circuitId: number;
     activationElements: ActivationElement[],
     responsiveElements: ResponsiveElement[],
 }
@@ -169,12 +169,12 @@ function constructLevelContent(levelname: keyof typeof levels) {
         }
 
         for (const circuitColumnIndex in circuits) {
-            const circuitID = parseInt(circuits[circuitColumnIndex]);
-            if (!isNaN(circuitID)) {
-                let existingCircuit = levelContent.circuits.find((circuit) => circuit.circuitID === circuitID);
+            const circuitId = parseInt(circuits[circuitColumnIndex]);
+            if (!isNaN(circuitId)) {
+                let existingCircuit = levelContent.circuits.find((circuit) => circuit.circuitId === circuitId);
                 if (!existingCircuit) {
                     existingCircuit = {
-                        circuitID: circuitID,
+                        circuitId: circuitId,
                         activationElements: [],
                         responsiveElements: []
                     };
@@ -227,4 +227,31 @@ export function GetTileAtLocation(level: LevelContent, location: Location) {
 export function GetEntitiesAtLocation(level: LevelContent, location: Location) {
     return level.entities.filter(entity => entity.location.column === location.column && entity.location.row === location.row);
 }
+
+export function GetCircuitActivationElementAtLocation(level: LevelContent, location: Location) {
+    for (const circuit of level.circuits) {
+        for (const activationElement of circuit.activationElements) {
+            if (activationElement.location.column === location.column && activationElement.location.row === location.row) {
+                return { circuit: circuit, element: activationElement }
+            }
+        }
+    }
+
+    return null;
+}
+
+
+export function GetCircuitResponseElementAtLocation(level: LevelContent, location: Location) {
+    for (const circuit of level.circuits) {
+        for (const responseElement of circuit.responsiveElements) {
+            if (responseElement.location.column === location.column && responseElement.location.row === location.row) {
+                const activationState = circuit.activationElements.find((activationElement) => activationElement.isActive);
+                return { circuit: circuit, element: responseElement, isActive: Boolean(activationState) }
+            }
+        }
+    }
+
+    return null;
+}
+
 

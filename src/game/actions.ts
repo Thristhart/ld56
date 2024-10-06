@@ -1,7 +1,7 @@
 
 import { currentLevel, currentLevelState, LevelContent, Location, setCurrentLevelState } from "./levels";
 import { Direction, GetEntityMovementActions } from "./movehelpers";
-import { IsCreatureEntity } from "./specifications";
+import { IsCreatureEntity, TerrainType } from "./specifications";
 import { checkForTriggersAfterAnimation } from "./triggers";
 
 
@@ -30,7 +30,25 @@ export interface SwitchEntityResult {
     oldEntityId: number;
 }
 
-export type ActionResult = MoveEntityResult | SwitchEntityResult;
+export interface MergeBoulderIntoTerrainResult {
+    type: "MergeBoulderIntoTerrain";
+    targetlocation: Location,
+    boulderOldLocation: Location,
+    boulderId: number,
+    oldTerrainType: TerrainType;
+    newTerrainType: TerrainType;
+}
+
+export interface ModifyCircuitStateResult {
+    type: "ModifyCircuitState";
+    circuitId: number;
+    elementId: number
+    oldState: boolean;
+    newState: boolean;
+}
+
+
+export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult;
 
 function applyActionResult(levelState: LevelContent, actionResult: ActionResult): LevelContent {
     switch (actionResult.type) {
@@ -152,13 +170,11 @@ export function clearActions() {
     clearUndoAnimations();
 }
 
-export function clearActionAnimations()
-{
+export function clearActionAnimations() {
     lastActionResults = undefined;
     lastActionTimestamp = undefined;
 }
-export function clearUndoAnimations()
-{   
+export function clearUndoAnimations() {
     lastUndoActionResults = undefined;
     lastUndoTimestamp = undefined;
 }

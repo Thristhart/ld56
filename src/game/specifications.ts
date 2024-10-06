@@ -1,8 +1,9 @@
 export type CircuitType = 'button' | 'bridge' | 'door';
-export type TerrainType = CircuitType | 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel' | 'goal' ;
+export type BoulderTypes = 'boulder-chasm' | 'boulder-water';
+export type TerrainType = BoulderTypes | CircuitType | 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel' | 'goal';
 export const creatures = ['mouse', 'turtle', 'bird', 'frog'] as const;
 export type CreatureType = typeof creatures[number];
-export type EntityType = CreatureType | 'empty'| 'boulder' | 'insect';
+export type EntityType = CreatureType | 'empty' | 'boulder' | 'insect';
 
 export function GetEntityType(entityCode: string) {
     const strippedCode = entityCode.trim();
