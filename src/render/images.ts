@@ -32,7 +32,7 @@ import treeImageUrl from "~/assets/tree.png";
 import { currentLevelState, EntityData, GetTileAtLocation } from "~/game/levels";
 import { SpriteAnimation, SpriteAnimationDetails, SpriteSheet } from "./spritesheet";
 import { lerp } from "./animateaction";
-import { EntityType, TerrainType } from "~/game/specifications";
+import { EntityType, isFlyingTerrain, TerrainType } from "~/game/specifications";
 
 export const turtlePortraitImage = new Image();
 turtlePortraitImage.src = turtlePortraitUrl;
@@ -83,6 +83,59 @@ const turtleUnhideSprite: SpriteSheet = {
     height: 1
 }
 export const turtleUnhideAnimation = standardSpriteAnimation(turtleUnhideSprite, 66);
+
+import crowWalkUrl from "~/assets/crow_walk_strip16.png";
+const crowWalkImage = new Image();
+crowWalkImage.src = crowWalkUrl;
+const crowWalkSprite: SpriteSheet = {
+    image: crowWalkImage,
+    spriteWidth: 40,
+    spriteHeight: 40,
+    width: 16,
+    height: 1,
+}
+export const crowWalkAnimation = standardSpriteAnimation(crowWalkSprite, 33);
+
+import crowFlyUrl from "~/assets/crow_fly_strip6.png";
+const crowFlyImage = new Image();
+crowFlyImage.src = crowFlyUrl;
+const crowFlySprite: SpriteSheet = {
+    image: crowFlyImage,
+    spriteWidth: 40,
+    spriteHeight: 40,
+    width: 6,
+    height: 1,
+}
+export const crowFlyAnimation: SpriteAnimation = {
+    spritesheet: crowFlySprite,
+    getFrame(dt) {
+        return [Math.floor((dt % (crowFlySprite.width * 66)) / 66), 0];
+    },
+};
+
+import crowTakeoffUrl from "~/assets/crow_takeoff_strip9.png";
+const crowTakeoffImage = new Image();
+crowTakeoffImage.src = crowTakeoffUrl;
+const crowTakeoffSprite: SpriteSheet = {
+    image: crowTakeoffImage,
+    spriteWidth: 40,
+    spriteHeight: 40,
+    width: 9,
+    height: 1,
+}
+export const crowTakeoffAnimation = standardSpriteAnimation(crowTakeoffSprite, 66);
+
+import crowLandUrl from "~/assets/crow_land_strip3.png";
+const crowLandImage = new Image();
+crowLandImage.src = crowLandUrl;
+const crowLandSprite: SpriteSheet = {
+    image: crowLandImage,
+    spriteWidth: 40,
+    spriteHeight: 40,
+    width: 3,
+    height: 1,
+}
+export const crowLandAnimation = standardSpriteAnimation(crowLandSprite, 66);
 
 
 const boulderRollImage = new Image();
@@ -268,6 +321,15 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
     }
     if (entity.type === "boulder") {
         return { sprite: boulderRollAnimation, direction: -1, startTime: 0, renderDimensions: { width: 32, height: 32 } } // startTime 0 means this will always be at the last frame
+    }
+    if(entity.type === "bird")
+    {
+        const tile = GetTileAtLocation(currentLevelState, entity.location);
+        if(isFlyingTerrain(tile))
+        {
+            return {sprite: crowFlyAnimation, direction: 1, startTime: 0};
+        }
+        return {sprite: crowWalkAnimation, direction: -1, startTime: 0};
     }
     return undefined;
 }

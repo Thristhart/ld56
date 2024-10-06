@@ -36,3 +36,9 @@ export function GetTerrainType(terrainCode: string): TerrainType {
 export function IsCreatureEntity(entity: EntityType) {
     return entity === 'mouse' || entity === 'turtle' || entity === 'bird' || entity === 'frog';
 }
+
+const flyingTerrain = ["chasm", "water", "boulder-water", "boulder-chasm", "bridge"] as const satisfies Array<TerrainType>;
+export function isFlyingTerrain(t: TerrainType): t is typeof flyingTerrain[number]
+{
+    return flyingTerrain.includes(t as typeof flyingTerrain[number]);
+}

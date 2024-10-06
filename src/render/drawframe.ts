@@ -1,6 +1,6 @@
-import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
+import { clearActionAnimations, clearUndoAnimations, lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
 import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, LevelContent } from "~/game/levels";
-import { animateActionResult, animateActionResultUndo } from "./animateaction";
+import { animateActionResult } from "./animateaction";
 import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_GRID_LINE_LIGHT, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
 import { bridgeClosedHorizontalImage, bridgeClosedVerticalImage, bridgeOpenHorizontalImage, bridgeOpenVerticalImage, chasmTopEdgeImage, doorOpenAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
@@ -310,64 +310,86 @@ export function drawFrame(timestamp: number) {
     if (currentLevelState) {
         drawGrid(context, currentLevelState, timestamp);
 
-        let animations = [
-            ...lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [],
-        ];
+        const actionAnimations = lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [];
+        const undoAnimations = [];
         if ((lastUndoTimestamp ?? 0) > (lastActionTimestamp ?? 0)) {
-            animations.push(...(lastUndoActionResults?.map(result => animateActionResultUndo(result, timestamp - lastUndoTimestamp!)) ?? []));
+            undoAnimations.push(...(lastUndoActionResults?.map(result => animateActionResult(result, timestamp - lastUndoTimestamp!, -1)) ?? []));
         }
 
         const sortedEntities = [...currentLevelState.entities].sort(sortEntities);
         for (const entity of sortedEntities) {
             const portrait = GetEntityPortrait(entity.type);
-            if (portrait) {
-                const positionModification = { column: 0, row: 0 };
-                let spriteAnimationDetails: SpriteAnimationDetails | undefined;
-                animations?.forEach(animation => {
-                    const mod = animation.entityPositionModifications.get(entity.id);
-                    if (mod) {
-                        positionModification.column += mod.column;
-                        positionModification.row += mod.row;
-                    }
-                    const spriteAnim = animation.entitySpriteAnimations.get(entity.id);
-                    if (spriteAnim) {
-                        spriteAnimationDetails = spriteAnim;
-                    }
-                });
-                const entityLocation = {
-                    column: entity.location.column + positionModification.column,
-                    row: entity.location.row + positionModification.row,
+            const positionModification = { column: 0, row: 0 };
+            let spriteAnimationDetails: SpriteAnimationDetails | undefined;
+            actionAnimations.forEach(animation => {
+                const mod = animation.entityPositionModifications.get(entity.id);
+                if (mod) {
+                    positionModification.column += mod.column;
+                    positionModification.row += mod.row;
                 }
+                const spriteAnim = animation.entitySpriteAnimations.get(entity.id);
+                if (spriteAnim) {
+                    spriteAnimationDetails = {
+                        ...spriteAnim,
+                        direction: 1,
+                        startTime: lastActionTimestamp!,
+                        onComplete() {
+                            clearActionAnimations()
+                        },
+                    };
+                }
+            });
+            undoAnimations.forEach(undoAnimation => {
+                const mod = undoAnimation.entityPositionModifications.get(entity.id);
+                if (mod) {
+                    positionModification.column += mod.column;
+                    positionModification.row += mod.row;
+                }
+                const spriteAnim = undoAnimation.entitySpriteAnimations.get(entity.id);
+                if (spriteAnim) {
+                    spriteAnimationDetails = {
+                        ...spriteAnim,
+                        direction: -1,
+                        startTime: lastUndoTimestamp!,
+                        onComplete() {
+                            clearUndoAnimations()
+                        },
+                    };
+                }
+            });
+            const entityLocation = {
+                column: entity.location.column + positionModification.column,
+                row: entity.location.row + positionModification.row,
+            }
 
-                if (currentLevelState.currentEntityId === entity.id) {
-                    context.strokeStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
-                    context.fillStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
-                    context.beginPath();
-                    context.ellipse(
-                        entityLocation.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
-                        entityLocation.row * GRID_SQUARE_HEIGHT + 0.75 * GRID_SQUARE_HEIGHT,
-                        0.125 * GRID_SQUARE_HEIGHT,
-                        0.35 * GRID_SQUARE_WIDTH,
-                        Math.PI / 2,
-                        0,
-                        2 * Math.PI
-                    );
-                    context.fill();
-                }
-                const spriteDetails = spriteAnimationDetails ?? GetSpriteForEntity(entity);
-                if (spriteDetails) {
-                    drawSprite(
-                        context,
-                        spriteDetails.sprite.spritesheet,
-                        entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
-                        entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
-                        spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
-                        spriteDetails.renderDimensions,
-                    )
-                }
-                else {
-                    context.drawImage(portrait, entityLocation.column * GRID_SQUARE_WIDTH, entityLocation.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
-                }
+            if (currentLevelState.currentEntityId === entity.id) {
+                context.strokeStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
+                context.fillStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
+                context.beginPath();
+                context.ellipse(
+                    entityLocation.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
+                    entityLocation.row * GRID_SQUARE_HEIGHT + 0.75 * GRID_SQUARE_HEIGHT,
+                    0.125 * GRID_SQUARE_HEIGHT,
+                    0.35 * GRID_SQUARE_WIDTH,
+                    Math.PI / 2,
+                    0,
+                    2 * Math.PI
+                );
+                context.fill();
+            }
+            const spriteDetails = spriteAnimationDetails ?? GetSpriteForEntity(entity);
+            if (spriteDetails) {
+                drawSprite(
+                    context,
+                    spriteDetails.sprite.spritesheet,
+                    entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
+                    entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
+                    spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
+                    spriteDetails.renderDimensions,
+                )
+            }
+            else if(portrait) {
+                context.drawImage(portrait, entityLocation.column * GRID_SQUARE_WIDTH, entityLocation.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
             }
         }
     }
