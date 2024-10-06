@@ -152,6 +152,23 @@ const frogHopSprite: SpriteSheet = {
 }
 export const frogHopAnimation = standardSpriteAnimation(frogHopSprite, 24);
 
+import fliesUrl from "~/assets/mosquito_strip2.png";
+const fliesImage = new Image();
+fliesImage.src = fliesUrl;
+const fliesSprite: SpriteSheet = {
+    image: fliesImage,
+    spriteWidth: 8,
+    spriteHeight: 8,
+    width: 2,
+    height: 1,
+}
+export const fliesAnimation: SpriteAnimation = {
+    spritesheet: fliesSprite,
+    getFrame(timestamp) {
+        return [Math.floor((timestamp % (fliesSprite.width * 144)) / 144), 0];
+    },
+}
+
 const boulderRollImage = new Image();
 boulderRollImage.src = boulderRollUrl;
 const boulderRollSprite: SpriteSheet = {

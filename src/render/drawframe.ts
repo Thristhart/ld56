@@ -3,7 +3,7 @@ import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, Lev
 import { animateActionResult } from "./animateaction";
 import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_GRID_LINE_LIGHT, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { bridgeClosedHorizontalImage, bridgeClosedVerticalImage, bridgeOpenHorizontalImage, bridgeOpenVerticalImage, chasmTopEdgeImage, doorOpenAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
+import { bridgeClosedHorizontalImage, bridgeClosedVerticalImage, bridgeOpenHorizontalImage, bridgeOpenVerticalImage, chasmTopEdgeImage, doorOpenAnimation, fliesAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
 
 const canvas = document.querySelector("canvas")!;
@@ -74,7 +74,7 @@ function draw9GridWall(col: number, row: number, nineGrid: readonly [x: number, 
     context.drawImage(wall9GridImage, nineGrid[0] * 32, nineGrid[1] * 32, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 32, 32);
 }
 
-function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timestamp: number) {
+function drawGrid(level: LevelContent, timestamp: number) {
     const width = level.columns;
     const height = level.rows;
 
@@ -295,6 +295,132 @@ function sortEntities(a: EntityData, b: EntityData) {
     return 0;
 }
 
+function drawEntities(levelState: LevelContent, timestamp: number)
+{
+    const actionAnimations = lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [];
+    const undoAnimations = [];
+    if ((lastUndoTimestamp ?? 0) > (lastActionTimestamp ?? 0)) {
+        undoAnimations.push(...(lastUndoActionResults?.map(result => animateActionResult(result, timestamp - lastUndoTimestamp!, -1)) ?? []));
+    }
+
+    const sortedEntities = [...levelState.entities].sort(sortEntities);
+    for (const entity of sortedEntities) {
+        const portrait = GetEntityPortrait(entity.type);
+        const positionModification = { column: 0, row: 0 };
+        let spriteAnimationDetails: SpriteAnimationDetails | undefined;
+        actionAnimations.forEach(animation => {
+            const mod = animation.entityPositionModifications.get(entity.id);
+            if (mod) {
+                positionModification.column += mod.column;
+                positionModification.row += mod.row;
+            }
+            const spriteAnim = animation.entitySpriteAnimations.get(entity.id);
+            if (spriteAnim) {
+                spriteAnimationDetails = {
+                    ...spriteAnim,
+                    direction: 1,
+                    startTime: lastActionTimestamp!,
+                    onComplete() {
+                        clearActionAnimations()
+                    },
+                };
+            }
+        });
+        undoAnimations.forEach(undoAnimation => {
+            const mod = undoAnimation.entityPositionModifications.get(entity.id);
+            if (mod) {
+                positionModification.column += mod.column;
+                positionModification.row += mod.row;
+            }
+            const spriteAnim = undoAnimation.entitySpriteAnimations.get(entity.id);
+            if (spriteAnim) {
+                spriteAnimationDetails = {
+                    ...spriteAnim,
+                    direction: -1,
+                    startTime: lastUndoTimestamp!,
+                    onComplete() {
+                        clearUndoAnimations()
+                    },
+                };
+            }
+        });
+        const entityLocation = {
+            column: entity.location.column + positionModification.column,
+            row: entity.location.row + positionModification.row,
+        }
+
+        if (levelState.currentEntityId === entity.id) {
+            context.strokeStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
+            context.fillStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
+            context.beginPath();
+            context.ellipse(
+                entityLocation.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
+                entityLocation.row * GRID_SQUARE_HEIGHT + 0.75 * GRID_SQUARE_HEIGHT,
+                0.125 * GRID_SQUARE_HEIGHT,
+                0.35 * GRID_SQUARE_WIDTH,
+                Math.PI / 2,
+                0,
+                2 * Math.PI
+            );
+            context.fill();
+        }
+        if(entity.type === "insect")
+        {
+            let dt = timestamp/50 + (1000 * entityLocation.column / entityLocation.row);
+            drawSprite(
+                context,
+                fliesAnimation.spritesheet,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt/10) * 10,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.cos(dt/3) * 10,
+                fliesAnimation.getFrame(performance.now()),
+            )
+            drawSprite(
+                context,
+                fliesAnimation.spritesheet,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt/2) * 10,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.cos(dt/4) * 10,
+                fliesAnimation.getFrame(performance.now()),
+            )
+            drawSprite(
+                context,
+                fliesAnimation.spritesheet,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.cos(dt/6) * 15,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.sin(dt/10) * 10,
+                fliesAnimation.getFrame(performance.now()),
+            )
+            drawSprite(
+                context,
+                fliesAnimation.spritesheet,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.cos(dt/10) * 10,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.sin(dt/10) * 15,
+                fliesAnimation.getFrame(performance.now()),
+            )
+            drawSprite(
+                context,
+                fliesAnimation.spritesheet,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt/3) * 10,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.sin(dt/8) * 3,
+                fliesAnimation.getFrame(performance.now()),
+            )
+            continue;
+        }
+        const spriteDetails = spriteAnimationDetails ?? GetSpriteForEntity(entity);
+        if (spriteDetails) {
+            drawSprite(
+                context,
+                spriteDetails.sprite.spritesheet,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
+                spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
+                spriteDetails.renderDimensions,
+            )
+        }
+        else if(portrait) {
+            context.drawImage(portrait, entityLocation.column * GRID_SQUARE_WIDTH, entityLocation.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+        }
+    }
+}
+
 export function drawFrame(timestamp: number) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -308,90 +434,8 @@ export function drawFrame(timestamp: number) {
     context.scale(camera.scale, camera.scale);
 
     if (currentLevelState) {
-        drawGrid(context, currentLevelState, timestamp);
-
-        const actionAnimations = lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [];
-        const undoAnimations = [];
-        if ((lastUndoTimestamp ?? 0) > (lastActionTimestamp ?? 0)) {
-            undoAnimations.push(...(lastUndoActionResults?.map(result => animateActionResult(result, timestamp - lastUndoTimestamp!, -1)) ?? []));
-        }
-
-        const sortedEntities = [...currentLevelState.entities].sort(sortEntities);
-        for (const entity of sortedEntities) {
-            const portrait = GetEntityPortrait(entity.type);
-            const positionModification = { column: 0, row: 0 };
-            let spriteAnimationDetails: SpriteAnimationDetails | undefined;
-            actionAnimations.forEach(animation => {
-                const mod = animation.entityPositionModifications.get(entity.id);
-                if (mod) {
-                    positionModification.column += mod.column;
-                    positionModification.row += mod.row;
-                }
-                const spriteAnim = animation.entitySpriteAnimations.get(entity.id);
-                if (spriteAnim) {
-                    spriteAnimationDetails = {
-                        ...spriteAnim,
-                        direction: 1,
-                        startTime: lastActionTimestamp!,
-                        onComplete() {
-                            clearActionAnimations()
-                        },
-                    };
-                }
-            });
-            undoAnimations.forEach(undoAnimation => {
-                const mod = undoAnimation.entityPositionModifications.get(entity.id);
-                if (mod) {
-                    positionModification.column += mod.column;
-                    positionModification.row += mod.row;
-                }
-                const spriteAnim = undoAnimation.entitySpriteAnimations.get(entity.id);
-                if (spriteAnim) {
-                    spriteAnimationDetails = {
-                        ...spriteAnim,
-                        direction: -1,
-                        startTime: lastUndoTimestamp!,
-                        onComplete() {
-                            clearUndoAnimations()
-                        },
-                    };
-                }
-            });
-            const entityLocation = {
-                column: entity.location.column + positionModification.column,
-                row: entity.location.row + positionModification.row,
-            }
-
-            if (currentLevelState.currentEntityId === entity.id) {
-                context.strokeStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
-                context.fillStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
-                context.beginPath();
-                context.ellipse(
-                    entityLocation.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
-                    entityLocation.row * GRID_SQUARE_HEIGHT + 0.75 * GRID_SQUARE_HEIGHT,
-                    0.125 * GRID_SQUARE_HEIGHT,
-                    0.35 * GRID_SQUARE_WIDTH,
-                    Math.PI / 2,
-                    0,
-                    2 * Math.PI
-                );
-                context.fill();
-            }
-            const spriteDetails = spriteAnimationDetails ?? GetSpriteForEntity(entity);
-            if (spriteDetails) {
-                drawSprite(
-                    context,
-                    spriteDetails.sprite.spritesheet,
-                    entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
-                    entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
-                    spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
-                    spriteDetails.renderDimensions,
-                )
-            }
-            else if(portrait) {
-                context.drawImage(portrait, entityLocation.column * GRID_SQUARE_WIDTH, entityLocation.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
-            }
-        }
+        drawGrid(currentLevelState, timestamp);
+        drawEntities(currentLevelState, timestamp);
     }
 
     context.restore();

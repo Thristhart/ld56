@@ -1,8 +1,8 @@
-import { ActionResult, clearActionAnimations, clearUndoAnimations, lastActionTimestamp, lastUndoTimestamp } from "~/game/actions";
+import { ActionResult } from "~/game/actions";
 import { currentLevelState, GetTileAtLocation } from "~/game/levels";
+import { isFlyingTerrain } from "~/game/specifications";
+import { boulderRollAnimation, crowLandAnimation, crowTakeoffAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation } from "./images";
 import { SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
-import { boulderRollAnimation, crowFlyAnimation, crowLandAnimation, crowTakeoffAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation } from "./images";
-import { isFlyingTerrain, TerrainType } from "~/game/specifications";
 
 export function lerp(a: number, b: number, t: number)
 {
