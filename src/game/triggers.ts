@@ -3,6 +3,7 @@ import { continueStory, displayDialog } from "~/story";
 import { currentLevelState, GetEntitiesAtLocation, GetTileAtLocation, LevelContent } from "./levels";
 import { ActionResult, MoveEntityResult } from "./actions";
 import { IsCreatureEntity } from "./specifications";
+import { sounds } from "~/audio";
 
 export const triggers = new EventEmitter();
 
@@ -20,7 +21,6 @@ triggers.on("creatureOnGoal", () => {
     }
     const creatures = currentLevelState.entities.filter(ent => IsCreatureEntity(ent.type))
     const anyNotOnGoal = creatures.some(entity => {
-        
         const tileAtLocation = GetTileAtLocation(currentLevelState!, entity.location);
         return !(tileAtLocation == "goal");
     })
@@ -40,6 +40,34 @@ triggers.once("turtleCannotMove", () => {
         message: "you're large and that's ground."
     })
 })
+
+export function TriggerAudioFromResults(results: Array<ActionResult>)
+{
+    for(const result of results)
+    {
+        if(result.type === "MoveEntity") {
+            if(result.entity.type === "boulder") {
+                sounds.boulderMove.play();
+            }
+            if(IsCreatureEntity(result.entity.type)) {
+                sounds.footstep.play();
+            }
+        }
+        else if(result.type === "SwitchEntity") {
+            const entity = currentLevelState?.entities.find(entity => entity.id === result.newEntityId);
+            if(!entity) {
+                return;
+            }
+            if(entity.type === "mouse")
+            {
+                sounds.mouseSelect.play();
+            }
+            if(entity.type === "turtle") {
+                sounds.turtleSelect.play();
+            }
+        }
+    }
+}
 
 
 export function checkForTriggersAfterAnimation(levelState: LevelContent, actionResult: ActionResult) {
