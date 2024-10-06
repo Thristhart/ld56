@@ -77,7 +77,7 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
             return {
                 ...levelState,
                 groundGrid: groundGridCopy,
-                entities: filteredEntities
+                entities: [...filteredEntities]
             }
         }
         case "ModifyCircuitState": {
