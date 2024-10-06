@@ -33,8 +33,7 @@ function onInput(input: Input) {
     }
 
     // when showing a message, only allow advancing dialog
-    if(isShowingMessage())
-    {
+    if (isShowingMessage()) {
         switch (input) {
             case "e":
             case " ": {
@@ -50,23 +49,33 @@ function onInput(input: Input) {
             break;
         }
         case "w": {
-            fireAction({ type: "MoveCreature", direction: "up" });
+            if (currentLevelState.canContinueLevel) {
+                fireAction({ type: "MoveCreature", direction: "up" });
+            }
             break;
         }
         case "a": {
-            fireAction({ type: "MoveCreature", direction: "left" });
+            if (currentLevelState.canContinueLevel) {
+                fireAction({ type: "MoveCreature", direction: "left" });
+            }
             break;
         }
         case "s": {
-            fireAction({ type: "MoveCreature", direction: "down" });
+            if (currentLevelState.canContinueLevel) {
+                fireAction({ type: "MoveCreature", direction: "down" });
+            }
             break;
         }
         case "d": {
-            fireAction({ type: "MoveCreature", direction: "right" });
+            if (currentLevelState.canContinueLevel) {
+                fireAction({ type: "MoveCreature", direction: "right" });
+            }
             break;
         }
         case "e": {
-            fireAction({ type: "SwitchCreature" });
+            if (currentLevelState.canContinueLevel) {
+                fireAction({ type: "SwitchCreature" });
+            }
             break;
         }
         case "z": {

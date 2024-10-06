@@ -40,6 +40,12 @@ export interface MergeBoulderIntoTerrainResult {
     newTerrainType: TerrainType;
 }
 
+export interface DeleteEntityResult {
+    type: "DeleteEntity";
+    entityId: number,
+    entityLocation: Location;
+}
+
 export interface ModifyCircuitStateResult {
     type: "ModifyCircuitState";
     circuitId: number;
@@ -57,7 +63,7 @@ export interface EatInsectResult {
 }
 
 
-export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult;
+export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult;
 
 function applyActionResult(levelState: LevelContent, actionResult: ActionResult): LevelContent {
     switch (actionResult.type) {
@@ -76,6 +82,23 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
             return {
                 ...levelState,
                 currentEntityId: actionResult.newEntityId
+            }
+        }
+        case "DeleteEntity": {
+            const entity = levelState.entities.find(e => e.id === actionResult.entityId);
+            if (!entity) {
+                return levelState;
+            }
+            const otherEntities = levelState.entities.filter(e => e.id != actionResult.entityId);
+
+            const isCreature = IsCreatureEntity(entity.type);
+            if (IsCreatureEntity(entity.type)) {
+                triggers.emit(`kill${entity.type}`);
+            }
+            return {
+                ...levelState,
+                entities: [...otherEntities],
+                canContinueLevel: levelState.canContinueLevel && !isCreature
             }
         }
         case "MergeBoulderIntoTerrain": {
@@ -124,7 +147,7 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
                 ...levelState,
                 entities: [
                     ...otherEntities.filter(entity => entity.id !== actionResult.insectId),
-                    {...eater, facing: GetFacingFromLocations(eater.facing, actionResult.eaterLocation, actionResult.insectLocation)}
+                    { ...eater, facing: GetFacingFromLocations(eater.facing, actionResult.eaterLocation, actionResult.insectLocation) }
                 ],
             }
         }

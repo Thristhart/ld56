@@ -21,6 +21,7 @@ triggers.on("creatureOnGoal", () => {
     }
     const creatures = currentLevelState.entities.filter(ent => IsCreatureEntity(ent.type))
     const anyNotOnGoal = creatures.some(entity => {
+
         const tileAtLocation = GetTileAtLocation(currentLevelState!, entity.location);
         return !(tileAtLocation == "goal");
     })
@@ -41,38 +42,37 @@ triggers.once("turtleCannotMove", () => {
     })
 })
 
-export function TriggerAudioFromResults(results: Array<ActionResult>)
-{
-    for(const result of results)
-    {
-        if(result.type === "MoveEntity") {
-            if(result.entity.type === "boulder") {
+export function TriggerAudioFromResults(results: Array<ActionResult>) {
+    for (const result of results) {
+        if (result.type === "MoveEntity") {
+            if (result.entity.type === "boulder") {
                 sounds.boulderMove.play();
             }
-            if(IsCreatureEntity(result.entity.type)) {
+            if (IsCreatureEntity(result.entity.type)) {
                 sounds.footstep.play();
             }
         }
+        else if(result.type === "MergeBoulderIntoTerrain") {
+            sounds.splash.play();
+        }
         else if(result.type === "SwitchEntity") {
             const entity = currentLevelState?.entities.find(entity => entity.id === result.newEntityId);
-            if(!entity) {
+            if (!entity) {
                 return;
             }
-            if(entity.type === "mouse")
-            {
+            if (entity.type === "mouse") {
                 sounds.mouseSelect.stop();
                 sounds.mouseSelect.play();
             }
-            if(entity.type === "turtle") {
+            if (entity.type === "turtle") {
                 sounds.turtleSelect.stop();
                 sounds.turtleSelect.play();
             }
-            if(entity.type === "bird")
-            {
+            if (entity.type === "bird") {
                 sounds.birdSelect.stop();
                 sounds.birdSelect.play();
             }
-            if(entity.type === "frog") {
+            if (entity.type === "frog") {
                 sounds.frogSelect.stop();
                 sounds.frogSelect.play();
             }
@@ -80,6 +80,50 @@ export function TriggerAudioFromResults(results: Array<ActionResult>)
     }
 }
 
+
+triggers.on("killturtle", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "turtle",
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
+
+triggers.on("killbird", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "bird",
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
+
+triggers.on("killfrog", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "frog",
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
+
+triggers.on("killmouse", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "mouse",
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
 
 export function checkForTriggersAfterAnimation(levelState: LevelContent, actionResult: ActionResult) {
     if (actionResult.type === "MoveEntity") {

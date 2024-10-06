@@ -37,7 +37,7 @@ if (import.meta.env.DEV) {
     window.DEBUG_STORY = story;
 }
 
-export type Speaker = "none" | "turtle";
+export type Speaker = "none" | "turtle" | "frog" | "bird" | "mouse";
 
 export interface StoryMessage {
     readonly type: "message";
@@ -58,26 +58,23 @@ export interface WaitForLevelComplete {
 
 export type StoryBeat = StoryMessage | LevelStart | ClearDialog | WaitForLevelComplete;
 
-const log: ( StoryMessage | ClearDialog )[] = [];
+const log: (StoryMessage | ClearDialog)[] = [];
 const speakers: [Speaker?, Speaker?] = [];
 
 export const getCurrentMessage = (): StoryMessage | ClearDialog | undefined => log[log.length - 1];
 export const getCurrentSpeakers = () => speakers;
 
-export function isShowingMessage() 
-{
+export function isShowingMessage() {
     return getCurrentMessage()?.type === "message";
 }
 
-export function insertStoryBeats(...beats: Array<StoryBeat>)
-{
+export function insertStoryBeats(...beats: Array<StoryBeat>) {
     story.splice(storyIndex + 1, 0, ...beats);
 }
 
-export function displayDialog(...beats: Array<StoryMessage>)
-{
+export function displayDialog(...beats: Array<StoryMessage>) {
     insertStoryBeats(
-        ...beats, 
+        ...beats,
         { type: "cleardialog", }
     );
     continueStory();
@@ -91,8 +88,7 @@ function getNextBeat() {
 }
 export function continueStory(levelComplete = false) {
     const nextBeat = getNextBeat();
-    if(nextBeat?.type === "waitforlevelcomplete" && !levelComplete)
-    {
+    if (nextBeat?.type === "waitforlevelcomplete" && !levelComplete) {
         return;
     }
     if (nextBeat) {
@@ -110,7 +106,7 @@ export function continueStory(levelComplete = false) {
                 continueStory();
                 break;
             case "waitforlevelcomplete":
-                if(levelComplete) {
+                if (levelComplete) {
                     continueStory();
                 }
                 break;
