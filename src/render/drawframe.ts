@@ -224,7 +224,7 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         if(above === "chasm")
                         {
                             let horizBridgeImage = circuitResponse?.isActive ? bridgeOpenHorizontalImage : bridgeClosedHorizontalImage;
-                            context.drawImage(horizBridgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                            context.drawImage(horizBridgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT + 8, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                         else {
                             let verticalBridgeImage = circuitResponse?.isActive ? bridgeOpenVerticalImage : bridgeClosedVerticalImage;
