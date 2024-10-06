@@ -9,6 +9,7 @@ import grassBackgroundUrl from "~/assets/grass_background.png";
 import tunnelBackgroundUrl from "~/assets/tunnel_background.png";
 import dialogBackgroundUrl from "~/assets/dialog_panel.png";
 import waterBackgroundSpriteUrl from "~/assets/water_animated.png";
+import waterBoulderBackgroundSpriteUrl from "~/assets/water_boulder_animated.png";
 import buttonBackgroundUrl from "~/assets/button_background.png";
 
 import doorOpenBackgroundUrl from "~/assets/door_open_background.png";
@@ -108,6 +109,9 @@ dialogBackgroundImage.src = dialogBackgroundUrl;
 const waterBackgroundSpriteImage = new Image();
 waterBackgroundSpriteImage.src = waterBackgroundSpriteUrl;
 
+const waterBoulderBackgroundSpriteImage = new Image();
+waterBoulderBackgroundSpriteImage.src = waterBoulderBackgroundSpriteUrl;
+
 export const buttonBackgroundImage = new Image();
 buttonBackgroundImage.src = buttonBackgroundUrl;
 
@@ -147,6 +151,22 @@ const waterBackgroundAnimation: SpriteAnimation = {
     },
 }
 
+const waterBoulderBackgroundSprite: SpriteSheet = {
+    image: waterBoulderBackgroundSpriteImage,
+    spriteWidth: 32,
+    spriteHeight: 32,
+    width: 8,
+    height: 1,
+}
+
+const waterBoulderBackgroundAnimation: SpriteAnimation = {
+    spritesheet: waterBoulderBackgroundSprite,
+    getFrame(timestamp) {
+        return [Math.floor((timestamp % (waterBoulderBackgroundSprite.width * 200)) / 200), 0];
+    },
+}
+
+
 export const treeImage = new Image();
 treeImage.src = treeImageUrl;
 
@@ -182,6 +202,7 @@ export function GetTerrainBackground(terrain: TerrainType, activeElementState?: 
 export function GetTerrainAnimation(terrain: TerrainType) {
     switch (terrain) {
         case 'water': return waterBackgroundAnimation;
+        case 'boulder-water': return waterBoulderBackgroundAnimation;
         default: return undefined;
     }
 }
