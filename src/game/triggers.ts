@@ -52,7 +52,14 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
                 sounds.footstep.play();
             }
         }
+<<<<<<< HEAD
         else if (result.type === "SwitchEntity") {
+=======
+        if(result.type === "MergeBoulderIntoTerrain") {
+            sounds.splash.play();
+        }
+        else if(result.type === "SwitchEntity") {
+>>>>>>> c6c913870fbab4c4c7b2ab5bb7fb0db31cd9fa1a
             const entity = currentLevelState?.entities.find(entity => entity.id === result.newEntityId);
             if (!entity) {
                 return;
