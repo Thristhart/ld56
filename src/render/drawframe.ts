@@ -40,6 +40,9 @@ function identify9GridForWall(level: LevelContent, col: number, row: number): re
     if (isWallLike(col - 1, row) && isWallLike(col + 1, row) && isWallLike(col, row - 1) && !isWallLike(col, row + 1)) {
         return [4, 0];
     }
+    if (isWallLike(col - 1, row) && isWallLike(col + 1, row) && isWallLike(col, row + 1) && !isWallLike(col, row - 1)) {
+        return [4, 1];
+    }
     if (isWallLike(col, row + 1) && isWallLike(col + 1, row)) {
         return [0, 0];
     }
