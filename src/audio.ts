@@ -8,6 +8,9 @@ import mouseSelectUrl from "~/assets/audio/mouse select.mp3";
 import frogSelectUrl from "~/assets/audio/frog select.mp3";
 import birdSelectUrl from "~/assets/audio/bird select.mp3";
 import splashUrl from "~/assets/audio/splash.mp3";
+import bumpUrl from "~/assets/audio/bump.mp3";
+import turtleWaterEnterUrl from "~/assets/audio/turtle water enter.mp3";
+import turtleWaterMoveUrl from "~/assets/audio/turtle water move.mp3";
 
 export const sounds = {
     boulderMove: new Howl({src: boulderMoveUrl}),
@@ -18,4 +21,7 @@ export const sounds = {
     frogSelect: new Howl({src: frogSelectUrl}),
     birdSelect: new Howl({src: birdSelectUrl}),
     splash: new Howl({src: splashUrl}),
+    bump: new Howl({src: bumpUrl}),
+    turtleWaterEnter: new Howl({src: turtleWaterEnterUrl}),
+    turtleWaterMove: new Howl({src: turtleWaterMoveUrl}),
 } as const satisfies { [key: string]: Howl };

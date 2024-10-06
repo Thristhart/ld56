@@ -40,6 +40,9 @@ function identify9GridForWall(level: LevelContent, col: number, row: number): re
     if (isWallLike(col - 1, row) && isWallLike(col + 1, row) && isWallLike(col, row - 1) && !isWallLike(col, row + 1)) {
         return [4, 0];
     }
+    if (isWallLike(col - 1, row) && isWallLike(col + 1, row) && isWallLike(col, row + 1) && !isWallLike(col, row - 1)) {
+        return [4, 1];
+    }
     if (isWallLike(col, row + 1) && isWallLike(col + 1, row)) {
         return [0, 0];
     }
@@ -209,7 +212,7 @@ function drawGrid(level: LevelContent, timestamp: number) {
 
                         if (above === "chasm") {
                             let horizBridgeImage = circuitResponse?.isActive ? bridgeImages.horizontalOpen : bridgeImages.horizontalClosed;
-                            context.drawImage(horizBridgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                            context.drawImage(horizBridgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT + 8, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                         else {
                             let verticalBridgeImage = circuitResponse?.isActive ? bridgeImages.verticalOpen : bridgeImages.verticalClosed;
@@ -436,11 +439,11 @@ export function drawFrame(timestamp: number) {
         drawGrid(currentLevelState, timestamp);
         drawEntities(currentLevelState, timestamp);
     }
+    // render story bits
+    drawDialog(context);
 
     context.restore();
 
-    // render story bits
-    drawDialog(context);
 }
 
 

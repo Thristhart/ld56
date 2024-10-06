@@ -1,17 +1,10 @@
-import { Howl } from "howler";
 import { levels, startLevel } from "./game/levels";
-
-const sounds: { [key: string]: Howl } = {
-    // screech: new Howl({ src: ratSpawnSoundPath, volume: 0.01 }),
-    // laugh: new Howl({ src: laughSoundPath, volume: 0.05 }),
-    // siren: new Howl({ src: copSirenSoundPath, volume: 0.1 }),
-};
 
 let storyIndex = -1;
 const story: Array<StoryBeat> = [
     {
         type: "startlevel",
-        level: "boulderPond"
+        level: "flower2"
     },
     {
         type: "message",
