@@ -158,11 +158,11 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         if(isWall(col, row - 1))
                         {
                             const frame = circuitResponse?.isActive ?  [0, 0] as const : doorOpenAnimation.getFrame(timestamp);
-                            drawSprite(context, doorOpenAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - 10, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 6, frame, {width: 48, height: 64});
+                            drawSprite(context, doorOpenAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - 10, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 6, frame, false, {width: 48, height: 64});
                         }
                         else {
                             const frame = circuitResponse?.isActive ?  doorOpenAnimation.getFrame(timestamp) : [0, 0] as const;
-                            drawSprite(context, doorOpenAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 16, frame, {width: 64, height: 96});
+                            drawSprite(context, doorOpenAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 16, frame, false,  {width: 64, height: 96});
                         }
                         continue;
                     }
@@ -183,12 +183,12 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         {
                             waterAnim = waterTopEdgeBackgroundAnimation
                         }
-                        drawSprite(context, waterAnim.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
-                        drawSprite(context, terrainAnimation!.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, waterAnim.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation!.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
                     if (terrainAnimation) {
-                        drawSprite(context, terrainAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
 
@@ -412,11 +412,17 @@ function drawEntities(levelState: LevelContent, timestamp: number)
                 entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
                 entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
                 spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
+                entity.facing === "left",
                 spriteDetails.renderDimensions,
             )
         }
         else if(portrait) {
-            context.drawImage(portrait, entityLocation.column * GRID_SQUARE_WIDTH, entityLocation.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+            context.save();
+            let scale = entity.facing === "left" ? -1 : 1;
+            context.scale(scale, 1);
+            context.translate(scale * entityLocation.column * GRID_SQUARE_WIDTH - (scale === -1 ? GRID_SQUARE_WIDTH : 0), 0);
+            context.drawImage(portrait, 0, entityLocation.row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+            context.restore();
         }
     }
 }

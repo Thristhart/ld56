@@ -27,17 +27,23 @@ export function drawSprite(
     x: number,
     y: number,
     frame: readonly [x: number, y: number],
+    flip?: boolean,
     renderDimensions?: { width: number; height: number }
 ) {
+    context.save();
+    let scale = flip ? -1 : 1;
+    context.scale(scale, 1);
+    context.translate(x * scale, 0);
     context.drawImage(
         sheet.image,
         frame[0] * sheet.spriteWidth,
         frame[1] * sheet.spriteHeight,
         sheet.spriteWidth,
         sheet.spriteHeight,
-        x + (sheet.xOffset ?? 0) - (renderDimensions?.width ?? sheet.spriteWidth) / 2,
+        -((renderDimensions?.width ?? sheet.spriteWidth) / 2 - (sheet.xOffset ?? 0)),
         y + (sheet.yOffset ?? 0) - (renderDimensions?.height ?? sheet.spriteHeight) / 2,
         renderDimensions?.width ?? sheet.spriteWidth,
         renderDimensions?.height ?? sheet.spriteHeight
     );
+    context.restore();
 }

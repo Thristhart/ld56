@@ -15,6 +15,7 @@ import flower2Circuit from '../levels/frog_bird/flower_2/flower_2.circuit?raw';
 
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
+import { Direction } from './movehelpers';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
@@ -66,6 +67,7 @@ export interface EntityData {
     type: EntityType;
     location: Location;
     id: number;
+    facing: "left" | "right";
 }
 export interface Location {
     row: number;
@@ -156,7 +158,8 @@ function constructLevelContent(levelname: keyof typeof levels) {
                             row: parseInt(entityRowIndex),
                             column: parseInt(entityTileIndex)
                         },
-                        id: entityID
+                        id: entityID,
+                        facing: "right"
                     }
                 )
                 if (!levelContent.currentEntityId && IsCreatureEntity(entityTile)) {

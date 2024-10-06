@@ -27,6 +27,19 @@ export function GetLocationInDirection(startLocation: Location, direction: Direc
     }
 }
 
+export function GetFacingFromLocations(currentFacing: "left" | "right", oldLocation: Location, newLocation: Location): "left" | "right"
+{
+    if(oldLocation.column < newLocation.column)
+    {
+        return "right";
+    }
+    if(oldLocation.column > newLocation.column)
+    {
+        return "left";
+    }
+    return currentFacing;
+}
+
 export function GetEntityMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {
     switch (entity.type) {
         case 'turtle': return GetTurtleMoveResults(levelState, entity, direction);

@@ -1,6 +1,6 @@
 
 import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState } from "./levels";
-import { Direction, GetEntityMovementActions } from "./movehelpers";
+import { Direction, GetEntityMovementActions, GetFacingFromLocations } from "./movehelpers";
 import { IsCreatureEntity, TerrainType } from "./specifications";
 import { checkForTriggersAfterAnimation } from "./triggers";
 
@@ -60,7 +60,7 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
             const otherEntities = levelState.entities.filter(e => e.id != actionResult.entityid);
             return {
                 ...levelState,
-                entities: [...otherEntities, { ...entity, location: actionResult.newLocation }]
+                entities: [...otherEntities, { ...entity, location: actionResult.newLocation, facing: GetFacingFromLocations(entity.facing, actionResult.oldLocation, actionResult.newLocation) }]
             }
         }
         case "SwitchEntity": {
