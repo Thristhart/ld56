@@ -60,10 +60,21 @@ export function TriggerAudioFromResults(results: Array<ActionResult>)
             }
             if(entity.type === "mouse")
             {
+                sounds.mouseSelect.stop();
                 sounds.mouseSelect.play();
             }
             if(entity.type === "turtle") {
+                sounds.turtleSelect.stop();
                 sounds.turtleSelect.play();
+            }
+            if(entity.type === "bird")
+            {
+                sounds.birdSelect.stop();
+                sounds.birdSelect.play();
+            }
+            if(entity.type === "frog") {
+                sounds.frogSelect.stop();
+                sounds.frogSelect.play();
             }
         }
     }
