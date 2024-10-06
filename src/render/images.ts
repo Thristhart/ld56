@@ -9,7 +9,8 @@ import grassBackgroundUrl from "~/assets/grass_background.png";
 import tunnelBackgroundUrl from "~/assets/tunnel_background.png";
 import dialogBackgroundUrl from "~/assets/dialog_panel.png";
 import waterBackgroundSpriteUrl from "~/assets/water_animated.png";
-import waterBoulderBackgroundSpriteUrl from "~/assets/water_boulder_animated.png";
+import waterBoulderBackgroundSpriteUrl from "~/assets/water_boulder_animated-sheet.png";
+import waterTopEdgeBackgroundSpriteUrl from "~/assets/water_top_edge_animated.png";
 import buttonBackgroundUrl from "~/assets/button_background.png";
 
 import doorOpenBackgroundUrl from "~/assets/door_open_background.png";
@@ -125,6 +126,9 @@ waterBackgroundSpriteImage.src = waterBackgroundSpriteUrl;
 const waterBoulderBackgroundSpriteImage = new Image();
 waterBoulderBackgroundSpriteImage.src = waterBoulderBackgroundSpriteUrl;
 
+const waterTopEdgeBackgroundSpriteImage = new Image();
+waterTopEdgeBackgroundSpriteImage.src = waterTopEdgeBackgroundSpriteUrl;
+
 export const buttonBackgroundImage = new Image();
 buttonBackgroundImage.src = buttonBackgroundUrl;
 
@@ -179,6 +183,20 @@ const waterBoulderBackgroundAnimation: SpriteAnimation = {
     },
 }
 
+const waterTopEdgeBackgroundSprite: SpriteSheet = {
+    image: waterTopEdgeBackgroundSpriteImage,
+    spriteWidth: 32,
+    spriteHeight: 32,
+    width: 8,
+    height: 1,
+}
+
+export const waterTopEdgeBackgroundAnimation: SpriteAnimation = {
+    spritesheet: waterTopEdgeBackgroundSprite,
+    getFrame(timestamp) {
+        return [Math.floor((timestamp % (waterTopEdgeBackgroundSprite.width * 200)) / 200), 0];
+    },
+}
 
 export const treeImage = new Image();
 treeImage.src = treeImageUrl;

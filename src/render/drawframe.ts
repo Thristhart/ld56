@@ -3,13 +3,13 @@ import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, Lev
 import { animateActionResult, animateActionResultUndo } from "./animateaction";
 import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_GRID_LINE_LIGHT, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { doorOpenAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage } from "./images";
+import { doorOpenAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
 
-export const camera = { x: 0, y: 0, scale: 1 };
+export const camera = { x: 0, y: 0, scale: 1, trueScale: 1 };
 
 export const GRID_SQUARE_WIDTH = 32;
 export const GRID_SQUARE_HEIGHT = 32;
@@ -166,7 +166,21 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
                         }
                         continue;
                     }
-                    const terrainAnimation = GetTerrainAnimation(terrainType);
+                    let terrainAnimation = GetTerrainAnimation(terrainType);
+                    if(terrainType === "water")
+                    {
+                        const above = level.groundGrid[row - 1][col];
+                        if(above !== "water" && above !== "boulder-water")
+                        {
+                            terrainAnimation = waterTopEdgeBackgroundAnimation;
+                        }
+                    }
+                    if(terrainType == "boulder-water")
+                    {
+                        drawSprite(context, waterTopEdgeBackgroundAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterTopEdgeBackgroundAnimation.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation!.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        continue;
+                    }
                     if (terrainAnimation) {
                         drawSprite(context, terrainAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
@@ -207,6 +221,7 @@ function drawTreeFragment(col: number, row: number, fragment: TreeFragment) {
     }
 }
 
+export let canvasScale = 1;
 
 function fitLevelToCamera() {
     if (!currentLevelState) {
@@ -218,7 +233,9 @@ function fitLevelToCamera() {
     camera.x = width / 2 - GRID_SQUARE_WIDTH;
     camera.y = height / 2 - GRID_SQUARE_HEIGHT;
     camera.scale = Math.floor(scale);
-    canvas.style.transform = `scale(${scale / camera.scale})`
+    canvasScale = scale / camera.scale;
+    camera.trueScale = scale;
+    canvas.style.transform = `scale(${canvasScale})`
 }
 
 function sortEntities(a: EntityData, b: EntityData) {

@@ -287,6 +287,7 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
     const responseCircuitAtOrigin = GetCircuitResponseElementAtLocation(levelState, boulder.location);
     const bCanMoveFromOrigin = boulderOriginTileType === 'ground' ||
         boulderOriginTileType === 'water' && boulderEntitiesAtOrigin.find((x) => x.type === 'turtle') ||
+        boulderOriginTileType === 'boulder-water' ||
         boulderOriginTileType === 'button' ||
         boulderOriginTileType === 'door' && responseCircuitAtOrigin?.isActive ||
         boulderOriginTileType === 'bridge' && responseCircuitAtOrigin?.isActive;

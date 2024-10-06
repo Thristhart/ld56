@@ -1,5 +1,6 @@
 import { getCurrentMessage } from "~/story";
 import { dialogBackgroundImage, turtlePortraitImage } from "./images";
+import { camera, canvasScale } from "./drawframe";
 
 const portraitSize = 300;
 export function drawDialog(context: CanvasRenderingContext2D) {
@@ -14,8 +15,20 @@ export function drawDialog(context: CanvasRenderingContext2D) {
     }
 
     context.save();
-    const scale = (window.innerWidth - 200) / dialogBackgroundImage.width;
-    context.translate(100, window.innerHeight - 500 * scale);
+    // let scale = (window.innerWidth - 200) / dialogBackgroundImage.width;
+    // context.translate(100, window.innerHeight - 500 * scale);
+
+    const windowWidth = window.innerWidth / canvasScale;
+    const windowHeight = window.innerHeight / canvasScale;
+
+    const windowLeftMargin = (window.innerWidth - windowWidth) / 2;
+    const windowTopMargin = (window.innerHeight - windowHeight) / 2;
+
+    let scale = 1/canvasScale;
+    
+    context.translate(windowLeftMargin, windowTopMargin);
+    scale *= ((window.innerWidth - 20) / dialogBackgroundImage.width);
+    context.translate(10 / canvasScale, 0);
     context.scale(scale, scale);
 
     context.drawImage(turtlePortraitImage, 70, 0, portraitSize, portraitSize);
