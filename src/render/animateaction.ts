@@ -1,7 +1,7 @@
 import { ActionResult, clearActionAnimations, clearUndoAnimations, lastActionTimestamp, lastUndoTimestamp } from "~/game/actions";
 import { currentLevelState, GetTileAtLocation } from "~/game/levels";
 import { SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
-import { boulderRollAnimation, crowFlyAnimation, crowLandAnimation, crowTakeoffAnimation, turtleHideAnimation, turtleUnhideAnimation } from "./images";
+import { boulderRollAnimation, crowFlyAnimation, crowLandAnimation, crowTakeoffAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation } from "./images";
 import { isFlyingTerrain, TerrainType } from "~/game/specifications";
 
 export function lerp(a: number, b: number, t: number)
@@ -95,6 +95,12 @@ export function animateActionResult(actionResult: ActionResult, dt: number, dire
                     sprite: boulderRollAnimation,
                     renderDimensions: {width: 32, height: 32},
                 })
+            }
+            if(entity?.type === "frog")
+            {
+                entitySpriteAnimations.set(entity.id, {
+                    sprite: frogHopAnimation,
+                });
             }
             break;
         }

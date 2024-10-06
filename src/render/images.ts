@@ -138,6 +138,20 @@ const crowLandSprite: SpriteSheet = {
 export const crowLandAnimation = standardSpriteAnimation(crowLandSprite, 66);
 
 
+import frogHopUrl from "~/assets/frog_hop_strip6.png";
+const frogHopImage = new Image();
+frogHopImage.src = frogHopUrl;
+const frogHopSprite: SpriteSheet = {
+    image: frogHopImage,
+    spriteWidth: 50,
+    spriteHeight: 50,
+    width: 6,
+    height: 1,
+    xOffset: 5,
+    yOffset: -6
+}
+export const frogHopAnimation = standardSpriteAnimation(frogHopSprite, 24);
+
 const boulderRollImage = new Image();
 boulderRollImage.src = boulderRollUrl;
 const boulderRollSprite: SpriteSheet = {
@@ -145,7 +159,7 @@ const boulderRollSprite: SpriteSheet = {
     spriteWidth: 40,
     spriteHeight: 40,
     width: 6,
-    height: 1
+    height: 1,
 }
 export const boulderRollAnimation = standardSpriteAnimation(boulderRollSprite, 24);
 
@@ -330,6 +344,10 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
             return {sprite: crowFlyAnimation, direction: 1, startTime: 0};
         }
         return {sprite: crowWalkAnimation, direction: -1, startTime: 0};
+    }
+    if(entity.type === "frog")
+    {
+        return {sprite: frogHopAnimation, direction: -1, startTime: 0};
     }
     return undefined;
 }
