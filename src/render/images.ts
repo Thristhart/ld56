@@ -12,6 +12,7 @@ import waterBackgroundSpriteUrl from "~/assets/water_animated.png";
 import waterBoulderBackgroundSpriteUrl from "~/assets/water_boulder_animated-sheet.png";
 import waterTopEdgeBackgroundSpriteUrl from "~/assets/water_top_edge_animated.png";
 import buttonBackgroundUrl from "~/assets/button_background.png";
+import chasmTopEdgeUrl from "~/assets/chasm_top_edge.png";
 
 import doorOpenBackgroundUrl from "~/assets/door_open_background.png";
 import doorClosedBackgroundUrl from "~/assets/door_closed_background.png";
@@ -152,6 +153,9 @@ wall9GridImage.src = wall9GridUrl;
 
 export const rockWallImage = new Image();
 rockWallImage.src = rockwallUrl;
+
+export const chasmTopEdgeImage = new Image();
+chasmTopEdgeImage.src = chasmTopEdgeUrl;
 
 const waterBackgroundSprite: SpriteSheet = {
     image: waterBackgroundSpriteImage,
