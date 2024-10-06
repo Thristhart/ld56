@@ -231,8 +231,55 @@ const doorSprite: SpriteSheet = {
     width: 6,
     height: 1
 };
-
 export const doorOpenAnimation = standardSpriteAnimation(doorSprite, 33);
+
+import doorSpriteBlueUrl from "~/assets/door_strip6_blue.png";
+const doorSpriteBlueImage = new Image();
+doorSpriteBlueImage.src = doorSpriteBlueUrl;
+const doorSpriteBlue: SpriteSheet = {
+    image: doorSpriteBlueImage,
+    spriteWidth: 96,
+    spriteHeight: 128,
+    width: 6,
+    height: 1
+};
+export const doorOpenBlueAnimation = standardSpriteAnimation(doorSpriteBlue, 33);
+
+import doorSpriteRedUrl from "~/assets/door_strip6_red.png";
+const doorSpriteRedImage = new Image();
+doorSpriteRedImage.src = doorSpriteRedUrl;
+const doorSpriteRed: SpriteSheet = {
+    image: doorSpriteRedImage,
+    spriteWidth: 96,
+    spriteHeight: 128,
+    width: 6,
+    height: 1
+};
+export const doorOpenRedAnimation = standardSpriteAnimation(doorSpriteRed, 33);
+
+import doorSpriteYellowUrl from "~/assets/door_strip6_yellow.png";
+const doorSpriteYellowImage = new Image();
+doorSpriteYellowImage.src = doorSpriteYellowUrl;
+const doorSpriteYellow: SpriteSheet = {
+    image: doorSpriteYellowImage,
+    spriteWidth: 96,
+    spriteHeight: 128,
+    width: 6,
+    height: 1
+};
+export const doorOpenYellowAnimation = standardSpriteAnimation(doorSpriteYellow, 33);
+
+import doorSpritePurpleUrl from "~/assets/door_strip6_purple.png";
+const doorSpritePurpleImage = new Image();
+doorSpritePurpleImage.src = doorSpritePurpleUrl;
+const doorSpritePurple: SpriteSheet = {
+    image: doorSpritePurpleImage,
+    spriteWidth: 96,
+    spriteHeight: 128,
+    width: 6,
+    height: 1
+};
+export const doorOpenPurpleAnimation = standardSpriteAnimation(doorSpritePurple, 33);
 
 export const mousePortraitImage = new Image();
 mousePortraitImage.src = mousePortraitUrl;
@@ -296,6 +343,94 @@ export const bridgeOpenVerticalImage = new Image();
 bridgeOpenVerticalImage.src = bridgeOpenVerticalUrl;
 export const bridgeClosedVerticalImage = new Image();
 bridgeClosedVerticalImage.src = bridgeClosedVerticalUrl;
+
+import bridgeOpenBlueHorizontalUrl from "~/assets/bridge_open_horizontal_blue.png";
+import bridgeClosedBlueHorizontalUrl from "~/assets/bridge_closed_horizontal_blue.png";
+export const bridgeOpenBlueHorizontalImage = new Image();
+bridgeOpenBlueHorizontalImage.src = bridgeOpenBlueHorizontalUrl;
+export const bridgeClosedBlueHorizontalImage = new Image();
+bridgeClosedBlueHorizontalImage.src = bridgeClosedBlueHorizontalUrl;
+
+import bridgeOpenBlueVerticalUrl from "~/assets/bridge_open_vertical_blue.png";
+import bridgeClosedBlueVerticalUrl from "~/assets/bridge_closed_vertical_blue.png";
+export const bridgeOpenBlueVerticalImage = new Image();
+bridgeOpenBlueVerticalImage.src = bridgeOpenBlueVerticalUrl;
+export const bridgeClosedBlueVerticalImage = new Image();
+bridgeClosedBlueVerticalImage.src = bridgeClosedBlueVerticalUrl;
+
+import bridgeOpenRedHorizontalUrl from "~/assets/bridge_open_horizontal_red.png";
+import bridgeClosedRedHorizontalUrl from "~/assets/bridge_closed_horizontal_red.png";
+export const bridgeOpenRedHorizontalImage = new Image();
+bridgeOpenRedHorizontalImage.src = bridgeOpenRedHorizontalUrl;
+export const bridgeClosedRedHorizontalImage = new Image();
+bridgeClosedRedHorizontalImage.src = bridgeClosedRedHorizontalUrl;
+
+import bridgeOpenRedVerticalUrl from "~/assets/bridge_open_vertical_red.png";
+import bridgeClosedRedVerticalUrl from "~/assets/bridge_closed_vertical_red.png";
+export const bridgeOpenRedVerticalImage = new Image();
+bridgeOpenRedVerticalImage.src = bridgeOpenRedVerticalUrl;
+export const bridgeClosedRedVerticalImage = new Image();
+bridgeClosedRedVerticalImage.src = bridgeClosedRedVerticalUrl;
+
+import bridgeOpenPurpleHorizontalUrl from "~/assets/bridge_open_horizontal_purple.png";
+import bridgeClosedPurpleHorizontalUrl from "~/assets/bridge_closed_horizontal_purple.png";
+export const bridgeOpenPurpleHorizontalImage = new Image();
+bridgeOpenPurpleHorizontalImage.src = bridgeOpenPurpleHorizontalUrl;
+export const bridgeClosedPurpleHorizontalImage = new Image();
+bridgeClosedPurpleHorizontalImage.src = bridgeClosedPurpleHorizontalUrl;
+
+import bridgeOpenPurpleVerticalUrl from "~/assets/bridge_open_vertical_purple.png";
+import bridgeClosedPurpleVerticalUrl from "~/assets/bridge_closed_vertical_purple.png";
+export const bridgeOpenPurpleVerticalImage = new Image();
+bridgeOpenPurpleVerticalImage.src = bridgeOpenPurpleVerticalUrl;
+export const bridgeClosedPurpleVerticalImage = new Image();
+bridgeClosedPurpleVerticalImage.src = bridgeClosedPurpleVerticalUrl;
+
+import bridgeOpenYellowHorizontalUrl from "~/assets/bridge_open_horizontal_yellow.png";
+import bridgeClosedYellowHorizontalUrl from "~/assets/bridge_closed_horizontal_yellow.png";
+export const bridgeOpenYellowHorizontalImage = new Image();
+bridgeOpenYellowHorizontalImage.src = bridgeOpenYellowHorizontalUrl;
+export const bridgeClosedYellowHorizontalImage = new Image();
+bridgeClosedYellowHorizontalImage.src = bridgeClosedYellowHorizontalUrl;
+
+import bridgeOpenYellowVerticalUrl from "~/assets/bridge_open_vertical_yellow.png";
+import bridgeClosedYellowVerticalUrl from "~/assets/bridge_closed_vertical_yellow.png";
+export const bridgeOpenYellowVerticalImage = new Image();
+bridgeOpenYellowVerticalImage.src = bridgeOpenYellowVerticalUrl;
+export const bridgeClosedYellowVerticalImage = new Image();
+bridgeClosedYellowVerticalImage.src = bridgeClosedYellowVerticalUrl;
+
+import buttonBlueBackgroundUrl from "~/assets/button_background_blue.png";
+export const buttonBlueBackgroundImage = new Image();
+buttonBlueBackgroundImage.src = buttonBlueBackgroundUrl;
+
+import buttonRedBackgroundUrl from "~/assets/button_background_red.png";
+export const buttonRedBackgroundImage = new Image();
+buttonRedBackgroundImage.src = buttonRedBackgroundUrl;
+
+import buttonPurpleBackgroundUrl from "~/assets/button_background_purple.png";
+export const buttonPurpleBackgroundImage = new Image();
+buttonPurpleBackgroundImage.src = buttonPurpleBackgroundUrl;
+
+import buttonYellowBackgroundUrl from "~/assets/button_background_yellow.png";
+export const buttonYellowBackgroundImage = new Image();
+buttonYellowBackgroundImage.src = buttonYellowBackgroundUrl;
+
+import buttonBlueDownBackgroundUrl from "~/assets/button_background_blue_down.png";
+export const buttonBlueDownBackgroundImage = new Image();
+buttonBlueDownBackgroundImage.src = buttonBlueDownBackgroundUrl;
+
+import buttonRedDownBackgroundUrl from "~/assets/button_background_red_down.png";
+export const buttonRedDownBackgroundImage = new Image();
+buttonRedDownBackgroundImage.src = buttonRedDownBackgroundUrl;
+
+import buttonPurpleDownBackgroundUrl from "~/assets/button_background_purple_down.png";
+export const buttonPurpleDownBackgroundImage = new Image();
+buttonPurpleDownBackgroundImage.src = buttonPurpleDownBackgroundUrl;
+
+import buttonYellowDownBackgroundUrl from "~/assets/button_background_yellow_down.png";
+export const buttonYellowDownBackgroundImage = new Image();
+buttonYellowDownBackgroundImage.src = buttonYellowDownBackgroundUrl;
 
 const waterBackgroundSprite: SpriteSheet = {
     image: waterBackgroundSpriteImage,
@@ -366,8 +501,6 @@ export function GetTerrainBackground(terrain: TerrainType, activeElementState?: 
         case 'ground': return grassBackgroundImage;
         case 'tunnel': return tunnelBackgroundImage;
         case 'button': return buttonBackgroundImage;
-        case 'door': return doorClosedBackgroundImage;
-        case 'bridge': return bridgeClosedBackgroundImage;
         case 'wall': return rockWallImage;
         case 'goal': return goalPortraitImage;
         default: return undefined;
@@ -405,9 +538,40 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
     if (entity.type === "frog") {
         return { sprite: frogHopAnimation, direction: -1, startTime: 0 };
     }
-    if(entity.type === "turtle")
-    {
-        return {sprite: turtleWalkAnimation, direction: -1, startTime: 0 };
+    if (entity.type === "turtle") {
+        return { sprite: turtleWalkAnimation, direction: -1, startTime: 0 };
     }
     return undefined;
+}
+
+// yellow for 1 
+// red for 2 
+// blue for 3 
+// purple for 4
+
+export function GetDoorAnimation(circuitId: number | undefined) {
+    switch (circuitId) {
+        case 1: return doorOpenRedAnimation;
+        case 2: return doorOpenBlueAnimation;
+        case 3: return doorOpenPurpleAnimation;
+        default: return doorOpenYellowAnimation;
+    }
+}
+
+export function GetBridgeImagesForCircuit(circuitId: number | undefined) {
+    switch (circuitId) {
+        case 1: return { horizontalOpen: bridgeOpenRedHorizontalImage, horizontalClosed: bridgeClosedRedHorizontalImage, verticalOpen: bridgeOpenRedVerticalImage, verticalClosed: bridgeClosedRedVerticalImage };
+        case 2: return { horizontalOpen: bridgeOpenBlueHorizontalImage, horizontalClosed: bridgeClosedBlueHorizontalImage, verticalOpen: bridgeOpenBlueVerticalImage, verticalClosed: bridgeClosedBlueVerticalImage };
+        case 3: return { horizontalOpen: bridgeOpenPurpleHorizontalImage, horizontalClosed: bridgeClosedPurpleHorizontalImage, verticalOpen: bridgeOpenPurpleVerticalImage, verticalClosed: bridgeClosedPurpleVerticalImage };
+        default: return { horizontalOpen: bridgeOpenYellowHorizontalImage, horizontalClosed: bridgeClosedYellowHorizontalImage, verticalOpen: bridgeOpenYellowVerticalImage, verticalClosed: bridgeClosedYellowVerticalImage };
+    }
+}
+
+export function GetButtonImagesForCircuit(circuitId: number | undefined) {
+    switch (circuitId) {
+        case 1: return { down: buttonRedDownBackgroundImage, up: buttonRedBackgroundImage };
+        case 2: return { down: buttonBlueDownBackgroundImage, up: buttonBlueBackgroundImage };
+        case 3: return { down: buttonPurpleDownBackgroundImage, up: buttonPurpleBackgroundImage };
+        default: return { down: buttonYellowDownBackgroundImage, up: buttonYellowBackgroundImage };
+    }
 }

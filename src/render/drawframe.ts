@@ -1,9 +1,9 @@
 import { clearActionAnimations, clearUndoAnimations, lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
-import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, LevelContent } from "~/game/levels";
+import { currentLevelState, EntityData, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation, LevelContent } from "~/game/levels";
 import { animateActionResult } from "./animateaction";
-import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_GRID_LINE_LIGHT, GetTerrainColor } from "./colors";
+import { COLOR_CURRENT_CREATURE_HIGHLIGHT, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { bridgeClosedHorizontalImage, bridgeClosedVerticalImage, bridgeOpenHorizontalImage, bridgeOpenVerticalImage, chasmTopEdgeImage, doorOpenAnimation, fliesAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
+import { chasmTopEdgeImage, fliesAnimation, GetBridgeImagesForCircuit, GetButtonImagesForCircuit, GetDoorAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
 
 const canvas = document.querySelector("canvas")!;
@@ -140,10 +140,8 @@ function drawGrid(level: LevelContent, timestamp: number) {
                             continue;
                         }
                     }
-                    if(terrainType === "tunnel")
-                    {
-                        if(isWall(col, row - 1))
-                        {
+                    if (terrainType === "tunnel") {
+                        if (isWall(col, row - 1)) {
                             context.drawImage(tunnelBackgroundImage, 32, 0, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                         else {
@@ -151,36 +149,31 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         }
                         continue;
                     }
-                    if(terrainType === "door")
-                    {
-                        const circuitResponse = GetCircuitResponseElementAtLocation(level, {row, column: col});
+                    if (terrainType === "door") {
+                        const circuitResponse = GetCircuitResponseElementAtLocation(level, { row, column: col });
                         context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
-                        if(isWall(col, row - 1))
-                        {
-                            const frame = circuitResponse?.isActive ?  [0, 0] as const : doorOpenAnimation.getFrame(timestamp);
-                            drawSprite(context, doorOpenAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - 10, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 6, frame, false, {width: 48, height: 64});
+                        const doorAnimation = GetDoorAnimation(circuitResponse?.circuit.circuitId);
+                        if (isWall(col, row - 1)) {
+                            const frame = circuitResponse?.isActive ? [0, 0] as const : doorAnimation.getFrame(timestamp);
+                            drawSprite(context, doorAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - 10, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 6, frame, false, { width: 48, height: 64 });
                         }
                         else {
-                            const frame = circuitResponse?.isActive ?  doorOpenAnimation.getFrame(timestamp) : [0, 0] as const;
-                            drawSprite(context, doorOpenAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 16, frame, false,  {width: 64, height: 96});
+                            const frame = circuitResponse?.isActive ? doorAnimation.getFrame(timestamp) : [0, 0] as const;
+                            drawSprite(context, doorAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 16, frame, false, { width: 64, height: 96 });
                         }
                         continue;
                     }
                     let terrainAnimation = GetTerrainAnimation(terrainType);
-                    if(terrainType === "water")
-                    {
+                    if (terrainType === "water") {
                         const above = level.groundGrid[row - 1][col];
-                        if(above !== "water" && above !== "boulder-water")
-                        {
+                        if (above !== "water" && above !== "boulder-water") {
                             terrainAnimation = waterTopEdgeBackgroundAnimation;
                         }
                     }
-                    if(terrainType == "boulder-water")
-                    {
+                    if (terrainType == "boulder-water") {
                         const above = level.groundGrid[row - 1][col];
                         let waterAnim = GetTerrainAnimation("water")!;
-                        if(above !== "water" && above !== "boulder-water")
-                        {
+                        if (above !== "water" && above !== "boulder-water") {
                             waterAnim = waterTopEdgeBackgroundAnimation
                         }
                         drawSprite(context, waterAnim.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
@@ -192,41 +185,43 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         continue;
                     }
 
-                    if(terrainType === "goal")
-                    {
+                    if (terrainType === "goal") {
                         context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                     }
-                    if(terrainType == "chasm")
-                    {
+                    if (terrainType == "chasm") {
                         const above = level.groundGrid[row - 1][col];
-                        if(above !== "chasm" && above !== "bridge" && above !== "boulder-chasm")
-                        {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                             continue;
                         }
                     }
-                    if(terrainType === "bridge")
-                    {
+                    if (terrainType === "bridge") {
                         const above = level.groundGrid[row - 1][col];
-                        if(above !== "chasm" && above !== "bridge" && above !== "boulder-chasm")
-                        {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                         else {
                             context.fillStyle = "black";
                             context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
-                        const circuitResponse = GetCircuitResponseElementAtLocation(level, {row, column: col});
-                        
-                        if(above === "chasm")
-                        {
-                            let horizBridgeImage = circuitResponse?.isActive ? bridgeOpenHorizontalImage : bridgeClosedHorizontalImage;
+                        const circuitResponse = GetCircuitResponseElementAtLocation(level, { row, column: col });
+                        const bridgeImages = GetBridgeImagesForCircuit(circuitResponse?.circuit.circuitId);
+
+                        if (above === "chasm") {
+                            let horizBridgeImage = circuitResponse?.isActive ? bridgeImages.horizontalOpen : bridgeImages.horizontalClosed;
                             context.drawImage(horizBridgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                         else {
-                            let verticalBridgeImage = circuitResponse?.isActive ? bridgeOpenVerticalImage : bridgeClosedVerticalImage;
+                            let verticalBridgeImage = circuitResponse?.isActive ? bridgeImages.verticalOpen : bridgeImages.verticalClosed;
                             context.drawImage(verticalBridgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
+                        continue;
+                    }
+                    if (terrainType === 'button') {
+                        const circuit = GetCircuitActivationElementAtLocation(level, { row, column: col });
+                        const buttonImages = GetButtonImagesForCircuit(circuit?.circuit.circuitId);
+                        const buttonImage = circuit?.element.isActive ? buttonImages.down : buttonImages.up
+                        context.drawImage(buttonImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         continue;
                     }
 
@@ -295,8 +290,7 @@ function sortEntities(a: EntityData, b: EntityData) {
     return 0;
 }
 
-function drawEntities(levelState: LevelContent, timestamp: number)
-{
+function drawEntities(levelState: LevelContent, timestamp: number) {
     const actionAnimations = lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [];
     const undoAnimations = [];
     if ((lastUndoTimestamp ?? 0) > (lastActionTimestamp ?? 0)) {
@@ -364,42 +358,41 @@ function drawEntities(levelState: LevelContent, timestamp: number)
             );
             context.fill();
         }
-        if(entity.type === "insect")
-        {
-            let dt = timestamp/50 + (1000 * entityLocation.column / entityLocation.row);
+        if (entity.type === "insect") {
+            let dt = timestamp / 50 + (1000 * entityLocation.column / entityLocation.row);
             drawSprite(
                 context,
                 fliesAnimation.spritesheet,
-                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt/10) * 10,
-                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.cos(dt/3) * 10,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt / 10) * 10,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + Math.cos(dt / 3) * 10,
                 fliesAnimation.getFrame(performance.now()),
             )
             drawSprite(
                 context,
                 fliesAnimation.spritesheet,
-                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt/2) * 10,
-                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.cos(dt/4) * 10,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt / 2) * 10,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + Math.cos(dt / 4) * 10,
                 fliesAnimation.getFrame(performance.now()),
             )
             drawSprite(
                 context,
                 fliesAnimation.spritesheet,
-                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.cos(dt/6) * 15,
-                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.sin(dt/10) * 10,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.cos(dt / 6) * 15,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + Math.sin(dt / 10) * 10,
                 fliesAnimation.getFrame(performance.now()),
             )
             drawSprite(
                 context,
                 fliesAnimation.spritesheet,
-                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.cos(dt/10) * 10,
-                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.sin(dt/10) * 15,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.cos(dt / 10) * 10,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + Math.sin(dt / 10) * 15,
                 fliesAnimation.getFrame(performance.now()),
             )
             drawSprite(
                 context,
                 fliesAnimation.spritesheet,
-                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt/3) * 10,
-                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2+ Math.sin(dt/8) * 3,
+                entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 + Math.sin(dt / 3) * 10,
+                entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + Math.sin(dt / 8) * 3,
                 fliesAnimation.getFrame(performance.now()),
             )
             continue;
@@ -416,7 +409,7 @@ function drawEntities(levelState: LevelContent, timestamp: number)
                 spriteDetails.renderDimensions,
             )
         }
-        else if(portrait) {
+        else if (portrait) {
             context.save();
             let scale = entity.facing === "left" ? -1 : 1;
             context.scale(scale, 1);

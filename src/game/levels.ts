@@ -1,6 +1,11 @@
-import testingEntities from '../levels/testing.entities?raw';
-import testingTerrain from '../levels/testing.terrain?raw';
-import testingCircuit from '../levels/testing.circuit?raw';
+import testingEntities from '../levels/testing/testing.entities?raw';
+import testingTerrain from '../levels/testing/testing.terrain?raw';
+import testingCircuit from '../levels/testing/testing.circuit?raw';
+
+import circuitTestingEntities from '../levels/testing/circuittest.entities?raw';
+import circuitTestingTerrain from '../levels/testing/circuittest.terrain?raw';
+import circuitTestingCircuit from '../levels/testing/circuittest.circuit?raw';
+
 import introEntities from '../levels/intro.entities?raw';
 import introTerrain from '../levels/intro.terrain?raw';
 import introCircuit from '../levels/intro.circuit?raw';
@@ -48,6 +53,11 @@ export const levels = {
         entities: testingEntities,
         terrain: testingTerrain,
         circuit: testingCircuit,
+    },
+    circuittesting: {
+        entities: circuitTestingEntities,
+        terrain: circuitTestingTerrain,
+        circuit: circuitTestingCircuit,
     },
     intro: {
         entities: introEntities,

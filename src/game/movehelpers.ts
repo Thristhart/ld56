@@ -1,4 +1,4 @@
-import { Action, ActionResult } from "./actions";
+import { ActionResult } from "./actions";
 import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation, CircuitData, ActivationElement } from "./levels";
 import { creatures, CreatureType, IsCreatureEntity } from "./specifications";
 import { triggers } from "./triggers";
