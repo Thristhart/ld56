@@ -1,9 +1,9 @@
-import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, LevelContent } from "~/game/levels";
-import { COLOR_GRID_LINE_LIGHT, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
-import { drawDialog } from "./drawdialog";
-import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation, GetSpriteForEntity, treeImage, wall9GridImage, treeWallBackgroundImage, tunnelBackgroundImage } from "./images";
 import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
+import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, LevelContent } from "~/game/levels";
 import { animateActionResult, animateActionResultUndo } from "./animateaction";
+import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_GRID_LINE_LIGHT, GetTerrainColor } from "./colors";
+import { drawDialog } from "./drawdialog";
+import { doorOpenAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
 
 const canvas = document.querySelector("canvas")!;
@@ -148,6 +148,21 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
                         }
                         else {
                             context.drawImage(tunnelBackgroundImage, 0, 0, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
+                        continue;
+                    }
+                    if(terrainType === "door")
+                    {
+                        const circuitResponse = GetCircuitResponseElementAtLocation(level, {row, column: col});
+                        context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        if(isWall(col, row - 1))
+                        {
+                            const frame = circuitResponse?.isActive ?  [0, 0] as const : doorOpenAnimation.getFrame(timestamp);
+                            drawSprite(context, doorOpenAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - 14, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 16, frame, {width: 64, height: 96});
+                        }
+                        else {
+                            const frame = circuitResponse?.isActive ?  doorOpenAnimation.getFrame(timestamp) : [0, 0] as const;
+                            drawSprite(context, doorOpenAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 16, frame, {width: 64, height: 96});
                         }
                         continue;
                     }

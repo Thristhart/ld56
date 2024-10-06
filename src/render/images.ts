@@ -19,6 +19,7 @@ import bridgeClosedBackgroundUrl from "~/assets/bridge_closed_background.png";
 import wallBackgroundUrl from "~/assets/tree_wall.png";
 import wall9GridUrl from "~/assets/wall_9grid.png";
 import rockwallUrl from "~/assets/rockwall.png";
+import doorSpriteUrl from "~/assets/door_strip6.png";
 
 import treeImageUrl from "~/assets/tree.png";
 
@@ -88,6 +89,18 @@ const boulderRollSprite: SpriteSheet = {
     height: 1
 }
 export const boulderRollAnimation = standardSpriteAnimation(boulderRollSprite, 24);
+
+const doorSpriteImage = new Image();
+doorSpriteImage.src = doorSpriteUrl;
+const doorSprite: SpriteSheet = {
+    image: doorSpriteImage,
+    spriteWidth: 96,
+    spriteHeight: 128,
+    width: 6,
+    height: 1
+};
+
+export const doorOpenAnimation = standardSpriteAnimation(doorSprite, 33);
 
 export const mousePortraitImage = new Image();
 mousePortraitImage.src = mousePortraitUrl;
