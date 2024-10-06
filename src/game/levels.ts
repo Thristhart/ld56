@@ -5,6 +5,10 @@ import introEntities from '../levels/intro.entities?raw';
 import introTerrain from '../levels/intro.terrain?raw';
 import introCircuit from '../levels/intro.circuit?raw';
 
+import flower1Terrain from '../levels/turtle_mouse/flower_1/flower_1.terrain?raw';
+import flower1Entities from '../levels/turtle_mouse/flower_1/flower_1.entities?raw';
+import flower1Circuit from '../levels/turtle_mouse/flower_1/flower_1.circuit?raw';
+
 import flower2Terrain from '../levels/frog_bird/flower_2/flower_2.terrain?raw';
 import flower2Entities from '../levels/frog_bird/flower_2/flower_2.entities?raw';
 import flower2Circuit from '../levels/frog_bird/flower_2/flower_2.circuit?raw';
@@ -45,6 +49,11 @@ export const levels = {
         entities: introEntities,
         terrain: introTerrain,
         circuit: introCircuit
+    },
+    flower1: {
+        entities: flower1Entities,
+        terrain: flower1Terrain,
+        circuit: flower1Circuit,
     },
     flower2: {
         entities: flower2Entities,

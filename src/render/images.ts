@@ -16,6 +16,8 @@ import doorClosedBackgroundUrl from "~/assets/door_closed_background.png";
 import bridgeOpenBackgroundUrl from "~/assets/bridge_open_background.png";
 import bridgeClosedBackgroundUrl from "~/assets/bridge_closed_background.png";
 import wallBackgroundUrl from "~/assets/tree_wall.png";
+import wall9GridUrl from "~/assets/wall_9grid.png";
+import rockwallUrl from "~/assets/rockwall.png";
 
 import treeImageUrl from "~/assets/tree.png";
 
@@ -121,8 +123,14 @@ bridgeOpenBackgroundImage.src = bridgeOpenBackgroundUrl;
 export const bridgeClosedBackgroundImage = new Image();
 bridgeClosedBackgroundImage.src = bridgeClosedBackgroundUrl;
 
-export const wallBackgroundImage = new Image();
-wallBackgroundImage.src = wallBackgroundUrl;
+export const treeWallBackgroundImage = new Image();
+treeWallBackgroundImage.src = wallBackgroundUrl;
+
+export const wall9GridImage = new Image();
+wall9GridImage.src = wall9GridUrl;
+
+export const rockWallImage = new Image();
+rockWallImage.src = rockwallUrl;
 
 const waterBackgroundSprite: SpriteSheet = {
     image: waterBackgroundSpriteImage,
@@ -158,7 +166,7 @@ export function GetTerrainBackground(terrain: TerrainType) {
         case 'button': return buttonBackgroundImage;
         case 'door': return doorOpenBackgroundImage;
         case 'bridge': return bridgeOpenBackgroundImage;
-        case 'wall': return wallBackgroundImage;
+        case 'wall': return rockWallImage;
         case 'goal': return goalPortraitImage;
         default: return undefined;
     }

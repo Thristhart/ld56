@@ -1,10 +1,11 @@
 import { currentLevel, currentLevelState, EntityData, LevelContent } from "~/game/levels";
 import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation, GetSpriteForEntity, treeImage } from "./images";
+import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation, GetSpriteForEntity, treeImage, wall9GridImage, treeWallBackgroundImage } from "./images";
 import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
 import { animateActionResult, animateActionResultUndo } from "./animateaction";
 import { drawSprite, SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
+import { TerrainType } from "~/game/specifications";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -14,6 +15,84 @@ export const camera = { x: 0, y: 0, scale: 1 };
 export const GRID_SQUARE_WIDTH = 32;
 export const GRID_SQUARE_HEIGHT = 32;
 
+
+function isWallLike( col: number, row: number)
+{
+    if(!currentLevelState)
+    {
+        return false;
+    }
+    if(row === 0 || col === 0 || row === currentLevelState.rows - 1 || col === currentLevelState.columns - 1)
+    {
+        return false;
+    }
+    const terrain = currentLevelState.groundGrid[row]?.[col];
+    return terrain === "wall" || terrain === "door" || terrain === "tunnel";
+}
+function isWall(col: number, row: number)
+{
+    if(!currentLevelState)
+    {
+        return false;
+    }
+    if(row === 0 || col === 0 || row === currentLevelState.rows - 1 || col === currentLevelState.columns - 1)
+    {
+        return true;
+    }
+    const terrain = currentLevelState.groundGrid[row]?.[col];
+    return terrain === "wall";
+}
+
+function identify9GridForWall(level: LevelContent, col: number, row: number): readonly [x: number, y: number]
+{
+    if(isWallLike(col -1, row) && isWallLike(col + 1, row) && isWallLike(col, row - 1) && !isWallLike(col, row + 1))
+    {
+        return [4, 0];
+    }
+    if(isWallLike(col, row + 1) && isWallLike(col + 1, row))
+    {
+        return [0, 0];
+    }
+    if(isWallLike(col, row - 1) && isWallLike(col + 1, row))
+    {
+        return [0, 2];
+    }
+    if(isWallLike(col, row + 1) && isWallLike(col - 1, row))
+    {
+        return [2, 0];
+    }
+    if(isWallLike(col, row - 1) && isWallLike(col - 1, row))
+    {
+        return [2, 2];
+    }
+    if(isWallLike(col, row - 1) && !isWallLike(col, row + 1))
+    {
+        return [2, 1];
+    }
+    if(isWallLike(col, row + 1) && !isWallLike(col, row - 1))
+    {
+        return [1, 1];
+    }
+    if(isWallLike(col - 1, row) && !isWallLike(col + 1, row))
+    {
+        return [3, 1];
+    }
+    if(isWallLike(col + 1, row) && !isWallLike(col - 1, row))
+    {
+        return [3, 0];
+    }
+    if(!(isWallLike(col, row - 1) || isWallLike(col, row + 1)))
+    {
+        return [1, 0];
+    }
+    return [0, 1];
+}
+
+function draw9GridWall(col: number, row: number, nineGrid: readonly [x: number, y: number])
+{
+    context.drawImage(wall9GridImage, nineGrid[0] * 32, nineGrid[1] * 32, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 32, 32 );
+}
+
 function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timestamp: number) {
     const width = level.columns;
     const height = level.rows;
@@ -21,7 +100,7 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
     // draw the foresty background
     for (let row = -10; row < height + 10; row++) {
         for (let col = -10; col < width + 10; col++) {
-            context.drawImage(GetTerrainBackground("wall")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+            context.drawImage(treeWallBackgroundImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
         }
     }
 
@@ -36,29 +115,59 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
                     if(terrainType === "wall")
                     {
                         context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
-                        const parts: Array<TreeFragment> = []
+                        const parts = new Set<TreeFragment>();
                         if(col === 0)
                         {
-                            parts.push("tl", "bl");
+                            parts.add("tl");
+                            parts.add("bl");
                         }
                         if(col === groundRow.length - 1)
                         {
-                            parts.push("tr", "br");
+                            parts.add("tr");
+                            parts.add("br");
                         }
                         if(row === 0)
                         {
-                            parts.push("tl", "tr");
+                            parts.add("tl");
+                            parts.add("tr");
                         }
                         if(row === height - 1)
                         {
-                            parts.push("bl", "br");
+                            parts.add("bl");
+                            parts.add("br");
                         }
-                        const topParts = parts.filter(part => part.startsWith("t"));
-                        const bottomParts = parts.filter(part => part.startsWith("b"));
-                        topParts.forEach(frag => drawTreeFragment(col, row, frag));
-                        drawTreeFragment(col, row, "center");
-                        bottomParts.forEach(frag => drawTreeFragment(col, row, frag));
-                        continue;
+                        if(isWall(col - 1, row) && isWall(col, row - 1) && isWall(col - 1, row - 1))
+                        {
+                            parts.add("tl");
+                        }
+                        if(isWall(col + 1, row) && isWall(col, row - 1) && isWall(col + 1, row - 1))
+                        {
+                            parts.add("tr");
+                        }
+                        if(isWall(col - 1, row) && isWall(col, row + 1) && isWall(col - 1, row + 1))
+                        {
+                            parts.add("bl");
+                        }
+                        if(isWall(col + 1, row) && isWall(col, row + 1) && isWall(col + 1, row + 1))
+                        {
+                            parts.add("br");
+                        }
+
+                        // Not an edge wall, so we don't draw trees. Instead draw a wall
+                        if(parts.size === 0)
+                        {
+                            draw9GridWall(col, row, identify9GridForWall(level, col, row));
+                            continue;
+                        }
+                        else {
+                            const partArray = Array.from(parts);
+                            const topParts = partArray.filter(part => part.startsWith("t"));
+                            const bottomParts = partArray.filter(part => part.startsWith("b"));
+                            topParts.forEach(frag => drawTreeFragment(col, row, frag));
+                            drawTreeFragment(col, row, "center");
+                            bottomParts.forEach(frag => drawTreeFragment(col, row, frag));
+                            continue;
+                        }
                     }
                     const terrainAnimation = GetTerrainAnimation(terrainType);
                     if (terrainAnimation) {
