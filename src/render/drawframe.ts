@@ -1,7 +1,7 @@
 import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, LevelContent } from "~/game/levels";
 import { COLOR_GRID_LINE_LIGHT, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation, GetSpriteForEntity, treeImage, wall9GridImage, treeWallBackgroundImage } from "./images";
+import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation, GetSpriteForEntity, treeImage, wall9GridImage, treeWallBackgroundImage, tunnelBackgroundImage } from "./images";
 import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
 import { animateActionResult, animateActionResultUndo } from "./animateaction";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
@@ -139,6 +139,17 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
                             bottomParts.forEach(frag => drawTreeFragment(col, row, frag));
                             continue;
                         }
+                    }
+                    if(terrainType === "tunnel")
+                    {
+                        if(isWall(col, row - 1))
+                        {
+                            context.drawImage(tunnelBackgroundImage, 32, 0, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
+                        else {
+                            context.drawImage(tunnelBackgroundImage, 0, 0, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
+                        continue;
                     }
                     const terrainAnimation = GetTerrainAnimation(terrainType);
                     if (terrainAnimation) {
