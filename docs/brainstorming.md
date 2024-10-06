@@ -93,3 +93,16 @@ example potential exceptions:
 * the boulder presses a button to open the very last door blocking the exit
 
 ALSO if it's possible to push the boulder along a wall so that it's no longer adjacent to a wall then the boulder isn't considered lost. think hard on whether or not an animal button would actually lose a theoretical boulder, even if there's no boulder that could ever reach that button
+
+if a button to open a door is 2 tiles away we can create a cool structure
+
+XXXX
+   X
+B RDF
+   X
+XXXX
+ we put one animal through the door by standing one on the button and then push a boulder in front of it then we use the animal inside the door to push the boulder away from the wall
+
+ this is really cool, i'm gonna use it in the final mouse/turtle level
+
+ also i should make a spot where the rat goes into a spot to get a boulder pushed in front of it
