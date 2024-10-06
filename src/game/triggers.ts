@@ -58,7 +58,8 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
                 }
                 else if(nextTile === "water" )
                 {
-                    if(prevTile !== "water") {
+                    if(prevTile !== "water")
+                    {
                         sounds.splash.play();
                     }
                 }

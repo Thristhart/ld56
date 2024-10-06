@@ -1,4 +1,5 @@
 
+import { sounds } from "~/audio";
 import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState, EntityData } from "./levels";
 import { Direction, GetEntityMovementActions, GetFacingFromLocations } from "./movehelpers";
 import { IsCreatureEntity, TerrainType } from "./specifications";
@@ -238,6 +239,10 @@ export function fireAction(action: Action) {
     const result = applyAction(currentLevelState, action);
     if (result && !(Array.isArray(result) && result.length === 0)) {
         lastActionResults = Array.isArray(result) ? result : [result];
+        if(lastActionResults.length === 1 && lastActionResults[0].type === "SwitchFacingDirection") 
+        {
+            sounds.bump.play();
+        }
         lastActionTimestamp = performance.now();
         setTimeout(() => {
             for (const actionResult of lastActionResults ?? []) {
@@ -246,6 +251,9 @@ export function fireAction(action: Action) {
         }, 100);
         TriggerAudioFromResults(lastActionResults);
         actionLog.push(action);
+    }
+    else {
+        sounds.bump.play();
     }
     setCurrentLevelState(ComputeStateFromActionLog());
 }
