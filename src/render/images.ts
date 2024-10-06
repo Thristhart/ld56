@@ -197,6 +197,20 @@ export const fliesAnimation: SpriteAnimation = {
     },
 }
 
+import turtleWalkUrl from "~/assets/turtle_walk_strip5.png";
+const turtleWalkImage = new Image();
+turtleWalkImage.src = turtleWalkUrl;
+const turtleWalkSprite: SpriteSheet = {
+    image: turtleWalkImage,
+    spriteWidth: 40,
+    spriteHeight: 40,
+    width: 5,
+    height: 1,
+    yOffset: -4,
+    xOffset: 2
+}
+export const turtleWalkAnimation: SpriteAnimation = standardSpriteAnimation(turtleWalkSprite, 33);
+
 const boulderRollImage = new Image();
 boulderRollImage.src = boulderRollUrl;
 const boulderRollSprite: SpriteSheet = {
@@ -390,6 +404,10 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
     }
     if (entity.type === "frog") {
         return { sprite: frogHopAnimation, direction: -1, startTime: 0 };
+    }
+    if(entity.type === "turtle")
+    {
+        return {sprite: turtleWalkAnimation, direction: -1, startTime: 0 };
     }
     return undefined;
 }

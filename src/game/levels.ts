@@ -13,9 +13,12 @@ import flower2Terrain from '../levels/frog_bird/flower_2/flower_2.terrain?raw';
 import flower2Entities from '../levels/frog_bird/flower_2/flower_2.entities?raw';
 import flower2Circuit from '../levels/frog_bird/flower_2/flower_2.circuit?raw';
 
+import boulderPondTerrain from '../levels/turtle_mouse/boulder_pond/boulder_pond.terrain?raw';
+import boulderPondEntities from '../levels/turtle_mouse/boulder_pond/boulder_pond.entities?raw';
+import boulderPondCircuit from '../levels/turtle_mouse/boulder_pond/boulder_pond.circuit?raw';
+
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
-import { Direction } from './movehelpers';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
@@ -60,6 +63,11 @@ export const levels = {
         entities: flower2Entities,
         terrain: flower2Terrain,
         circuit: flower2Circuit,
+    },
+    boulderPond: {
+        entities: boulderPondEntities,
+        terrain: boulderPondTerrain,
+        circuit: boulderPondCircuit,
     }
 } as const satisfies Record<string, LevelDescription>;
 

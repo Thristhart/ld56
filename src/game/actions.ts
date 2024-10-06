@@ -1,8 +1,8 @@
 
-import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState } from "./levels";
+import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState, EntityData } from "./levels";
 import { Direction, GetEntityMovementActions, GetFacingFromLocations } from "./movehelpers";
 import { IsCreatureEntity, TerrainType } from "./specifications";
-import { checkForTriggersAfterAnimation, triggers } from "./triggers";
+import { checkForTriggersAfterAnimation, TriggerAudioFromResults } from "./triggers";
 
 
 export interface MoveCreatureAction {
@@ -22,6 +22,7 @@ export interface MoveEntityResult {
     entityid: number;
     oldLocation: Location;
     newLocation: Location;
+    entity: EntityData;
 }
 
 export interface SwitchEntityResult {
@@ -223,6 +224,7 @@ export function fireAction(action: Action) {
                 checkForTriggersAfterAnimation(currentLevelState!, actionResult);
             }
         }, 100);
+        TriggerAudioFromResults(lastActionResults);
         actionLog.push(action);
     }
     setCurrentLevelState(ComputeStateFromActionLog());
@@ -242,6 +244,7 @@ export function undo() {
     if (resultOfUndoneAction) {
         lastUndoActionResults = Array.isArray(resultOfUndoneAction) ? resultOfUndoneAction : [resultOfUndoneAction];
         lastUndoTimestamp = performance.now();
+        TriggerAudioFromResults(lastUndoActionResults);
     }
 }
 

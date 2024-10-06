@@ -1,7 +1,7 @@
 import { ActionResult } from "~/game/actions";
 import { currentLevelState, GetTileAtLocation } from "~/game/levels";
 import { isFlyingTerrain } from "~/game/specifications";
-import { boulderRollAnimation, crowLandAnimation, crowTakeoffAnimation, crowWalkAnimation, frogAttackForwardAnimation, frogAttackUpAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation } from "./images";
+import { boulderRollAnimation, crowLandAnimation, crowTakeoffAnimation, crowWalkAnimation, frogAttackForwardAnimation, frogAttackUpAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation, turtleWalkAnimation } from "./images";
 import { SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
 
 export function lerp(a: number, b: number, t: number)
@@ -59,6 +59,12 @@ export function animateActionResult(actionResult: ActionResult, dt: number, dire
             {
                 const prevTile = GetTileAtLocation(currentLevelState, actionResult.oldLocation);
                 const nextTile = GetTileAtLocation(currentLevelState, actionResult.newLocation);
+                if(prevTile !== "water" && nextTile !== "water")
+                {
+                    entitySpriteAnimations.set(entity.id, {
+                        sprite: turtleWalkAnimation,
+                    });
+                }
                 if(prevTile !== "water" && nextTile === "water")
                 {
                     entitySpriteAnimations.set(entity.id, {
