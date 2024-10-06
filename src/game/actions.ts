@@ -47,8 +47,16 @@ export interface ModifyCircuitStateResult {
     newState: boolean;
 }
 
+export interface EatInsectResult {
+    type: "EatInsect";
+    insectId: number;
+    eaterId: number;
+    insectLocation: Location;
+    eaterLocation: Location;
+}
 
-export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult;
+
+export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult;
 
 function applyActionResult(levelState: LevelContent, actionResult: ActionResult): LevelContent {
     switch (actionResult.type) {
@@ -77,7 +85,7 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
             return {
                 ...levelState,
                 groundGrid: groundGridCopy,
-                entities: [...filteredEntities]
+                entities: filteredEntities,
             }
         }
         case "ModifyCircuitState": {
@@ -103,6 +111,20 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
                         activationElements: [...otherActivationElements, { ...element, isActive: newState }]
                     }
                 ]
+            }
+        }
+        case "EatInsect": {
+            const eater = levelState.entities.find(e => e.id === actionResult.eaterId);
+            if (!eater) {
+                return levelState;
+            }
+            const otherEntities = levelState.entities.filter(e => e.id != actionResult.eaterId);
+            return {
+                ...levelState,
+                entities: [
+                    ...otherEntities.filter(entity => entity.id !== actionResult.insectId),
+                    {...eater, facing: GetFacingFromLocations(eater.facing, actionResult.eaterLocation, actionResult.insectLocation)}
+                ],
             }
         }
     }

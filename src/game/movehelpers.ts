@@ -289,7 +289,7 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
 
     return actionResults;
 }
-export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {
+export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction): ActionResult[] {
     const actionResults: ActionResult[] = [];
     const originTileType = GetTileAtLocation(levelState, entity.location);
 
@@ -301,6 +301,18 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
 
     if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
         return [];
+    }
+
+    const insectsAtLocation = entitiesAtMoveTarget.filter(ent => ent.type === "insect");
+    if(insectsAtLocation.length > 0)
+    {
+        return insectsAtLocation.map(insect => ({
+            type: "EatInsect",
+            insectId: insect.id,
+            insectLocation: insect.location,
+            eaterId: entity.id,
+            eaterLocation: entity.location,
+        }))
     }
 
     if (tileAtMoveTargetType === 'water') {

@@ -1,7 +1,7 @@
 import { ActionResult } from "~/game/actions";
 import { currentLevelState, GetTileAtLocation } from "~/game/levels";
 import { isFlyingTerrain } from "~/game/specifications";
-import { boulderRollAnimation, crowLandAnimation, crowTakeoffAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation } from "./images";
+import { boulderRollAnimation, crowLandAnimation, crowTakeoffAnimation, crowWalkAnimation, frogAttackForwardAnimation, frogAttackUpAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation } from "./images";
 import { SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
 
 export function lerp(a: number, b: number, t: number)
@@ -76,6 +76,12 @@ export function animateActionResult(actionResult: ActionResult, dt: number, dire
             {
                 const prevTile = GetTileAtLocation(currentLevelState, actionResult.oldLocation);
                 const nextTile = GetTileAtLocation(currentLevelState, actionResult.newLocation);
+                if(!isFlyingTerrain(prevTile) && !isFlyingTerrain(nextTile))
+                {
+                    entitySpriteAnimations.set(entity.id, {
+                        sprite: crowWalkAnimation,
+                    });
+                }
                 if(!isFlyingTerrain(prevTile) && isFlyingTerrain(nextTile))
                 {
                     entitySpriteAnimations.set(entity.id, {
@@ -103,6 +109,18 @@ export function animateActionResult(actionResult: ActionResult, dt: number, dire
                 });
             }
             break;
+        }
+        case "EatInsect": {
+            let t = clamp(dt / MOVE_ANIMATION_DURATION_MS);
+            const diff = {
+                row: actionResult.eaterLocation.row - actionResult.insectLocation.row,
+                column: actionResult.eaterLocation.column - actionResult.insectLocation.column,
+            };
+            const lerped = lerp(-direction, 0, t);
+            entityPositionModifications.set(actionResult.insectId, {row: diff.row * lerped, column: diff.column * lerped})
+            entitySpriteAnimations.set(actionResult.eaterId, {
+                sprite: actionResult.eaterLocation.row > actionResult.insectLocation.row ? frogAttackUpAnimation : frogAttackForwardAnimation,
+            })
         }
     }
     return {entityPositionModifications, entitySpriteAnimations};

@@ -91,10 +91,10 @@ const crowWalkSprite: SpriteSheet = {
     image: crowWalkImage,
     spriteWidth: 40,
     spriteHeight: 40,
-    width: 16,
+    width: 8,
     height: 1,
 }
-export const crowWalkAnimation = standardSpriteAnimation(crowWalkSprite, 33);
+export const crowWalkAnimation = standardSpriteAnimation(crowWalkSprite, 18);
 
 import crowFlyUrl from "~/assets/crow_fly_strip6.png";
 const crowFlyImage = new Image();
@@ -151,6 +151,34 @@ const frogHopSprite: SpriteSheet = {
     yOffset: -6
 }
 export const frogHopAnimation = standardSpriteAnimation(frogHopSprite, 24);
+
+import frogAttackForwardUrl from "~/assets/frog_attackforward_strip6.png";
+const frogAttackForwardImage = new Image();
+frogAttackForwardImage.src = frogAttackForwardUrl;
+const fromAttackForwardSprite: SpriteSheet = {
+    image: frogAttackForwardImage,
+    spriteWidth: 50,
+    spriteHeight: 50,
+    width: 6,
+    height: 1,
+    xOffset: 5,
+    yOffset: -6
+}
+export const frogAttackForwardAnimation = standardSpriteAnimation(fromAttackForwardSprite, 24);
+
+import frogAttackUpUrl from "~/assets/frog_attackup_strip6.png";
+const frogAttackUpImage = new Image();
+frogAttackUpImage.src = frogAttackUpUrl;
+const fromAttackUpSprite: SpriteSheet = {
+    image: frogAttackUpImage,
+    spriteWidth: 50,
+    spriteHeight: 50,
+    width: 6,
+    height: 1,
+    xOffset: 5,
+    yOffset: -6
+}
+export const frogAttackUpAnimation = standardSpriteAnimation(fromAttackUpSprite, 24);
 
 import fliesUrl from "~/assets/mosquito_strip2.png";
 const fliesImage = new Image();
