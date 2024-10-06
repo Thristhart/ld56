@@ -1,6 +1,6 @@
 import { ActionResult } from "./actions";
 import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation } from "./levels";
-import { EntityType, TerrainType, creatures, CreatureType } from "./specifications";
+import { creatures, CreatureType } from "./specifications";
 import { triggers } from "./triggers";
 
 export type Direction = "up" | "down" | "left" | "right";
