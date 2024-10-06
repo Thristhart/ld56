@@ -285,7 +285,7 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
 
     const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
 
-    if (tileAtMoveTargetType === 'wall') {
+    if (tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
         return [];
     }
 
