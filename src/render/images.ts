@@ -85,7 +85,7 @@ const turtleUnhideSprite: SpriteSheet = {
 export const turtleUnhideAnimation = standardSpriteAnimation(turtleUnhideSprite, 66);
 
 import crowWalkUrl from "~/assets/crow_walk_strip16.png";
-const crowWalkImage = new Image();
+export const crowWalkImage = new Image();
 crowWalkImage.src = crowWalkUrl;
 const crowWalkSprite: SpriteSheet = {
     image: crowWalkImage,
@@ -139,7 +139,7 @@ export const crowLandAnimation = standardSpriteAnimation(crowLandSprite, 66);
 
 
 import frogHopUrl from "~/assets/frog_hop_strip6.png";
-const frogHopImage = new Image();
+export const frogHopImage = new Image();
 frogHopImage.src = frogHopUrl;
 const frogHopSprite: SpriteSheet = {
     image: frogHopImage,
@@ -381,18 +381,15 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
     if (entity.type === "boulder") {
         return { sprite: boulderRollAnimation, direction: -1, startTime: 0, renderDimensions: { width: 32, height: 32 } } // startTime 0 means this will always be at the last frame
     }
-    if(entity.type === "bird")
-    {
+    if (entity.type === "bird") {
         const tile = GetTileAtLocation(currentLevelState, entity.location);
-        if(isFlyingTerrain(tile))
-        {
-            return {sprite: crowFlyAnimation, direction: 1, startTime: 0};
+        if (isFlyingTerrain(tile)) {
+            return { sprite: crowFlyAnimation, direction: 1, startTime: 0 };
         }
-        return {sprite: crowWalkAnimation, direction: -1, startTime: 0};
+        return { sprite: crowWalkAnimation, direction: -1, startTime: 0 };
     }
-    if(entity.type === "frog")
-    {
-        return {sprite: frogHopAnimation, direction: -1, startTime: 0};
+    if (entity.type === "frog") {
+        return { sprite: frogHopAnimation, direction: -1, startTime: 0 };
     }
     return undefined;
 }

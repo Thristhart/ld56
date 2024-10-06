@@ -100,6 +100,7 @@ export interface LevelContent {
     readonly entities: EntityData[];
     circuits: CircuitData[];
     currentEntityId: number;
+    canContinueLevel: boolean;
 }
 
 let gEntityId = 1;
@@ -118,6 +119,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
         entities: [],
         circuits: [],
         currentEntityId: 0,
+        canContinueLevel: true
     }
 
     const groundRows = ground.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);

@@ -1,6 +1,6 @@
 import { ActionResult } from "./actions";
-import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation } from "./levels";
-import { creatures, CreatureType } from "./specifications";
+import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation, CircuitData, ActivationElement } from "./levels";
+import { creatures, CreatureType, IsCreatureEntity } from "./specifications";
 import { triggers } from "./triggers";
 
 export type Direction = "up" | "down" | "left" | "right";
@@ -27,14 +27,11 @@ export function GetLocationInDirection(startLocation: Location, direction: Direc
     }
 }
 
-export function GetFacingFromLocations(currentFacing: "left" | "right", oldLocation: Location, newLocation: Location): "left" | "right"
-{
-    if(oldLocation.column < newLocation.column)
-    {
+export function GetFacingFromLocations(currentFacing: "left" | "right", oldLocation: Location, newLocation: Location): "left" | "right" {
+    if (oldLocation.column < newLocation.column) {
         return "right";
     }
-    if(oldLocation.column > newLocation.column)
-    {
+    if (oldLocation.column > newLocation.column) {
         return "left";
     }
     return currentFacing;
@@ -61,7 +58,7 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
         if (boulder) {
             const boulderMoveResults = GetBoulderMovementActionResults(levelState, boulder, direction);
             if (!boulderMoveResults.length) {
-                return [];
+                return []; //TODO add facing stuff
             }
             else {
                 return [...entityMoveResults, ...boulderMoveResults];
@@ -156,20 +153,11 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
         )
     }
 
-    // handle moving OFF of a button
-    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, entity.location);
-    if (originTileType === 'button' && activationCircuitAtOrigin) {
-        actionResults.push(
-            {
-                type: 'ModifyCircuitState',
-                circuitId: activationCircuitAtOrigin.circuit.circuitId,
-                elementId: activationCircuitAtOrigin.element.id,
-                oldState: activationCircuitAtOrigin.element.isActive,
-                newState: false
-            })
-        triggers.emit('checkCircuitEntityCollision')
+    if (originTileType === 'button') {
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity.location);
+        if (buttonDeactivationResults.length > 0)
+            actionResults.push(...buttonDeactivationResults);
     }
-
     return actionResults;
 }
 
@@ -273,22 +261,14 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
         )
     }
 
-    // handle moving OFF of a button
-    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, entity.location);
-    if (originTileType === 'button' && activationCircuitAtOrigin) {
-        actionResults.push(
-            {
-                type: 'ModifyCircuitState',
-                circuitId: activationCircuitAtOrigin.circuit.circuitId,
-                elementId: activationCircuitAtOrigin.element.id,
-                oldState: activationCircuitAtOrigin.element.isActive,
-                newState: false
-            })
-        triggers.emit('checkCircuitEntityCollision')
+    if (originTileType === 'button') {
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity.location);
+        if (buttonDeactivationResults.length > 0)
+            actionResults.push(...buttonDeactivationResults);
     }
-
     return actionResults;
 }
+
 export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction): ActionResult[] {
     const actionResults: ActionResult[] = [];
     const originTileType = GetTileAtLocation(levelState, entity.location);
@@ -304,8 +284,7 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
     }
 
     const insectsAtLocation = entitiesAtMoveTarget.filter(ent => ent.type === "insect");
-    if(insectsAtLocation.length > 0)
-    {
+    if (insectsAtLocation.length > 0) {
         return insectsAtLocation.map(insect => ({
             type: "EatInsect",
             insectId: insect.id,
@@ -386,22 +365,15 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
         )
     }
 
-    // handle moving OFF of a button
-    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, entity.location);
-    if (originTileType === 'button' && activationCircuitAtOrigin) {
-        actionResults.push(
-            {
-                type: 'ModifyCircuitState',
-                circuitId: activationCircuitAtOrigin.circuit.circuitId,
-                elementId: activationCircuitAtOrigin.element.id,
-                oldState: activationCircuitAtOrigin.element.isActive,
-                newState: false
-            })
-        triggers.emit('checkCircuitEntityCollision')
+    if (originTileType === 'button') {
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity.location);
+        if (buttonDeactivationResults.length > 0)
+            actionResults.push(...buttonDeactivationResults);
     }
 
     return actionResults;
 }
+
 export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {
     const actionResults: ActionResult[] = [];
     const originTileType = GetTileAtLocation(levelState, entity.location);
@@ -416,8 +388,7 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
         return [];
     }
 
-    if(entitiesAtMoveTarget.find(entity => entity.type === "boulder" || entity.type === "insect"))
-    {
+    if (entitiesAtMoveTarget.find(entity => entity.type === "boulder" || entity.type === "insect")) {
         // bird can't move boulders or enter tiles with insects
         return [];
     }
@@ -486,20 +457,11 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
         )
     }
 
-    // handle moving OFF of a button
-    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, entity.location);
-    if (originTileType === 'button' && activationCircuitAtOrigin) {
-        actionResults.push(
-            {
-                type: 'ModifyCircuitState',
-                circuitId: activationCircuitAtOrigin.circuit.circuitId,
-                elementId: activationCircuitAtOrigin.element.id,
-                oldState: activationCircuitAtOrigin.element.isActive,
-                newState: false
-            })
-        triggers.emit('checkCircuitEntityCollision')
+    if (originTileType === 'button') {
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity.location);
+        if (buttonDeactivationResults.length > 0)
+            actionResults.push(...buttonDeactivationResults);
     }
-
     return actionResults;
 }
 
@@ -615,18 +577,63 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
         )
     }
 
-    // handle moving OFF of a button
-    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, boulder.location);
-    if (boulderOriginTileType === 'button' && activationCircuitAtOrigin) {
-        actionResults.push(
-            {
-                type: 'ModifyCircuitState',
-                circuitId: activationCircuitAtOrigin.circuit.circuitId,
-                elementId: activationCircuitAtOrigin.element.id,
-                oldState: activationCircuitAtOrigin.element.isActive,
-                newState: false
-            })
-        triggers.emit('checkCircuitEntityCollision')
+    if (boulderOriginTileType === 'button') {
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, boulder.location);
+        if (buttonDeactivationResults.length > 0)
+            actionResults.push(...buttonDeactivationResults);
+    }
+
+    return actionResults;
+}
+
+function GetButtonDeactivationResults(levelState: LevelContent, location: Location) {
+    const actionResults: ActionResult[] = [];
+    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, location);
+    if (!activationCircuitAtOrigin) {
+        return [];
+    }
+
+    const { circuit, element } = activationCircuitAtOrigin;
+    actionResults.push(
+        {
+            type: 'ModifyCircuitState',
+            circuitId: activationCircuitAtOrigin.circuit.circuitId,
+            elementId: activationCircuitAtOrigin.element.id,
+            oldState: activationCircuitAtOrigin.element.isActive,
+            newState: false
+        })
+
+    // is any other activation element on? if so then bail out
+    for (const activation of circuit.activationElements) {
+        if (activation.id !== element.id) {
+            if (element.isActive)
+                return [];
+        }
+    }
+
+    for (const response of circuit.responsiveElements) {
+        const tileType = GetTileAtLocation(levelState, response.location);
+        const entities = GetEntitiesAtLocation(levelState, response.location);
+        if (entities.length) {
+            for (const entity of entities) {
+                if (entity.type === 'boulder') {
+                    actionResults.push({
+                        type: "DeleteEntity",
+                        entityId: entity.id,
+                        entityLocation: entity.location
+                    })
+                }
+                else if (IsCreatureEntity(entity.type)) {
+                    if (entity.type !== 'bird' || tileType !== 'bridge') {
+                        actionResults.push({
+                            type: "DeleteEntity",
+                            entityId: entity.id,
+                            entityLocation: entity.location
+                        });
+                    }
+                }
+            }
+        }
     }
 
     return actionResults;

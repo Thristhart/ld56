@@ -20,7 +20,7 @@ triggers.on("creatureOnGoal", () => {
     }
     const creatures = currentLevelState.entities.filter(ent => IsCreatureEntity(ent.type))
     const anyNotOnGoal = creatures.some(entity => {
-        
+
         const tileAtLocation = GetTileAtLocation(currentLevelState!, entity.location);
         return !(tileAtLocation == "goal");
     })
@@ -41,6 +41,50 @@ triggers.once("turtleCannotMove", () => {
     })
 })
 
+
+triggers.on("killturtle", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "turtle",
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
+
+triggers.on("killbird", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "bird",
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
+
+triggers.on("killfrog", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "frog",
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
+
+triggers.on("killmouse", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    displayDialog({
+        type: "message",
+        speaker: "mouse",
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
 
 export function checkForTriggersAfterAnimation(levelState: LevelContent, actionResult: ActionResult) {
     if (actionResult.type === "MoveEntity") {
