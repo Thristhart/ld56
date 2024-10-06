@@ -5,16 +5,21 @@ import introEntities from '../levels/intro.entities?raw';
 import introTerrain from '../levels/intro.terrain?raw';
 import introCircuit from '../levels/intro.circuit?raw';
 
+import flower1Terrain from '../levels/turtle_mouse/flower_1/flower_1.terrain?raw';
+import flower1Entities from '../levels/turtle_mouse/flower_1/flower_1.entities?raw';
+import flower1Circuit from '../levels/turtle_mouse/flower_1/flower_1.circuit?raw';
+
 import flower2Terrain from '../levels/frog_bird/flower_2/flower_2.terrain?raw';
 import flower2Entities from '../levels/frog_bird/flower_2/flower_2.entities?raw';
 import flower2Circuit from '../levels/frog_bird/flower_2/flower_2.circuit?raw';
 
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
+import { Direction } from './movehelpers';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
-    currentLevel = level;
+    initialLevelState = level;
     currentLevelState = level;
     clearActions();
 }
@@ -29,7 +34,7 @@ interface LevelDescription {
     circuit: string;
 }
 
-export let currentLevel: LevelContent | undefined;
+export let initialLevelState: LevelContent | undefined;
 export function setCurrentLevelState(newState: LevelContent | undefined) {
     currentLevelState = newState;
 }
@@ -46,6 +51,11 @@ export const levels = {
         terrain: introTerrain,
         circuit: introCircuit
     },
+    flower1: {
+        entities: flower1Entities,
+        terrain: flower1Terrain,
+        circuit: flower1Circuit,
+    },
     flower2: {
         entities: flower2Entities,
         terrain: flower2Terrain,
@@ -57,6 +67,7 @@ export interface EntityData {
     type: EntityType;
     location: Location;
     id: number;
+    facing: "left" | "right";
 }
 export interface Location {
     row: number;
@@ -75,19 +86,17 @@ export interface ResponsiveElement {
 }
 
 export interface CircuitData {
-    circuitID: number;
+    circuitId: number;
     activationElements: ActivationElement[],
     responsiveElements: ResponsiveElement[],
 }
 
 // first number is row
 // second number is column
-export type IGridMap<T> = T[][];
-
 export interface LevelContent {
     rows: number;
     columns: number;
-    readonly groundGrid: IGridMap<TerrainType>;
+    readonly groundGrid: TerrainType[][];
     readonly entities: EntityData[];
     circuits: CircuitData[];
     currentEntityId: number;
@@ -149,7 +158,8 @@ function constructLevelContent(levelname: keyof typeof levels) {
                             row: parseInt(entityRowIndex),
                             column: parseInt(entityTileIndex)
                         },
-                        id: entityID
+                        id: entityID,
+                        facing: "right"
                     }
                 )
                 if (!levelContent.currentEntityId && IsCreatureEntity(entityTile)) {
@@ -169,12 +179,12 @@ function constructLevelContent(levelname: keyof typeof levels) {
         }
 
         for (const circuitColumnIndex in circuits) {
-            const circuitID = parseInt(circuits[circuitColumnIndex]);
-            if (!isNaN(circuitID)) {
-                let existingCircuit = levelContent.circuits.find((circuit) => circuit.circuitID === circuitID);
+            const circuitId = parseInt(circuits[circuitColumnIndex]);
+            if (!isNaN(circuitId)) {
+                let existingCircuit = levelContent.circuits.find((circuit) => circuit.circuitId === circuitId);
                 if (!existingCircuit) {
                     existingCircuit = {
-                        circuitID: circuitID,
+                        circuitId: circuitId,
                         activationElements: [],
                         responsiveElements: []
                     };
@@ -227,4 +237,31 @@ export function GetTileAtLocation(level: LevelContent, location: Location) {
 export function GetEntitiesAtLocation(level: LevelContent, location: Location) {
     return level.entities.filter(entity => entity.location.column === location.column && entity.location.row === location.row);
 }
+
+export function GetCircuitActivationElementAtLocation(level: LevelContent, location: Location) {
+    for (const circuit of level.circuits) {
+        for (const activationElement of circuit.activationElements) {
+            if (activationElement.location.column === location.column && activationElement.location.row === location.row) {
+                return { circuit: circuit, element: activationElement }
+            }
+        }
+    }
+
+    return null;
+}
+
+
+export function GetCircuitResponseElementAtLocation(level: LevelContent, location: Location) {
+    for (const circuit of level.circuits) {
+        for (const responseElement of circuit.responsiveElements) {
+            if (responseElement.location.column === location.column && responseElement.location.row === location.row) {
+                const activationState = circuit.activationElements.find((activationElement) => activationElement.isActive);
+                return { circuit: circuit, element: responseElement, isActive: Boolean(activationState) }
+            }
+        }
+    }
+
+    return null;
+}
+
 

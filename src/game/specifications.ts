@@ -1,8 +1,9 @@
 export type CircuitType = 'button' | 'bridge' | 'door';
-export type TerrainType = CircuitType | 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel';
+export type BoulderTypes = 'boulder-chasm' | 'boulder-water';
+export type TerrainType = BoulderTypes | CircuitType | 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel' | 'goal';
 export const creatures = ['mouse', 'turtle', 'bird', 'frog'] as const;
 export type CreatureType = typeof creatures[number];
-export type EntityType = CreatureType | 'empty' | 'goal' | 'boulder' | 'insect';
+export type EntityType = CreatureType | 'empty' | 'boulder' | 'insect';
 
 export function GetEntityType(entityCode: string) {
     const strippedCode = entityCode.trim();
@@ -12,7 +13,6 @@ export function GetEntityType(entityCode: string) {
         case 'B': return 'bird';
         case 'F': return 'frog';
         case 'R': return 'boulder';
-        case 'G': return 'goal';
         case 'I': return 'insect';
         default: return 'empty';
     }
@@ -28,10 +28,17 @@ export function GetTerrainType(terrainCode: string): TerrainType {
         case 'B': return 'button';
         case 'H': return 'bridge';
         case 'D': return 'door';
+        case 'G': return 'goal';
         default: return 'ground';
     }
 }
 
 export function IsCreatureEntity(entity: EntityType) {
     return entity === 'mouse' || entity === 'turtle' || entity === 'bird' || entity === 'frog';
+}
+
+const flyingTerrain = ["chasm", "water", "boulder-water", "boulder-chasm", "bridge"] as const satisfies Array<TerrainType>;
+export function isFlyingTerrain(t: TerrainType): t is typeof flyingTerrain[number]
+{
+    return flyingTerrain.includes(t as typeof flyingTerrain[number]);
 }

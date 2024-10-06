@@ -1,7 +1,7 @@
 
-import { currentLevel, currentLevelState, LevelContent, Location, setCurrentLevelState } from "./levels";
-import { Direction, GetEntityMovementActions } from "./movehelpers";
-import { IsCreatureEntity } from "./specifications";
+import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState } from "./levels";
+import { Direction, GetEntityMovementActions, GetFacingFromLocations } from "./movehelpers";
+import { IsCreatureEntity, TerrainType } from "./specifications";
 import { checkForTriggersAfterAnimation } from "./triggers";
 
 
@@ -30,7 +30,33 @@ export interface SwitchEntityResult {
     oldEntityId: number;
 }
 
-export type ActionResult = MoveEntityResult | SwitchEntityResult;
+export interface MergeBoulderIntoTerrainResult {
+    type: "MergeBoulderIntoTerrain";
+    targetlocation: Location,
+    boulderOldLocation: Location,
+    boulderId: number,
+    oldTerrainType: TerrainType;
+    newTerrainType: TerrainType;
+}
+
+export interface ModifyCircuitStateResult {
+    type: "ModifyCircuitState";
+    circuitId: number;
+    elementId: number
+    oldState: boolean;
+    newState: boolean;
+}
+
+export interface EatInsectResult {
+    type: "EatInsect";
+    insectId: number;
+    eaterId: number;
+    insectLocation: Location;
+    eaterLocation: Location;
+}
+
+
+export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult;
 
 function applyActionResult(levelState: LevelContent, actionResult: ActionResult): LevelContent {
     switch (actionResult.type) {
@@ -42,13 +68,63 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
             const otherEntities = levelState.entities.filter(e => e.id != actionResult.entityid);
             return {
                 ...levelState,
-                entities: [...otherEntities, { ...entity, location: actionResult.newLocation }]
+                entities: [...otherEntities, { ...entity, location: actionResult.newLocation, facing: GetFacingFromLocations(entity.facing, actionResult.oldLocation, actionResult.newLocation) }]
             }
         }
         case "SwitchEntity": {
             return {
                 ...levelState,
                 currentEntityId: actionResult.newEntityId
+            }
+        }
+        case "MergeBoulderIntoTerrain": {
+            const { targetlocation, boulderId, newTerrainType } = actionResult;
+            const groundGridCopy = levelState.groundGrid.map((groundRow) => [...groundRow])
+            groundGridCopy[targetlocation.row][targetlocation.column] = newTerrainType;
+            const filteredEntities = levelState.entities.filter((entity) => entity.id !== boulderId)
+            return {
+                ...levelState,
+                groundGrid: groundGridCopy,
+                entities: filteredEntities,
+            }
+        }
+        case "ModifyCircuitState": {
+            const { circuitId, elementId, newState } = actionResult;
+            const circuit = levelState.circuits.find(c => c.circuitId === circuitId);
+            if (!circuit) {
+                return levelState;
+            }
+
+            const element = circuit.activationElements.find(e => e.id === elementId);
+            if (!element) {
+                return levelState;
+            }
+            const otherActivationElements = circuit.activationElements.filter(e => e.id != elementId);
+            const otherCircuits = levelState.circuits.filter(c => c.circuitId != circuitId);
+
+            return {
+                ...levelState,
+                circuits: [
+                    ...otherCircuits,
+                    {
+                        ...circuit,
+                        activationElements: [...otherActivationElements, { ...element, isActive: newState }]
+                    }
+                ]
+            }
+        }
+        case "EatInsect": {
+            const eater = levelState.entities.find(e => e.id === actionResult.eaterId);
+            if (!eater) {
+                return levelState;
+            }
+            const otherEntities = levelState.entities.filter(e => e.id != actionResult.eaterId);
+            return {
+                ...levelState,
+                entities: [
+                    ...otherEntities.filter(entity => entity.id !== actionResult.insectId),
+                    {...eater, facing: GetFacingFromLocations(eater.facing, actionResult.eaterLocation, actionResult.insectLocation)}
+                ],
             }
         }
     }
@@ -59,10 +135,10 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
 export const actionLog: Array<Action> = [];
 
 export function ComputeStateFromActionLog() {
-    if (!currentLevel) {
+    if (!initialLevelState) {
         return undefined;
     }
-    let levelState = currentLevel;
+    let levelState = initialLevelState;
     for (let action of actionLog) {
         let result = applyAction(levelState, action);
         if (result) {
@@ -152,13 +228,11 @@ export function clearActions() {
     clearUndoAnimations();
 }
 
-export function clearActionAnimations()
-{
+export function clearActionAnimations() {
     lastActionResults = undefined;
     lastActionTimestamp = undefined;
 }
-export function clearUndoAnimations()
-{   
+export function clearUndoAnimations() {
     lastUndoActionResults = undefined;
     lastUndoTimestamp = undefined;
 }

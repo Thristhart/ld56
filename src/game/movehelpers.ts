@@ -1,6 +1,6 @@
 import { ActionResult } from "./actions";
-import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation } from "./levels";
-import { EntityType, TerrainType, creatures, CreatureType } from "./specifications";
+import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation } from "./levels";
+import { creatures, CreatureType } from "./specifications";
 import { triggers } from "./triggers";
 
 export type Direction = "up" | "down" | "left" | "right";
@@ -27,164 +27,607 @@ export function GetLocationInDirection(startLocation: Location, direction: Direc
     }
 }
 
-export function CanEntityMove(entityType: EntityType, tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[], entitiesAtMoveOrigin: EntityData[]) {
-    switch (entityType) {
-        case 'turtle': return CanTurtleMove(tileAtMoveTarget, entitiesAtMoveTarget, entitiesAtMoveOrigin);
-        case 'mouse': return CanMouseMove(tileAtMoveTarget, entitiesAtMoveTarget);
-        default: return false;
+export function GetFacingFromLocations(currentFacing: "left" | "right", oldLocation: Location, newLocation: Location): "left" | "right"
+{
+    if(oldLocation.column < newLocation.column)
+    {
+        return "right";
+    }
+    if(oldLocation.column > newLocation.column)
+    {
+        return "left";
+    }
+    return currentFacing;
+}
+
+export function GetEntityMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {
+    switch (entity.type) {
+        case 'turtle': return GetTurtleMoveResults(levelState, entity, direction);
+        case 'mouse': return GetMouseMoveResults(levelState, entity, direction);
+        case 'frog': return GetFrogMoveResults(levelState, entity, direction);
+        case 'bird': return GetBirdMoveResults(levelState, entity, direction);
+        default: return [];
     }
 }
 
 export function GetEntityMovementActions(levelState: LevelContent, entity: EntityData, direction: Direction) {
-    const entityMovementActions: ActionResult[] = [];
-
 
     const moveTarget = GetLocationInDirection(entity.location, direction);
-    const tileAtMoveTarget = GetTileAtLocation(levelState, moveTarget);
     const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTarget);
-    const entitiesAtMoveOrigin = GetEntitiesAtLocation(levelState, entity.location);
-    const canEntityMove = CanEntityMove(entity.type, tileAtMoveTarget, entitiesAtMoveTarget, entitiesAtMoveOrigin);
+    const entityMoveResults = GetEntityMoveResults(levelState, entity, direction);
 
-    if (canEntityMove) {
+    if (entityMoveResults.length > 0) {
         const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
-
         if (boulder) {
-            const boulderTileAtLocation = tileAtMoveTarget;
-            const boulderMoveTarget = GetLocationInDirection(boulder.location, direction);
-            const boulderTileAtMoveTarget = GetTileAtLocation(levelState, boulderMoveTarget);
-            const boulderEntitiesAtMoveTarget = GetEntitiesAtLocation(levelState, boulderMoveTarget);
-            const canBoulderMove = CanBoulderMove(tileAtMoveTarget, boulderTileAtLocation, boulderTileAtMoveTarget, entitiesAtMoveTarget, boulderEntitiesAtMoveTarget);
-            if (canBoulderMove) {
-                entityMovementActions.push(
-                    {
-                        type: "MoveEntity",
-                        entityid: boulder.id,
-                        oldLocation: boulder.location,
-                        newLocation: boulderMoveTarget
-                    }
-                )
+            const boulderMoveResults = GetBoulderMovementActionResults(levelState, boulder, direction);
+            if (!boulderMoveResults.length) {
+                return [];
             }
             else {
-                return entityMovementActions;
+                return [...entityMoveResults, ...boulderMoveResults];
             }
-
         }
+    }
+    return entityMoveResults;
+}
 
-        entityMovementActions.push(
+export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {
+    const actionResults: ActionResult[] = [];
+    const originTileType = GetTileAtLocation(levelState, entity.location);
+
+    const moveTargetLocation = GetLocationInDirection(entity.location, direction);
+    const tileAtMoveTargetType = GetTileAtLocation(levelState, moveTargetLocation);
+    const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTargetLocation);
+
+    const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
+
+    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall') {
+        return [];
+    }
+
+    if (tileAtMoveTargetType === 'water') {
+        const turtleInWater = entitiesAtMoveTarget.filter((x) => x.type === 'turtle')
+        if (turtleInWater.length) {
+            actionResults.push(
+                {
+                    type: "MoveEntity",
+                    entityid: entity.id,
+                    oldLocation: entity.location,
+                    newLocation: moveTargetLocation
+                }
+            )
+        }
+        else {
+            // bail out, we can't move
+            return [];
+        }
+    }
+    else if (moveTargetHasCreature) {
+        // bail out, we can't move
+        return [];
+    }
+    else if (tileAtMoveTargetType === 'bridge' || tileAtMoveTargetType === 'door') {
+        const responseCircuitAtMoveTarget = GetCircuitResponseElementAtLocation(levelState, moveTargetLocation)
+        if (responseCircuitAtMoveTarget && responseCircuitAtMoveTarget.isActive) {
+            actionResults.push(
+                {
+                    type: "MoveEntity",
+                    entityid: entity.id,
+                    oldLocation: entity.location,
+                    newLocation: moveTargetLocation
+                }
+            )
+        }
+        else {
+            // bail out, we can't move
+            return []
+        }
+    }
+    else if (tileAtMoveTargetType === 'button') {
+        actionResults.push(
             {
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTarget
+                newLocation: moveTargetLocation
             }
         )
+        const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
+        if (activationCircuitAtMoveTarget) {
+            actionResults.push(
+                {
+                    type: 'ModifyCircuitState',
+                    circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
+                    elementId: activationCircuitAtMoveTarget.element.id,
+                    oldState: activationCircuitAtMoveTarget.element.isActive,
+                    newState: true
+                }
+            )
+        }
+    }
+    else {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
+            }
+        )
+    }
 
+    // handle moving OFF of a button
+    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, entity.location);
+    if (originTileType === 'button' && activationCircuitAtOrigin) {
+        actionResults.push(
+            {
+                type: 'ModifyCircuitState',
+                circuitId: activationCircuitAtOrigin.circuit.circuitId,
+                elementId: activationCircuitAtOrigin.element.id,
+                oldState: activationCircuitAtOrigin.element.isActive,
+                newState: false
+            })
+        triggers.emit('checkCircuitEntityCollision')
+    }
 
-        const isTurtle = entity.type === 'turtle';
-        if (isTurtle) {
-            const carriedObjects = entitiesAtMoveOrigin.filter((x) => x.type !== 'turtle' && x.type !== 'goal');
+    return actionResults;
+}
+
+export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {
+    const actionResults: ActionResult[] = [];
+    const originTileType = GetTileAtLocation(levelState, entity.location);
+    const entitiesAtOrigin = GetEntitiesAtLocation(levelState, entity.location);
+
+    const moveTargetLocation = GetLocationInDirection(entity.location, direction);
+    const tileAtMoveTargetType = GetTileAtLocation(levelState, moveTargetLocation);
+    const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTargetLocation);
+
+    const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
+    if (moveTargetHasCreature) {
+        return [];
+    }
+
+    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
+        return [];
+    }
+
+    // turtle can only carry creatures and boulder while in water
+    const carriedObjects = entitiesAtOrigin.filter((x) => x.type !== 'turtle');
+    if (carriedObjects.length > 0 && (originTileType !== 'water' || tileAtMoveTargetType !== 'water')) {
+        triggers.emit("turtleCannotMove")
+        return [];
+    }
+
+    if (tileAtMoveTargetType === 'water') {
+        const carriedObjects = entitiesAtOrigin.filter((x) => x.type !== 'turtle');
+        if (originTileType === 'water') // to water from water, move all the carried objects too
+        {
             for (const object of carriedObjects) {
-                entityMovementActions.push(
+                actionResults.push(
                     {
                         type: "MoveEntity",
                         entityid: object.id,
                         oldLocation: object.location,
-                        newLocation: moveTarget
+                        newLocation: moveTargetLocation
                     }
                 )
             }
         }
-    }
 
-    return entityMovementActions;
-}
-
-export function CanTurtleMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[], entitiesAtMoveOrigin: EntityData[]) {
-    const targetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
-    if (targetHasCreature) {
-        return false;
-    }
-    const originHasOtherEntity = entitiesAtMoveOrigin.find((entity) => entity.type !== 'turtle' && entity.type !== 'goal')
-    if (originHasOtherEntity && tileAtMoveTarget !== 'water') {
-        triggers.emit("turtleCannotMove")
-        return false;
-    }
-    if (tileAtMoveTarget === 'chasm') {
-        const hasBoulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder')
-        if (hasBoulder) {
-            if (originHasOtherEntity) {
-                triggers.emit("turtleCannotMove")
-                return false;
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
             }
-            return true;
+        )
+    }
+    else if (tileAtMoveTargetType === 'bridge' || tileAtMoveTargetType === 'door') {
+        const responseCircuitAtMoveTarget = GetCircuitResponseElementAtLocation(levelState, moveTargetLocation)
+        if (responseCircuitAtMoveTarget && responseCircuitAtMoveTarget.isActive) {
+            actionResults.push(
+                {
+                    type: "MoveEntity",
+                    entityid: entity.id,
+                    oldLocation: entity.location,
+                    newLocation: moveTargetLocation
+                }
+            )
         }
-
-        return false;
+        else {
+            // bail out, we can't move
+            return []
+        }
+    }
+    else if (tileAtMoveTargetType === 'button') {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
+            }
+        )
+        const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
+        if (activationCircuitAtMoveTarget) {
+            actionResults.push(
+                {
+                    type: 'ModifyCircuitState',
+                    circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
+                    elementId: activationCircuitAtMoveTarget.element.id,
+                    oldState: activationCircuitAtMoveTarget.element.isActive,
+                    newState: true
+                }
+            )
+        }
+    }
+    else {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
+            }
+        )
     }
 
-    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'water' || tileAtMoveTarget === 'button') {
-        if (originHasOtherEntity && tileAtMoveTarget !== 'water') {
-            triggers.emit("turtleCannotMove")
-            return false;
-        }
-        return true;
+    // handle moving OFF of a button
+    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, entity.location);
+    if (originTileType === 'button' && activationCircuitAtOrigin) {
+        actionResults.push(
+            {
+                type: 'ModifyCircuitState',
+                circuitId: activationCircuitAtOrigin.circuit.circuitId,
+                elementId: activationCircuitAtOrigin.element.id,
+                oldState: activationCircuitAtOrigin.element.isActive,
+                newState: false
+            })
+        triggers.emit('checkCircuitEntityCollision')
     }
 
-    return false
+    return actionResults;
+}
+export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction): ActionResult[] {
+    const actionResults: ActionResult[] = [];
+    const originTileType = GetTileAtLocation(levelState, entity.location);
+
+    const moveTargetLocation = GetLocationInDirection(entity.location, direction);
+    const tileAtMoveTargetType = GetTileAtLocation(levelState, moveTargetLocation);
+    const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTargetLocation);
+
+    const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
+
+    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
+        return [];
+    }
+
+    const insectsAtLocation = entitiesAtMoveTarget.filter(ent => ent.type === "insect");
+    if(insectsAtLocation.length > 0)
+    {
+        return insectsAtLocation.map(insect => ({
+            type: "EatInsect",
+            insectId: insect.id,
+            insectLocation: insect.location,
+            eaterId: entity.id,
+            eaterLocation: entity.location,
+        }))
+    }
+
+    if (tileAtMoveTargetType === 'water') {
+        const turtleInWater = entitiesAtMoveTarget.filter((x) => x.type === 'turtle')
+        if (turtleInWater.length) {
+            actionResults.push(
+                {
+                    type: "MoveEntity",
+                    entityid: entity.id,
+                    oldLocation: entity.location,
+                    newLocation: moveTargetLocation
+                }
+            )
+        }
+        else {
+            // bail out, we can't move
+            return [];
+        }
+    }
+    else if (moveTargetHasCreature) {
+        // bail out, we can't move
+        return [];
+    }
+    else if (tileAtMoveTargetType === 'bridge' || tileAtMoveTargetType === 'door') {
+        const responseCircuitAtMoveTarget = GetCircuitResponseElementAtLocation(levelState, moveTargetLocation)
+        if (responseCircuitAtMoveTarget && responseCircuitAtMoveTarget.isActive) {
+            actionResults.push(
+                {
+                    type: "MoveEntity",
+                    entityid: entity.id,
+                    oldLocation: entity.location,
+                    newLocation: moveTargetLocation
+                }
+            )
+        }
+        else {
+            // bail out, we can't move
+            return []
+        }
+    }
+    else if (tileAtMoveTargetType === 'button') {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
+            }
+        )
+        const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
+        if (activationCircuitAtMoveTarget) {
+            actionResults.push(
+                {
+                    type: 'ModifyCircuitState',
+                    circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
+                    elementId: activationCircuitAtMoveTarget.element.id,
+                    oldState: activationCircuitAtMoveTarget.element.isActive,
+                    newState: true
+                }
+            )
+        }
+    }
+    else {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
+            }
+        )
+    }
+
+    // handle moving OFF of a button
+    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, entity.location);
+    if (originTileType === 'button' && activationCircuitAtOrigin) {
+        actionResults.push(
+            {
+                type: 'ModifyCircuitState',
+                circuitId: activationCircuitAtOrigin.circuit.circuitId,
+                elementId: activationCircuitAtOrigin.element.id,
+                oldState: activationCircuitAtOrigin.element.isActive,
+                newState: false
+            })
+        triggers.emit('checkCircuitEntityCollision')
+    }
+
+    return actionResults;
+}
+export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {
+    const actionResults: ActionResult[] = [];
+    const originTileType = GetTileAtLocation(levelState, entity.location);
+
+    const moveTargetLocation = GetLocationInDirection(entity.location, direction);
+    const tileAtMoveTargetType = GetTileAtLocation(levelState, moveTargetLocation);
+    const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTargetLocation);
+
+    const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
+
+    if (tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
+        return [];
+    }
+
+    if(entitiesAtMoveTarget.find(entity => entity.type === "boulder" || entity.type === "insect"))
+    {
+        // bird can't move boulders or enter tiles with insects
+        return [];
+    }
+
+    if (tileAtMoveTargetType === 'water') {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
+            }
+        )
+    }
+    else if (moveTargetHasCreature) {
+        // bail out, we can't move
+        return [];
+    }
+    else if (tileAtMoveTargetType === 'door') {
+        const responseCircuitAtMoveTarget = GetCircuitResponseElementAtLocation(levelState, moveTargetLocation)
+        if (responseCircuitAtMoveTarget && responseCircuitAtMoveTarget.isActive) {
+            actionResults.push(
+                {
+                    type: "MoveEntity",
+                    entityid: entity.id,
+                    oldLocation: entity.location,
+                    newLocation: moveTargetLocation
+                }
+            )
+        }
+        else {
+            // bail out, we can't move
+            return []
+        }
+    }
+    else if (tileAtMoveTargetType === 'button') {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
+            }
+        )
+        const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
+        if (activationCircuitAtMoveTarget) {
+            actionResults.push(
+                {
+                    type: 'ModifyCircuitState',
+                    circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
+                    elementId: activationCircuitAtMoveTarget.element.id,
+                    oldState: activationCircuitAtMoveTarget.element.isActive,
+                    newState: true
+                }
+            )
+        }
+    }
+    else {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: entity.id,
+                oldLocation: entity.location,
+                newLocation: moveTargetLocation
+            }
+        )
+    }
+
+    // handle moving OFF of a button
+    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, entity.location);
+    if (originTileType === 'button' && activationCircuitAtOrigin) {
+        actionResults.push(
+            {
+                type: 'ModifyCircuitState',
+                circuitId: activationCircuitAtOrigin.circuit.circuitId,
+                elementId: activationCircuitAtOrigin.element.id,
+                oldState: activationCircuitAtOrigin.element.isActive,
+                newState: false
+            })
+        triggers.emit('checkCircuitEntityCollision')
+    }
+
+    return actionResults;
 }
 
-export function CanMouseMove(tileAtMoveTarget: TerrainType, entitiesAtMoveTarget: EntityData[]) {
-    const creaturesAtMoveTarget = entitiesAtMoveTarget.filter((entity) => creatures.includes(entity.type as CreatureType))
-    if (creaturesAtMoveTarget.length > 0) {
-        if (creaturesAtMoveTarget.filter((entity) => entity.type !== 'turtle').length === 0 && tileAtMoveTarget === 'water') {
-            return true;
+export function GetBoulderMovementActionResults(levelState: LevelContent, boulder: EntityData, direction: Direction) {
+    const actionResults: ActionResult[] = [];
+    const boulderOriginTileType = GetTileAtLocation(levelState, boulder.location);
+    const boulderEntitiesAtOrigin = GetEntitiesAtLocation(levelState, boulder.location);
+
+    const boulderMoveTargetLocation = GetLocationInDirection(boulder.location, direction);
+    const boulderTileAtMoveTargetType = GetTileAtLocation(levelState, boulderMoveTargetLocation);
+    const boulderEntitiesAtMoveTarget = GetEntitiesAtLocation(levelState, boulderMoveTargetLocation);
+
+    const responseCircuitAtOrigin = GetCircuitResponseElementAtLocation(levelState, boulder.location);
+    const bCanMoveFromOrigin = boulderOriginTileType === 'ground' ||
+        boulderOriginTileType === 'water' && boulderEntitiesAtOrigin.find((x) => x.type === 'turtle') ||
+        boulderOriginTileType === 'boulder-water' ||
+        boulderOriginTileType === 'button' ||
+        boulderOriginTileType === 'door' && responseCircuitAtOrigin?.isActive ||
+        boulderOriginTileType === 'bridge' && responseCircuitAtOrigin?.isActive;
+
+    if (!bCanMoveFromOrigin) {
+        return actionResults;
+    }
+
+    // special special case 
+    if (boulderTileAtMoveTargetType === 'water' &&
+        boulderEntitiesAtMoveTarget.length === 1 &&
+        boulderEntitiesAtMoveTarget[0].type === 'turtle') {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: boulder.id,
+                oldLocation: boulder.location,
+                newLocation: boulderMoveTargetLocation
+            }
+        )
+    }
+    else if (boulderTileAtMoveTargetType === 'wall' || boulderTileAtMoveTargetType === 'tunnel' || boulderEntitiesAtMoveTarget.length > 0) {
+        // bail out, we can't move
+        return [];
+    }
+    else if (boulderTileAtMoveTargetType === 'bridge' || boulderTileAtMoveTargetType === 'door') {
+        const responseCircuitAtMoveTarget = GetCircuitResponseElementAtLocation(levelState, boulderMoveTargetLocation)
+        if (responseCircuitAtMoveTarget && responseCircuitAtMoveTarget.isActive) {
+            actionResults.push(
+                {
+                    type: "MoveEntity",
+                    entityid: boulder.id,
+                    oldLocation: boulder.location,
+                    newLocation: boulderMoveTargetLocation
+                }
+            )
         }
-        return false;
-    }
-    if (tileAtMoveTarget === 'chasm') {
-        const hasBoulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder')
-        if (hasBoulder) {
-            return true;
-        }
-        return false;
-    }
-
-    if (tileAtMoveTarget === 'water') {
-        const hasStep = entitiesAtMoveTarget.find((entity) => entity.type === 'turtle' || entity.type === 'boulder')
-        if (hasStep) {
-            return true;
-        }
-        return false;
-    }
-
-    if (tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'tunnel' || tileAtMoveTarget === 'button' || tileAtMoveTarget === 'bridge') {
-        return true;
-    }
-    return false;
-}
-
-export function CanBoulderMove(tileAtOrigin: TerrainType, tileAtLocation: TerrainType, tileAtMoveTarget: TerrainType, entitiesAtOrigin: EntityData[], entitiesAtTarget: EntityData[]) {
-
-    let bCanMoveFromOrigin = false;
-    let bCanMoveToTarget = false;
-
-    if (tileAtOrigin === 'ground' ||
-        tileAtOrigin === 'water' && entitiesAtOrigin.find((x) => x.type === 'turtle') ||
-        tileAtOrigin === 'button'
-    ) {
-        bCanMoveFromOrigin = true;
-    }
-
-    if (tileAtMoveTarget === 'water') {
-        if (!entitiesAtTarget.filter((x) => x.type !== 'turtle').length) {
-            bCanMoveToTarget = true;
+        else {
+            // bail out, we can't move
+            return []
         }
     }
-    else if (tileAtMoveTarget === 'chasm' || tileAtMoveTarget === 'ground' || tileAtMoveTarget === 'button') {
-        if (!entitiesAtTarget.length) {
-            bCanMoveToTarget = true;
+    else if (boulderTileAtMoveTargetType === 'water') {
+        actionResults.push(
+            {
+                type: "MergeBoulderIntoTerrain",
+                targetlocation: boulderMoveTargetLocation,
+                boulderOldLocation: boulder.location,
+                boulderId: boulder.id,
+                oldTerrainType: boulderTileAtMoveTargetType,
+                newTerrainType: 'boulder-water',
+            }
+        )
+    }
+    else if (boulderTileAtMoveTargetType === 'chasm' || boulderTileAtMoveTargetType === 'boulder-chasm') {
+        actionResults.push(
+            {
+                type: "MergeBoulderIntoTerrain",
+                targetlocation: boulderMoveTargetLocation,
+                boulderOldLocation: boulder.location,
+                boulderId: boulder.id,
+                oldTerrainType: boulderTileAtMoveTargetType,
+                newTerrainType: 'boulder-chasm',
+            }
+        )
+    }
+    else if (boulderTileAtMoveTargetType === 'button') {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: boulder.id,
+                oldLocation: boulder.location,
+                newLocation: boulderMoveTargetLocation
+            }
+        )
+        const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, boulderMoveTargetLocation);
+        if (activationCircuitAtMoveTarget) {
+            actionResults.push(
+                {
+                    type: 'ModifyCircuitState',
+                    circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
+                    elementId: activationCircuitAtMoveTarget.element.id,
+                    oldState: activationCircuitAtMoveTarget.element.isActive,
+                    newState: true
+                }
+            )
         }
     }
+    else {
+        actionResults.push(
+            {
+                type: "MoveEntity",
+                entityid: boulder.id,
+                oldLocation: boulder.location,
+                newLocation: boulderMoveTargetLocation
+            }
+        )
+    }
 
-    return bCanMoveToTarget && bCanMoveFromOrigin;
+    // handle moving OFF of a button
+    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, boulder.location);
+    if (boulderOriginTileType === 'button' && activationCircuitAtOrigin) {
+        actionResults.push(
+            {
+                type: 'ModifyCircuitState',
+                circuitId: activationCircuitAtOrigin.circuit.circuitId,
+                elementId: activationCircuitAtOrigin.element.id,
+                oldState: activationCircuitAtOrigin.element.isActive,
+                newState: false
+            })
+        triggers.emit('checkCircuitEntityCollision')
+    }
+
+    return actionResults;
 }

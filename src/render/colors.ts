@@ -1,4 +1,5 @@
-import { TerrainType } from "~/game/levels";
+import { TerrainType } from "~/game/specifications";
+
 
 export const COLOR_GRID_SQUARE_FILL_LIGHT = "hsl(171 12% 35%)";
 export const COLOR_GRID_SQUARE_FILL_DARK = "hsl(171 12% 25%)";
