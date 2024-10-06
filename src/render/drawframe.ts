@@ -177,7 +177,13 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
                     }
                     if(terrainType == "boulder-water")
                     {
-                        drawSprite(context, waterTopEdgeBackgroundAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterTopEdgeBackgroundAnimation.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        const above = level.groundGrid[row - 1][col];
+                        let waterAnim = GetTerrainAnimation("water")!;
+                        if(above !== "water" && above !== "boulder-water")
+                        {
+                            waterAnim = waterTopEdgeBackgroundAnimation
+                        }
+                        drawSprite(context, waterAnim.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         drawSprite(context, terrainAnimation!.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
