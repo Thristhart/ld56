@@ -186,6 +186,11 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
                         continue;
                     }
 
+                    if(terrainType === "goal")
+                    {
+                        context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                    }
+
                     const activeElement = GetCircuitResponseElementAtLocation(level, { row: row, column: col })
                     const activeElementState = activeElement && activeElement.isActive;
                     const terrainBackground = GetTerrainBackground(terrainType, !!activeElementState)
