@@ -1,7 +1,8 @@
 import { getCurrentMessage, Speaker } from "~/story";
 import { crowWalkAnimation, dialogBackgroundImage, frogHopAnimation, mousePortraitImage, turtlePortraitImage } from "./images";
-import { canvasScale } from "./drawframe";
+import { camera, canvasScale, GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH } from "./drawframe";
 import { drawSprite } from "./spritesheet";
+import { currentLevelState } from "~/game/levels";
 
 const portraitSize = 300;
 export function drawDialog(context: CanvasRenderingContext2D) {
@@ -15,21 +16,16 @@ export function drawDialog(context: CanvasRenderingContext2D) {
     }
 
     context.save();
-    // let scale = (window.innerWidth - 200) / dialogBackgroundImage.width;
-    // context.translate(100, window.innerHeight - 500 * scale);
+    if(currentLevelState) {
+        const levelWidth = currentLevelState.columns * GRID_SQUARE_WIDTH;
+        const levelHeight = currentLevelState!.rows * GRID_SQUARE_HEIGHT;
+        context.translate(0, levelHeight);
 
-    const windowWidth = window.innerWidth / canvasScale;
-    const windowHeight = window.innerHeight / canvasScale;
-
-    const windowLeftMargin = (window.innerWidth - windowWidth) / 2;
-    const windowTopMargin = (window.innerHeight - windowHeight) / 2;
-
-    let scale = 1 / canvasScale;
-
-    context.translate(windowLeftMargin, windowTopMargin);
-    scale *= ((window.innerWidth - 20) / dialogBackgroundImage.width);
-    context.translate(10 / canvasScale, 0);
-    context.scale(scale, scale);
+        const scale = (levelWidth - 32)/dialogBackgroundImage.width;
+        console.log(levelWidth, scale, dialogBackgroundImage.width / levelWidth);
+        context.translate(16, -500 * scale);
+        context.scale(scale, scale);
+    }
 
     drawSpeaker(currentBeat.speaker, context);
     context.drawImage(dialogBackgroundImage, 0, 200);

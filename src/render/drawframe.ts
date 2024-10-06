@@ -446,11 +446,11 @@ export function drawFrame(timestamp: number) {
         drawGrid(currentLevelState, timestamp);
         drawEntities(currentLevelState, timestamp);
     }
+    // render story bits
+    drawDialog(context);
 
     context.restore();
 
-    // render story bits
-    drawDialog(context);
 }
 
 
