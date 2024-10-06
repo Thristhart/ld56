@@ -1,5 +1,5 @@
 
-import { currentLevel, currentLevelState, LevelContent, Location, setCurrentLevelState } from "./levels";
+import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState } from "./levels";
 import { Direction, GetEntityMovementActions } from "./movehelpers";
 import { IsCreatureEntity, TerrainType } from "./specifications";
 import { checkForTriggersAfterAnimation } from "./triggers";
@@ -69,6 +69,42 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
                 currentEntityId: actionResult.newEntityId
             }
         }
+        case "MergeBoulderIntoTerrain": {
+            const { targetlocation, boulderId, newTerrainType } = actionResult;
+            const groundGridCopy = [...levelState.groundGrid];
+            groundGridCopy[targetlocation.row][targetlocation.column] = newTerrainType;
+            const filteredEntities = levelState.entities.filter((entity) => entity.id !== boulderId)
+            return {
+                ...levelState,
+                groundGrid: groundGridCopy,
+                entities: filteredEntities
+            }
+        }
+        case "ModifyCircuitState": {
+            const { circuitId, elementId, newState } = actionResult;
+            const circuit = levelState.circuits.find(c => c.circuitId === circuitId);
+            if (!circuit) {
+                return levelState;
+            }
+
+            const element = circuit.activationElements.find(e => e.id === elementId);
+            if (!element) {
+                return levelState;
+            }
+            const otherActivationElements = circuit.activationElements.filter(e => e.id != elementId);
+            const otherCircuits = levelState.circuits.filter(c => c.circuitId != circuitId);
+
+            return {
+                ...levelState,
+                circuits: [
+                    ...otherCircuits,
+                    {
+                        ...circuit,
+                        activationElements: [...otherActivationElements, { ...element, isActive: newState }]
+                    }
+                ]
+            }
+        }
     }
 
     return levelState;
@@ -77,10 +113,10 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
 export const actionLog: Array<Action> = [];
 
 export function ComputeStateFromActionLog() {
-    if (!currentLevel) {
+    if (!initialLevelState) {
         return undefined;
     }
-    let levelState = currentLevel;
+    let levelState = initialLevelState;
     for (let action of actionLog) {
         let result = applyAction(levelState, action);
         if (result) {

@@ -1,11 +1,10 @@
-import { currentLevel, currentLevelState, EntityData, LevelContent } from "~/game/levels";
-import { COLOR_GRID_SQUARE_FILL_DARK, COLOR_GRID_LINE_LIGHT, COLOR_GRID_LINE_DARK, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
+import { currentLevelState, EntityData, GetCircuitResponseElementAtLocation, LevelContent } from "~/game/levels";
+import { COLOR_GRID_LINE_LIGHT, GetTerrainColor, COLOR_CURRENT_CREATURE_HIGHLIGHT } from "./colors";
 import { drawDialog } from "./drawdialog";
 import { GetEntityPortrait, GetTerrainBackground, GetTerrainAnimation, GetSpriteForEntity, treeImage, wall9GridImage, treeWallBackgroundImage } from "./images";
 import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
 import { animateActionResult, animateActionResultUndo } from "./animateaction";
-import { drawSprite, SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
-import { TerrainType } from "~/game/specifications";
+import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -16,81 +15,63 @@ export const GRID_SQUARE_WIDTH = 32;
 export const GRID_SQUARE_HEIGHT = 32;
 
 
-function isWallLike( col: number, row: number)
-{
-    if(!currentLevelState)
-    {
+function isWallLike(col: number, row: number) {
+    if (!currentLevelState) {
         return false;
     }
-    if(row === 0 || col === 0 || row === currentLevelState.rows - 1 || col === currentLevelState.columns - 1)
-    {
+    if (row === 0 || col === 0 || row === currentLevelState.rows - 1 || col === currentLevelState.columns - 1) {
         return false;
     }
     const terrain = currentLevelState.groundGrid[row]?.[col];
     return terrain === "wall" || terrain === "door" || terrain === "tunnel";
 }
-function isWall(col: number, row: number)
-{
-    if(!currentLevelState)
-    {
+function isWall(col: number, row: number) {
+    if (!currentLevelState) {
         return false;
     }
-    if(row === 0 || col === 0 || row === currentLevelState.rows - 1 || col === currentLevelState.columns - 1)
-    {
+    if (row === 0 || col === 0 || row === currentLevelState.rows - 1 || col === currentLevelState.columns - 1) {
         return true;
     }
     const terrain = currentLevelState.groundGrid[row]?.[col];
     return terrain === "wall";
 }
 
-function identify9GridForWall(level: LevelContent, col: number, row: number): readonly [x: number, y: number]
-{
-    if(isWallLike(col -1, row) && isWallLike(col + 1, row) && isWallLike(col, row - 1) && !isWallLike(col, row + 1))
-    {
+function identify9GridForWall(level: LevelContent, col: number, row: number): readonly [x: number, y: number] {
+    if (isWallLike(col - 1, row) && isWallLike(col + 1, row) && isWallLike(col, row - 1) && !isWallLike(col, row + 1)) {
         return [4, 0];
     }
-    if(isWallLike(col, row + 1) && isWallLike(col + 1, row))
-    {
+    if (isWallLike(col, row + 1) && isWallLike(col + 1, row)) {
         return [0, 0];
     }
-    if(isWallLike(col, row - 1) && isWallLike(col + 1, row))
-    {
+    if (isWallLike(col, row - 1) && isWallLike(col + 1, row)) {
         return [0, 2];
     }
-    if(isWallLike(col, row + 1) && isWallLike(col - 1, row))
-    {
+    if (isWallLike(col, row + 1) && isWallLike(col - 1, row)) {
         return [2, 0];
     }
-    if(isWallLike(col, row - 1) && isWallLike(col - 1, row))
-    {
+    if (isWallLike(col, row - 1) && isWallLike(col - 1, row)) {
         return [2, 2];
     }
-    if(isWallLike(col, row - 1) && !isWallLike(col, row + 1))
-    {
+    if (isWallLike(col, row - 1) && !isWallLike(col, row + 1)) {
         return [2, 1];
     }
-    if(isWallLike(col, row + 1) && !isWallLike(col, row - 1))
-    {
+    if (isWallLike(col, row + 1) && !isWallLike(col, row - 1)) {
         return [1, 1];
     }
-    if(isWallLike(col - 1, row) && !isWallLike(col + 1, row))
-    {
+    if (isWallLike(col - 1, row) && !isWallLike(col + 1, row)) {
         return [3, 1];
     }
-    if(isWallLike(col + 1, row) && !isWallLike(col - 1, row))
-    {
+    if (isWallLike(col + 1, row) && !isWallLike(col - 1, row)) {
         return [3, 0];
     }
-    if(!(isWallLike(col, row - 1) || isWallLike(col, row + 1)))
-    {
+    if (!(isWallLike(col, row - 1) || isWallLike(col, row + 1))) {
         return [1, 0];
     }
     return [0, 1];
 }
 
-function draw9GridWall(col: number, row: number, nineGrid: readonly [x: number, y: number])
-{
-    context.drawImage(wall9GridImage, nineGrid[0] * 32, nineGrid[1] * 32, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 32, 32 );
+function draw9GridWall(col: number, row: number, nineGrid: readonly [x: number, y: number]) {
+    context.drawImage(wall9GridImage, nineGrid[0] * 32, nineGrid[1] * 32, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 32, 32);
 }
 
 function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timestamp: number) {
@@ -112,50 +93,40 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
             for (let col = 0; col < width; col++) {
                 const terrainType = groundRow[col];
                 if (terrainType) {
-                    if(terrainType === "wall")
-                    {
+                    if (terrainType === "wall") {
                         context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         const parts = new Set<TreeFragment>();
-                        if(col === 0)
-                        {
+                        if (col === 0) {
                             parts.add("tl");
                             parts.add("bl");
                         }
-                        if(col === groundRow.length - 1)
-                        {
+                        if (col === groundRow.length - 1) {
                             parts.add("tr");
                             parts.add("br");
                         }
-                        if(row === 0)
-                        {
+                        if (row === 0) {
                             parts.add("tl");
                             parts.add("tr");
                         }
-                        if(row === height - 1)
-                        {
+                        if (row === height - 1) {
                             parts.add("bl");
                             parts.add("br");
                         }
-                        if(isWall(col - 1, row) && isWall(col, row - 1) && isWall(col - 1, row - 1))
-                        {
+                        if (isWall(col - 1, row) && isWall(col, row - 1) && isWall(col - 1, row - 1)) {
                             parts.add("tl");
                         }
-                        if(isWall(col + 1, row) && isWall(col, row - 1) && isWall(col + 1, row - 1))
-                        {
+                        if (isWall(col + 1, row) && isWall(col, row - 1) && isWall(col + 1, row - 1)) {
                             parts.add("tr");
                         }
-                        if(isWall(col - 1, row) && isWall(col, row + 1) && isWall(col - 1, row + 1))
-                        {
+                        if (isWall(col - 1, row) && isWall(col, row + 1) && isWall(col - 1, row + 1)) {
                             parts.add("bl");
                         }
-                        if(isWall(col + 1, row) && isWall(col, row + 1) && isWall(col + 1, row + 1))
-                        {
+                        if (isWall(col + 1, row) && isWall(col, row + 1) && isWall(col + 1, row + 1)) {
                             parts.add("br");
                         }
 
                         // Not an edge wall, so we don't draw trees. Instead draw a wall
-                        if(parts.size === 0)
-                        {
+                        if (parts.size === 0) {
                             draw9GridWall(col, row, identify9GridForWall(level, col, row));
                             continue;
                         }
@@ -174,7 +145,10 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
                         drawSprite(context, terrainAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.getFrame(timestamp), { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
-                    const terrainBackground = GetTerrainBackground(terrainType)
+
+                    const activeElement = GetCircuitResponseElementAtLocation(level, { row: row, column: col })
+                    const activeElementState = activeElement && activeElement.isActive;
+                    const terrainBackground = GetTerrainBackground(terrainType, !!activeElementState)
                     if (terrainBackground) {
                         context.drawImage(terrainBackground, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                     }
@@ -208,22 +182,21 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
 }
 
 type TreeFragment = "tl" | "tr" | "bl" | "br" | "center";
-function drawTreeFragment(col: number, row: number, fragment: TreeFragment)
-{
-    if(fragment === "tl") {
-        context.drawImage(treeImage, 16, 16, 16, 16, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 16, 16 );
+function drawTreeFragment(col: number, row: number, fragment: TreeFragment) {
+    if (fragment === "tl") {
+        context.drawImage(treeImage, 16, 16, 16, 16, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 16, 16);
     }
-    if(fragment === "tr") {
-        context.drawImage(treeImage, 0, 16, 16, 16, col * GRID_SQUARE_WIDTH + 16, row * GRID_SQUARE_HEIGHT, 16, 16 );
+    if (fragment === "tr") {
+        context.drawImage(treeImage, 0, 16, 16, 16, col * GRID_SQUARE_WIDTH + 16, row * GRID_SQUARE_HEIGHT, 16, 16);
     }
-    if(fragment === "bl") {
-        context.drawImage(treeImage, 16, 0, 16, 16, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT + 16, 16, 16 );
+    if (fragment === "bl") {
+        context.drawImage(treeImage, 16, 0, 16, 16, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT + 16, 16, 16);
     }
-    if(fragment === "br") {
-        context.drawImage(treeImage, 0, 0, 16, 16, col * GRID_SQUARE_WIDTH + 16, row * GRID_SQUARE_HEIGHT + 16, 16, 16 );
+    if (fragment === "br") {
+        context.drawImage(treeImage, 0, 0, 16, 16, col * GRID_SQUARE_WIDTH + 16, row * GRID_SQUARE_HEIGHT + 16, 16, 16);
     }
-    if(fragment === "center") {
-        context.drawImage(treeImage, 0, 0, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 32, 32 );
+    if (fragment === "center") {
+        context.drawImage(treeImage, 0, 0, 32, 32, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, 32, 32);
     }
 }
 
@@ -232,24 +205,21 @@ function fitLevelToCamera() {
     if (!currentLevelState) {
         return;
     }
-    const width = ( currentLevelState.columns + 2) * GRID_SQUARE_WIDTH;
-    const height = ( currentLevelState.rows + 2) * GRID_SQUARE_HEIGHT;
+    const width = (currentLevelState.columns + 2) * GRID_SQUARE_WIDTH;
+    const height = (currentLevelState.rows + 2) * GRID_SQUARE_HEIGHT;
     const scale = Math.min(canvas.width / width, canvas.height / height);
     camera.x = width / 2 - GRID_SQUARE_WIDTH;
     camera.y = height / 2 - GRID_SQUARE_HEIGHT;
     camera.scale = scale;
 }
 
-function sortEntities(a: EntityData, b: EntityData)
-{
+function sortEntities(a: EntityData, b: EntityData) {
 
     // otherwise turtle should be most-bottom
-    if(a.type === "turtle")
-    {
+    if (a.type === "turtle") {
         return -1;
     }
-    if(b.type === "turtle")
-    {
+    if (b.type === "turtle") {
         return 1;
     }
 
@@ -274,27 +244,24 @@ export function drawFrame(timestamp: number) {
         let animations = [
             ...lastActionResults?.map(result => animateActionResult(result, timestamp - lastActionTimestamp!)) ?? [],
         ];
-        if( ( lastUndoTimestamp ?? 0 ) > ( lastActionTimestamp ?? 0 ))
-        {
+        if ((lastUndoTimestamp ?? 0) > (lastActionTimestamp ?? 0)) {
             animations.push(...(lastUndoActionResults?.map(result => animateActionResultUndo(result, timestamp - lastUndoTimestamp!)) ?? []));
         }
-        
+
         const sortedEntities = [...currentLevelState.entities].sort(sortEntities);
         for (const entity of sortedEntities) {
             const portrait = GetEntityPortrait(entity.type);
             if (portrait) {
-                const positionModification = {column: 0, row: 0};
+                const positionModification = { column: 0, row: 0 };
                 let spriteAnimationDetails: SpriteAnimationDetails | undefined;
                 animations?.forEach(animation => {
                     const mod = animation.entityPositionModifications.get(entity.id);
-                    if(mod)
-                    {
+                    if (mod) {
                         positionModification.column += mod.column;
                         positionModification.row += mod.row;
                     }
                     const spriteAnim = animation.entitySpriteAnimations.get(entity.id);
-                    if(spriteAnim)
-                    {
+                    if (spriteAnim) {
                         spriteAnimationDetails = spriteAnim;
                     }
                 });
@@ -319,8 +286,7 @@ export function drawFrame(timestamp: number) {
                     context.fill();
                 }
                 const spriteDetails = spriteAnimationDetails ?? GetSpriteForEntity(entity);
-                if(spriteDetails)
-                {
+                if (spriteDetails) {
                     drawSprite(
                         context,
                         spriteDetails.sprite.spritesheet,

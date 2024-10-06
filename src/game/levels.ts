@@ -18,7 +18,7 @@ import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainTyp
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
-    currentLevel = level;
+    initialLevelState = level;
     currentLevelState = level;
     clearActions();
 }
@@ -33,7 +33,7 @@ interface LevelDescription {
     circuit: string;
 }
 
-export let currentLevel: LevelContent | undefined;
+export let initialLevelState: LevelContent | undefined;
 export function setCurrentLevelState(newState: LevelContent | undefined) {
     currentLevelState = newState;
 }

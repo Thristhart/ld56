@@ -159,13 +159,20 @@ export function GetEntityPortrait(entity: EntityType) {
     }
 }
 
-export function GetTerrainBackground(terrain: TerrainType) {
+export function GetTerrainBackground(terrain: TerrainType, activeElementState?: boolean) {
+    if (activeElementState) {
+        if (terrain === 'bridge')
+            return bridgeOpenBackgroundImage;
+        if (terrain === 'door')
+            return doorOpenBackgroundImage;
+    }
+
     switch (terrain) {
         case 'ground': return grassBackgroundImage;
         case 'tunnel': return tunnelBackgroundImage;
         case 'button': return buttonBackgroundImage;
-        case 'door': return doorOpenBackgroundImage;
-        case 'bridge': return bridgeOpenBackgroundImage;
+        case 'door': return doorClosedBackgroundImage;
+        case 'bridge': return bridgeClosedBackgroundImage;
         case 'wall': return rockWallImage;
         case 'goal': return goalPortraitImage;
         default: return undefined;
@@ -190,7 +197,7 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
         }
     }
     if (entity.type === "boulder") {
-        return { sprite: boulderRollAnimation, direction: -1, startTime: 0, renderDimensions: {width: 32, height: 32} } // startTime 0 means this will always be at the last frame
+        return { sprite: boulderRollAnimation, direction: -1, startTime: 0, renderDimensions: { width: 32, height: 32 } } // startTime 0 means this will always be at the last frame
     }
     return undefined;
 }
