@@ -1,4 +1,4 @@
-import { ActionResult } from "./actions";
+import { Action, ActionResult } from "./actions";
 import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation, CircuitData, ActivationElement } from "./levels";
 import { creatures, CreatureType, IsCreatureEntity } from "./specifications";
 import { triggers } from "./triggers";
@@ -37,6 +37,13 @@ export function GetFacingFromLocations(currentFacing: "left" | "right", oldLocat
     return currentFacing;
 }
 
+export function GetFacingNewDirection(currentFacing: "left" | "right", direction: Direction): "left" | "right" | null {
+    if (direction === 'up' || direction === 'down' || currentFacing === direction)
+        return null;
+
+    return direction;
+}
+
 export function GetEntityMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {
     switch (entity.type) {
         case 'turtle': return GetTurtleMoveResults(levelState, entity, direction);
@@ -47,7 +54,7 @@ export function GetEntityMoveResults(levelState: LevelContent, entity: EntityDat
     }
 }
 
-export function GetEntityMovementActions(levelState: LevelContent, entity: EntityData, direction: Direction) {
+export function GetEntityMovementActions(levelState: LevelContent, entity: EntityData, direction: Direction): ActionResult[] {
 
     const moveTarget = GetLocationInDirection(entity.location, direction);
     const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTarget);
@@ -58,14 +65,39 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
         if (boulder) {
             const boulderMoveResults = GetBoulderMovementActionResults(levelState, boulder, direction);
             if (!boulderMoveResults.length) {
-                return []; //TODO add facing stuff
+                const newFacing = GetFacingNewDirection(entity.facing, direction)
+                if (newFacing) {
+                    return [{
+                        type: "SwitchFacingDirection",
+                        entityid: entity.id,
+                        oldFacing: entity.facing,
+                        newFacing: newFacing,
+                        entity: entity,
+                    }]
+                }
             }
             else {
                 return [...entityMoveResults, ...boulderMoveResults];
             }
         }
+        else {
+            return entityMoveResults
+        }
     }
-    return entityMoveResults;
+
+    const newFacing = GetFacingNewDirection(entity.facing, direction)
+    if (newFacing) {
+        return [{
+            type: "SwitchFacingDirection",
+            entityid: entity.id,
+            oldFacing: entity.facing,
+            newFacing: newFacing,
+            entity: entity,
+        }]
+    }
+    else {
+        return [];
+    }
 }
 
 export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData, direction: Direction) {

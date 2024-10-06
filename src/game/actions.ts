@@ -2,7 +2,7 @@
 import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState, EntityData } from "./levels";
 import { Direction, GetEntityMovementActions, GetFacingFromLocations } from "./movehelpers";
 import { IsCreatureEntity, TerrainType } from "./specifications";
-import { checkForTriggersAfterAnimation, TriggerAudioFromResults } from "./triggers";
+import { checkForTriggersAfterAnimation, TriggerAudioFromResults, triggers } from "./triggers";
 
 
 export interface MoveCreatureAction {
@@ -22,6 +22,14 @@ export interface MoveEntityResult {
     entityid: number;
     oldLocation: Location;
     newLocation: Location;
+    entity: EntityData;
+}
+
+export interface SwitchFacingDirectionResult {
+    type: "SwitchFacingDirection";
+    entityid: number;
+    oldFacing: 'left' | 'right';
+    newFacing: 'left' | 'right';
     entity: EntityData;
 }
 
@@ -63,7 +71,7 @@ export interface EatInsectResult {
 }
 
 
-export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult;
+export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult | SwitchFacingDirectionResult;
 
 function applyActionResult(levelState: LevelContent, actionResult: ActionResult): LevelContent {
     switch (actionResult.type) {
@@ -78,6 +86,18 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
                 entities: [...otherEntities, { ...entity, location: actionResult.newLocation, facing: GetFacingFromLocations(entity.facing, actionResult.oldLocation, actionResult.newLocation) }]
             }
         }
+        case 'SwitchFacingDirection':
+            {
+                const entity = levelState.entities.find(e => e.id === actionResult.entityid);
+                if (!entity) {
+                    return levelState;
+                }
+                const otherEntities = levelState.entities.filter(e => e.id != actionResult.entityid);
+                return {
+                    ...levelState,
+                    entities: [...otherEntities, { ...entity, facing: actionResult.newFacing }]
+                }
+            }
         case "SwitchEntity": {
             return {
                 ...levelState,
