@@ -53,6 +53,9 @@ export function TriggerAudioFromResults(results: Array<ActionResult>)
                 sounds.footstep.play();
             }
         }
+        if(result.type === "MergeBoulderIntoTerrain") {
+            sounds.splash.play();
+        }
         else if(result.type === "SwitchEntity") {
             const entity = currentLevelState?.entities.find(entity => entity.id === result.newEntityId);
             if(!entity) {
