@@ -186,25 +186,6 @@ function drawGrid(context: CanvasRenderingContext2D, level: LevelContent, timest
             }
         }
     }
-
-    context.lineWidth = 0.4;
-    // fill out grid lines
-    for (let x = -10; x <= width + 10; x++) {
-        context.strokeStyle = COLOR_GRID_LINE_LIGHT;
-        context.beginPath();
-        context.moveTo(x * GRID_SQUARE_WIDTH, -10 * GRID_SQUARE_HEIGHT);
-        context.lineTo(x * GRID_SQUARE_WIDTH, (height + 10) * GRID_SQUARE_HEIGHT);
-        context.closePath();
-        context.stroke();
-    }
-    for (let y = -10; y <= height + 10; y++) {
-        context.strokeStyle = COLOR_GRID_LINE_LIGHT;
-        context.beginPath();
-        context.moveTo(-10 * GRID_SQUARE_WIDTH, y * GRID_SQUARE_HEIGHT);
-        context.lineTo((width + 10) * GRID_SQUARE_WIDTH, y * GRID_SQUARE_HEIGHT);
-        context.closePath();
-        context.stroke();
-    }
 }
 
 type TreeFragment = "tl" | "tr" | "bl" | "br" | "center";
@@ -236,7 +217,8 @@ function fitLevelToCamera() {
     const scale = Math.min(canvas.width / width, canvas.height / height);
     camera.x = width / 2 - GRID_SQUARE_WIDTH;
     camera.y = height / 2 - GRID_SQUARE_HEIGHT;
-    camera.scale = scale;
+    camera.scale = Math.floor(scale);
+    canvas.style.transform = `scale(${scale / camera.scale})`
 }
 
 function sortEntities(a: EntityData, b: EntityData) {
@@ -261,7 +243,7 @@ export function drawFrame(timestamp: number) {
     fitLevelToCamera();
 
     context.save();
-    context.translate(canvas.width / 2 - camera.x * camera.scale, canvas.height / 2 - camera.y * camera.scale);
+    context.translate(Math.round(canvas.width / 2 - camera.x * camera.scale), Math.round(canvas.height / 2 - camera.y * camera.scale));
     context.scale(camera.scale, camera.scale);
 
     if (currentLevelState) {
