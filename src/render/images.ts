@@ -13,6 +13,10 @@ import waterBoulderBackgroundSpriteUrl from "~/assets/water_boulder_animated-she
 import waterTopEdgeBackgroundSpriteUrl from "~/assets/water_top_edge_animated.png";
 import buttonBackgroundUrl from "~/assets/button_background.png";
 import chasmTopEdgeUrl from "~/assets/chasm_top_edge.png";
+import bridgeOpenHorizontalUrl from "~/assets/bridge_open_horizontal.png";
+import bridgeClosedHorizontalUrl from "~/assets/bridge_closed_horizontal.png";
+import bridgeOpenVerticalUrl from "~/assets/bridge_open_vertical.png";
+import bridgeClosedVerticalUrl from "~/assets/bridge_closed_vertical.png";
 
 import doorOpenBackgroundUrl from "~/assets/door_open_background.png";
 import doorClosedBackgroundUrl from "~/assets/door_closed_background.png";
@@ -156,6 +160,16 @@ rockWallImage.src = rockwallUrl;
 
 export const chasmTopEdgeImage = new Image();
 chasmTopEdgeImage.src = chasmTopEdgeUrl;
+
+export const bridgeOpenHorizontalImage = new Image();
+bridgeOpenHorizontalImage.src = bridgeOpenHorizontalUrl;
+export const bridgeClosedHorizontalImage = new Image();
+bridgeClosedHorizontalImage.src = bridgeClosedHorizontalUrl;
+
+export const bridgeOpenVerticalImage = new Image();
+bridgeOpenVerticalImage.src = bridgeOpenVerticalUrl;
+export const bridgeClosedVerticalImage = new Image();
+bridgeClosedVerticalImage.src = bridgeClosedVerticalUrl;
 
 const waterBackgroundSprite: SpriteSheet = {
     image: waterBackgroundSpriteImage,
