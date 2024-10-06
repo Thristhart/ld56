@@ -50,6 +50,16 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
             }
             if (IsCreatureEntity(result.entity.type)) {
                 sounds.footstep.play();
+                const nextTile = GetTileAtLocation(currentLevelState!, result.newLocation);
+                const entitiesAtNextLocation = GetEntitiesAtLocation(currentLevelState!, result.newLocation);
+                if(nextTile === "boulder-water" || nextTile === "boulder-chasm" || entitiesAtNextLocation.some(ent => ent.type === "boulder" || ent.type === "turtle"))
+                {
+                    sounds.hardstep.play();
+                }
+                else
+                {
+                    sounds.footstep.play();
+                }
             }
         }
         else if (result.type === "MergeBoulderIntoTerrain") {
