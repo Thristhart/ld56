@@ -416,9 +416,9 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
         return [];
     }
 
-    if(entitiesAtMoveTarget.find(entity => entity.type === "boulder"))
+    if(entitiesAtMoveTarget.find(entity => entity.type === "boulder" || entity.type === "insect"))
     {
-        // bird can't move boulders
+        // bird can't move boulders or enter tiles with insects
         return [];
     }
 
