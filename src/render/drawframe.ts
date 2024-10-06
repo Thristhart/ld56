@@ -1,7 +1,7 @@
 import { clearActionAnimations, clearUndoAnimations, lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
 import { currentLevelState, EntityData, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation, LevelContent } from "~/game/levels";
 import { animateActionResult } from "./animateaction";
-import { COLOR_CURRENT_CREATURE_HIGHLIGHT, GetTerrainColor } from "./colors";
+import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_CURRENT_CREATURE_HIGHLIGHT_STOP, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
 import { chasmTopEdgeImage, fliesAnimation, GetBridgeImagesForCircuit, GetButtonImagesForCircuit, GetDoorAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
@@ -350,6 +350,19 @@ function drawEntities(levelState: LevelContent, timestamp: number) {
             context.strokeStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
             context.fillStyle = COLOR_CURRENT_CREATURE_HIGHLIGHT;
             context.beginPath();
+            const radialGradient = context.createRadialGradient(
+                entityLocation.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
+                entityLocation.row * GRID_SQUARE_HEIGHT + 0.65 * GRID_SQUARE_HEIGHT,
+                0.15 * GRID_SQUARE_WIDTH,
+                entityLocation.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
+                entityLocation.row * GRID_SQUARE_HEIGHT + 0.65 * GRID_SQUARE_HEIGHT,
+                0.5 * GRID_SQUARE_WIDTH
+            );
+            radialGradient.addColorStop(0, COLOR_CURRENT_CREATURE_HIGHLIGHT);
+            radialGradient.addColorStop(0.7, COLOR_CURRENT_CREATURE_HIGHLIGHT_STOP);
+            radialGradient.addColorStop(1, "#FFFFFF00");
+            context.fillStyle = radialGradient;
+
             context.ellipse(
                 entityLocation.column * GRID_SQUARE_WIDTH + 0.5 * GRID_SQUARE_WIDTH,
                 entityLocation.row * GRID_SQUARE_HEIGHT + 0.75 * GRID_SQUARE_HEIGHT,

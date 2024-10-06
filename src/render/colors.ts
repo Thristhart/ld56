@@ -10,7 +10,8 @@ export const COLOR_GRID_SQUARE_FILL_WALL = "hsl(0 0% 35%)";
 export const COLOR_GRID_SQUARE_FILL_CHASM = "hsl(0 0% 0%)";
 export const COLOR_GRID_SQUARE_FILL_TUNNEL = "hsl(60, 67%, 24%)";
 
-export const COLOR_CURRENT_CREATURE_HIGHLIGHT = "#FFEA00";
+export const COLOR_CURRENT_CREATURE_HIGHLIGHT = "#FFEA00FF";
+export const COLOR_CURRENT_CREATURE_HIGHLIGHT_STOP = "#FFEA0055";
 export const COLOR_GRID_LINE_LIGHT = "#1e1e1e";
 export const COLOR_GRID_LINE_DARK = "black";
 
