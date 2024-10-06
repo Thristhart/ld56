@@ -93,7 +93,8 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
                     type: "MoveEntity",
                     entityid: entity.id,
                     oldLocation: entity.location,
-                    newLocation: moveTargetLocation
+                    newLocation: moveTargetLocation,
+                    entity
                 }
             )
         }
@@ -114,7 +115,8 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
                     type: "MoveEntity",
                     entityid: entity.id,
                     oldLocation: entity.location,
-                    newLocation: moveTargetLocation
+                    newLocation: moveTargetLocation,
+                    entity
                 }
             )
         }
@@ -129,7 +131,8 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
@@ -151,7 +154,8 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
     }
@@ -208,7 +212,8 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
                         type: "MoveEntity",
                         entityid: object.id,
                         oldLocation: object.location,
-                        newLocation: moveTargetLocation
+                        newLocation: moveTargetLocation,
+                        entity
                     }
                 )
             }
@@ -219,7 +224,8 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
     }
@@ -231,7 +237,8 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
                     type: "MoveEntity",
                     entityid: entity.id,
                     oldLocation: entity.location,
-                    newLocation: moveTargetLocation
+                    newLocation: moveTargetLocation,
+                    entity
                 }
             )
         }
@@ -246,7 +253,8 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
@@ -268,7 +276,8 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
     }
@@ -323,7 +332,8 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
                     type: "MoveEntity",
                     entityid: entity.id,
                     oldLocation: entity.location,
-                    newLocation: moveTargetLocation
+                    newLocation: moveTargetLocation,
+                    entity
                 }
             )
         }
@@ -344,7 +354,8 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
                     type: "MoveEntity",
                     entityid: entity.id,
                     oldLocation: entity.location,
-                    newLocation: moveTargetLocation
+                    newLocation: moveTargetLocation,
+                    entity
                 }
             )
         }
@@ -359,7 +370,8 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
@@ -381,7 +393,8 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
     }
@@ -428,7 +441,8 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
     }
@@ -444,7 +458,8 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
                     type: "MoveEntity",
                     entityid: entity.id,
                     oldLocation: entity.location,
-                    newLocation: moveTargetLocation
+                    newLocation: moveTargetLocation,
+                    entity
                 }
             )
         }
@@ -459,7 +474,8 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
@@ -481,7 +497,8 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
                 type: "MoveEntity",
                 entityid: entity.id,
                 oldLocation: entity.location,
-                newLocation: moveTargetLocation
+                newLocation: moveTargetLocation,
+                entity
             }
         )
     }
@@ -533,7 +550,8 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
                 type: "MoveEntity",
                 entityid: boulder.id,
                 oldLocation: boulder.location,
-                newLocation: boulderMoveTargetLocation
+                newLocation: boulderMoveTargetLocation,
+                entity: boulder
             }
         )
     }
@@ -549,7 +567,8 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
                     type: "MoveEntity",
                     entityid: boulder.id,
                     oldLocation: boulder.location,
-                    newLocation: boulderMoveTargetLocation
+                    newLocation: boulderMoveTargetLocation,
+                    entity: boulder
                 }
             )
         }
@@ -588,7 +607,8 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
                 type: "MoveEntity",
                 entityid: boulder.id,
                 oldLocation: boulder.location,
-                newLocation: boulderMoveTargetLocation
+                newLocation: boulderMoveTargetLocation,
+                entity: boulder
             }
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, boulderMoveTargetLocation);
@@ -610,7 +630,8 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
                 type: "MoveEntity",
                 entityid: boulder.id,
                 oldLocation: boulder.location,
-                newLocation: boulderMoveTargetLocation
+                newLocation: boulderMoveTargetLocation,
+                entity: boulder
             }
         )
     }

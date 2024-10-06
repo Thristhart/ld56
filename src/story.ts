@@ -11,7 +11,7 @@ let storyIndex = -1;
 const story: Array<StoryBeat> = [
     {
         type: "startlevel",
-        level: "intro"
+        level: "boulderPond"
     },
     {
         type: "message",
