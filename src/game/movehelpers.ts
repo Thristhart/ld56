@@ -320,10 +320,6 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
 
     const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
 
-    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
-        return [];
-    }
-
     const insectsAtLocation = entitiesAtMoveTarget.filter(ent => ent.type === "insect");
     if (insectsAtLocation.length > 0) {
         return insectsAtLocation.map(insect => ({
@@ -334,6 +330,11 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
             eaterLocation: entity.location,
         }))
     }
+    
+    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
+        return [];
+    }
+
 
     if (tileAtMoveTargetType === 'water') {
         const turtleInWater = entitiesAtMoveTarget.filter((x) => x.type === 'turtle')
