@@ -91,12 +91,10 @@ export interface CircuitData {
 
 // first number is row
 // second number is column
-export type IGridMap<T> = T[][];
-
 export interface LevelContent {
     rows: number;
     columns: number;
-    readonly groundGrid: IGridMap<TerrainType>;
+    readonly groundGrid: TerrainType[][];
     readonly entities: EntityData[];
     circuits: CircuitData[];
     currentEntityId: number;

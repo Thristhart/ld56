@@ -71,7 +71,7 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
         }
         case "MergeBoulderIntoTerrain": {
             const { targetlocation, boulderId, newTerrainType } = actionResult;
-            const groundGridCopy = [...levelState.groundGrid];
+            const groundGridCopy = levelState.groundGrid.map((groundRow) => [...groundRow])
             groundGridCopy[targetlocation.row][targetlocation.column] = newTerrainType;
             const filteredEntities = levelState.entities.filter((entity) => entity.id !== boulderId)
             return {
