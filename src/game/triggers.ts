@@ -56,11 +56,14 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
                 {
                     sounds.hardstep.play();
                 }
-                else if(nextTile === "water" )
+                else if( result.entity.type === "turtle" && nextTile === "water" )
                 {
-                    if(prevTile !== "water")
+                    if( prevTile !== "water" )
                     {
-                        sounds.splash.play();
+                        sounds.turtleWaterEnter.play();
+                    }
+                    else {
+                        sounds.turtleWaterMove.play();
                     }
                 }
                 else
