@@ -1,0 +1,38 @@
+tasks:
+
+# Implement chasm falling rocks
+
+# New goal design
+
+# Intro Sequence (of some sort)
+
+- Menu
+
+# End Game Sequence (something)
+
+- Possibly just a toybox.
+- Credits
+
+# Animal Bumping = Talk
+
+- Ow/New York/Hints
+- Explain the hint system without using the words "hint" or "system".
+
+# "When you're in a failstate we should cut the music."
+
+# Add music
+
+# dialog between levels
+
+# exposititory?? - Explain the story to the player.
+
+- Intro dialogue
+- Maybe cutscenes?
+
+# Name the game
+
+# Name the characters (probably)
+
+# recolour the frog maybe? (Less green)
+
+# design/implement/test/redesign and reimplement more and better levels.
