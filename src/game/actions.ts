@@ -249,13 +249,15 @@ export function fireAction(action: Action) {
                 checkForTriggersAfterAnimation(currentLevelState!, actionResult);
             }
         }, 100);
-        TriggerAudioFromResults(lastActionResults);
         actionLog.push(action);
     }
     else {
         sounds.bump.play();
     }
     setCurrentLevelState(ComputeStateFromActionLog());
+    if(lastActionResults) {
+        TriggerAudioFromResults(lastActionResults);
+    }
 }
 export let lastUndoActionResults: Array<ActionResult> | undefined;
 export let lastUndoTimestamp: number | undefined;

@@ -52,7 +52,7 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
                 const prevTile = GetTileAtLocation(currentLevelState!, result.oldLocation);
                 const nextTile = GetTileAtLocation(currentLevelState!, result.newLocation);
                 const entitiesAtNextLocation = GetEntitiesAtLocation(currentLevelState!, result.newLocation);
-                if(nextTile === "boulder-water" || nextTile === "boulder-chasm" || entitiesAtNextLocation.some(ent => ent.type === "boulder" || ent.type === "turtle"))
+                if(nextTile === "boulder-water" || nextTile === "boulder-chasm" || entitiesAtNextLocation.some(ent => ent.type === "boulder" || (ent.type === "turtle" && result.entity.type !== "turtle")))
                 {
                     sounds.hardstep.play();
                 }
