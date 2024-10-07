@@ -51,9 +51,11 @@ export function drawDialog(context: CanvasRenderingContext2D) {
     context.font = "40px Varela Round";
     context.fillStyle = "black";
     const speakerName = GetSpeakerDisplayName(currentBeat.speaker);
-    context.fillRect(105, 195, context.measureText(speakerName).width + 10, 50);
-    context.fillStyle = "white";
-    context.fillText(speakerName, 110, 233);
+    if(speakerName) {
+        context.fillRect(105, 195, context.measureText(speakerName).width + 10, 50);
+        context.fillStyle = "white";
+        context.fillText(speakerName, 110, 233);
+    }
     context.fillStyle = "black";
     context.fillText(currentBeat.message, 100, 300);
     context.drawImage(controlIcons.leftclick, 1340, 370, 32, 32);

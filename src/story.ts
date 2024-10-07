@@ -1,12 +1,13 @@
-import { startMusic } from "./audio";
+import { sounds, startMusic } from "./audio";
 import { levels, startLevel } from "./game/levels";
 
 let storyIndex = -1;
 const story: Array<StoryBeat> = [
     {
         type: "startlevel",
-        level: "cutscene"
+        level: "lastTurtle"
     },
+    { type: "waitforlevelcomplete" },
     {
         type: "message",
         speaker: "witch1",
@@ -237,6 +238,72 @@ const story: Array<StoryBeat> = [
     },
     { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
+    
+    {
+        type: "startlevel",
+        level: "endcutscene"
+    },
+    { type: "startendmusic" },
+    {
+        type: "message",
+        speaker: "witch1",
+        message: "You four have all cleared the trials placed in front of you..."
+    },
+    {
+        type: "message",
+        speaker: "witch2",
+        message: "And now, for the final challenge..."
+    },
+    {
+        type: "message",
+        speaker: "witch1",
+        message: "... how could we possibly choose between you cuties?!"
+    },
+    {
+        type: "message",
+        speaker: "witch2",
+        message: "Oh, we'll just have two familiars each! Who says we can't?"
+    },
+    {
+        type: "message",
+        speaker: "witch1",
+        message: "You're right! Here, tiny creatures! Your heart's desire!"
+    },
+    {
+        type: "message",
+        speaker: "witch2",
+        message: "Friendship!"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "!!!"
+    },
+    {
+        type: "message",
+        speaker: "bird",
+        message: "Hmm, very astute."
+    },
+    {
+        type: "message",
+        speaker: "frog",
+        message: "Indeed! What we want most of all is companionship."
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "yeah..."
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "Let's party!!"
+    },
+    {
+        type: "message",
+        speaker: "none",
+        message: "Thanks for playing!"
+    },
     // characterization notes:
     // mouse: precocious, cassie vibes
     // turtle: chill, slow. all lowercase
@@ -271,7 +338,10 @@ export interface WaitForLevelComplete {
 export interface StartMusic {
     readonly type: "startmusic"
 }
-export type StoryBeat = StoryMessage | LevelStart | ClearDialog | WaitForLevelComplete | StartMusic;
+export interface StartEndMusic {
+    readonly type: "startendmusic"
+}
+export type StoryBeat = StoryMessage | LevelStart | ClearDialog | WaitForLevelComplete | StartMusic | StartEndMusic;
 
 const log: (StoryMessage | ClearDialog)[] = [];
 const speakers: [Speaker?, Speaker?] = [];
@@ -318,6 +388,11 @@ export function continueStory(levelComplete = false) {
                 break;
             case "startmusic":
                 startMusic();
+                continueStory();
+                break;
+            case "startendmusic":
+                sounds.music.stop();
+                sounds.endMusic.play();
                 continueStory();
                 break;
             case "cleardialog":

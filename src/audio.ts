@@ -15,6 +15,7 @@ import musicUrl from "~/assets/audio/main theme.mp3";
 import musicDeathUrl from "~/assets/audio/main theme death.mp3";
 import frogEatUrl from "~/assets/audio/frog eat.mp3";
 import buttonUrl from "~/assets/audio/bunton.mp3";
+import endMusicUrl from "~/assets/audio/mystical grove.mp3";
 
 export const sounds = {
     boulderMove: new Howl({ src: boulderMoveUrl }),
@@ -40,6 +41,10 @@ export const sounds = {
     musicDeath: new Howl({
         src: musicDeathUrl,
         loop: true,
+    }),
+    endMusic: new Howl({
+        src: endMusicUrl,
+        loop: true
     }),
 } as const satisfies { [key: string]: Howl };
 

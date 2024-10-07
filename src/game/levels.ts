@@ -8,6 +8,7 @@ import circuitTestingCircuit from '../levels/testing/circuittest.circuit?raw';
 
 import cutsceneTerrain from '../levels/cutscene.terrain?raw';
 import cutsceneEntities from '../levels/cutscene.entities?raw';
+import endCutsceneEntities from '../levels/endcutscene.entities?raw';
 
 import flower1Terrain from '../levels/turtle_mouse/flower_1/flower_1.terrain?raw';
 import flower1Entities from '../levels/turtle_mouse/flower_1/flower_1.entities?raw';
@@ -63,6 +64,11 @@ export const levels = {
     cutscene: {
         terrain: cutsceneTerrain,
         entities: cutsceneEntities,
+        circuit: undefined,
+    },
+    endcutscene: {
+        terrain: cutsceneTerrain,
+        entities: endCutsceneEntities,
         circuit: undefined,
     },
     testing: {

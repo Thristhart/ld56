@@ -300,6 +300,12 @@ function fitLevelToCamera() {
 
 function sortEntities(a: EntityData, b: EntityData) {
 
+    if(a.type === "altar") {
+        return -1;
+    }
+    if(b.type === "altar") {
+        return 1;
+    }
     // otherwise turtle should be most-bottom
     if (a.type === "turtle") {
         return -1;
@@ -439,7 +445,7 @@ function drawEntities(levelState: LevelContent, timestamp: number) {
                 entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
                 entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
                 spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
-                entity.facing === "left",
+                entity.facing === (spriteDetails.flip ? "right" : "left"),
                 spriteDetails.renderDimensions,
             )
         }
