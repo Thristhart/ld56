@@ -267,6 +267,7 @@ export function fireAction(action: Action) {
         actionLog.push(action);
     }
     else {
+        clearActionAnimations();
         sounds.bump.play();
     }
     setCurrentLevelState(ComputeStateFromActionLog());
