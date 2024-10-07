@@ -47,7 +47,7 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
             },
             {
                 type: 'message',
-                message: 'i can\'t follow you in that tunnel.',
+                message: 'I can\'t follow you in that tunnel.',
                 speaker: 'turtle',
             },
             {
@@ -81,7 +81,7 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
             },
             {
                 type: 'message',
-                message: 'Together my love, to the goal!',
+                message: 'Together, my love. To the goal!',
                 speaker: 'frog',
             }
         ]
@@ -90,7 +90,7 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
         count: 0, hints: [
             {
                 type: 'message',
-                message: 'we\'re going to have to split up for a second.',
+                message: 'we\'re going to have to split up for a second',
                 speaker: 'turtle',
             },
             {
@@ -100,7 +100,7 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
             },
             {
                 type: 'message',
-                message: 'i can try carrying rocks in the water.',
+                message: 'I can try carrying rocks in the water',
                 speaker: 'turtle',
             },
             {
