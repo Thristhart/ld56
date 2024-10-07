@@ -2,7 +2,7 @@
 import { sounds } from "~/audio";
 import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState, EntityData } from "./levels";
 import { Direction, GetEntityMovementActions, GetFacingFromLocations } from "./movehelpers";
-import { creatures, IsCreatureEntity, TerrainType } from "./specifications";
+import { creatures, EntityType, IsCreatureEntity, TerrainType } from "./specifications";
 import { checkForTriggersAfterAnimation, TriggerAudioFromResults, triggers } from "./triggers";
 
 
@@ -75,7 +75,7 @@ export interface EatInsectResult {
 }
 
 
-export type ActionResult = (NoActionResult | MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult | SwitchFacingDirectionResult) & { triggers?: { message: string, entityType?: EntityData }[] };
+export type ActionResult = (NoActionResult | MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult | SwitchFacingDirectionResult) & { triggers?: { message: string, entityType?: EntityType }[] };
 
 function applyActionResult(levelState: LevelContent, actionResult: ActionResult): LevelContent {
     switch (actionResult.type) {
@@ -117,7 +117,7 @@ function applyActionResult(levelState: LevelContent, actionResult: ActionResult)
 
             const isCreature = IsCreatureEntity(entity.type);
             if (IsCreatureEntity(entity.type)) {
-                triggers.emit(`kill${entity.type}`);
+                triggers.emit('killEntity', entity.type);
             }
             return {
                 ...levelState,
