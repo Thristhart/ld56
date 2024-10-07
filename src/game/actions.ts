@@ -2,7 +2,7 @@
 import { sounds } from "~/audio";
 import { initialLevelState, currentLevelState, LevelContent, Location, setCurrentLevelState, EntityData } from "./levels";
 import { Direction, GetEntityMovementActions, GetFacingFromLocations } from "./movehelpers";
-import { IsCreatureEntity, TerrainType } from "./specifications";
+import { creatures, IsCreatureEntity, TerrainType } from "./specifications";
 import { checkForTriggersAfterAnimation, TriggerAudioFromResults, triggers } from "./triggers";
 
 
@@ -215,16 +215,32 @@ export function applyAction(levelState: LevelContent, action: Action): ActionRes
         }
         case "SwitchCreature": {
             const currentEntityId = levelState.currentEntityId;
-            const otherCreatureEntities = levelState.entities.filter(entity => IsCreatureEntity(entity.type) && entity.id !== currentEntityId);
-            if (otherCreatureEntities && otherCreatureEntities.length === 1) {
-                return [
-                    {
-                        type: "SwitchEntity",
-                        oldEntityId: currentEntityId,
-                        newEntityId: otherCreatureEntities[0].id,
-                    }
-                ]
+            const oldEntity = levelState.entities.find(entity => entity.id === currentEntityId);
+            if (!oldEntity)
+                return undefined;
+
+            const currentCreatureArrayId = creatures.findIndex((creature) => oldEntity.type === creature)
+            if (currentCreatureArrayId < 0)
+                return undefined;
+
+            let creatureArrayId = (currentCreatureArrayId + 1) % (creatures.length);
+            while (creatureArrayId !== currentCreatureArrayId) {
+                const creatureType = creatures[creatureArrayId];
+                const creatureEntity = levelState.entities.find(entity => entity.type === creatureType);
+                if (creatureEntity) {
+                    return [
+                        {
+                            type: "SwitchEntity",
+                            oldEntityId: currentEntityId,
+                            newEntityId: creatureEntity.id,
+                        }
+                    ]
+                }
+                else {
+                    creatureArrayId = (creatureArrayId + 1) % (creatures.length);
+                }
             }
+            return undefined;
         }
     }
     return undefined;
@@ -239,8 +255,7 @@ export function fireAction(action: Action) {
     const result = applyAction(currentLevelState, action);
     if (result && !(Array.isArray(result) && result.length === 0)) {
         lastActionResults = Array.isArray(result) ? result : [result];
-        if(lastActionResults.length === 1 && lastActionResults[0].type === "SwitchFacingDirection") 
-        {
+        if (lastActionResults.length === 1 && lastActionResults[0].type === "SwitchFacingDirection") {
             sounds.bump.play();
         }
         lastActionTimestamp = performance.now();
@@ -255,7 +270,7 @@ export function fireAction(action: Action) {
         sounds.bump.play();
     }
     setCurrentLevelState(ComputeStateFromActionLog());
-    if(lastActionResults) {
+    if (lastActionResults) {
         TriggerAudioFromResults(lastActionResults);
     }
 }
