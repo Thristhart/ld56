@@ -12,6 +12,7 @@ import bumpUrl from "~/assets/audio/bump.mp3";
 import turtleWaterEnterUrl from "~/assets/audio/turtle water enter.mp3";
 import turtleWaterMoveUrl from "~/assets/audio/turtle water move.mp3";
 import musicUrl from "~/assets/audio/main theme.mp3";
+import musicDeathUrl from "~/assets/audio/main theme death.mp3";
 import frogEatUrl from "~/assets/audio/frog eat.mp3";
 import buttonUrl from "~/assets/audio/bunton.mp3";
 
@@ -35,6 +36,10 @@ export const sounds = {
             intro: [0, 29109],
             loop: [29109, 204090, true]
         }
+    }),
+    musicDeath: new Howl({
+        src: musicDeathUrl,
+        loop: true,
     }),
 } as const satisfies { [key: string]: Howl };
 

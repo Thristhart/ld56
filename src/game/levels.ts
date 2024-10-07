@@ -30,18 +30,9 @@ import superBoulderAdventureCircuit from "../levels/frog_bird/super_boulder_adve
 
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
-import { sounds } from '~/audio';
 
 export function startLevel(levelname: keyof typeof levels) {
-    const level = constructLevelContent(levelname)
-    try {
-        if (!sounds.music.playing()) {
-            sounds.music.play();
-        }
-    }
-    catch(e) {
-
-    }
+    const level = constructLevelContent(levelname);
     initialLevelState = level;
     currentLevelState = level;
     clearActions();

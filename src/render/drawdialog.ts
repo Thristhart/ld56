@@ -73,7 +73,7 @@ function drawSpeaker(speaker: Speaker, context: CanvasRenderingContext2D) {
         drawSprite(
             context,
             spriteDetails.sprite.spritesheet,
-            150,
+            170,
             150,
             spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
             false,
@@ -85,7 +85,7 @@ function drawSpeaker(speaker: Speaker, context: CanvasRenderingContext2D) {
         drawSprite(
             context,
             spriteDetails.sprite.spritesheet,
-            170,
+            190,
             110,
             spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
             false,

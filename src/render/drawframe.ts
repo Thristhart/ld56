@@ -467,20 +467,24 @@ function drawControls(levelState: LevelContent)
     context.fillStyle = "white";
     context.font = "20px Varela Round";
 
-    context.drawImage(controlIcons.w, 16, 0, 16, 16);
-    context.drawImage(controlIcons.a, 0, 16, 16, 16);
-    context.drawImage(controlIcons.s, 16, 16, 16, 16);
-    context.drawImage(controlIcons.d, 32, 16, 16, 16);
-    context.fillText("Move", 52, 22);
+    if(levelState.canContinueLevel) {
+        context.drawImage(controlIcons.w, 16, 0, 16, 16);
+        context.drawImage(controlIcons.a, 0, 16, 16, 16);
+        context.drawImage(controlIcons.s, 16, 16, 16, 16);
+        context.drawImage(controlIcons.d, 32, 16, 16, 16);
+        context.fillText("Move", 52, 22);
+        
+        
+        context.drawImage(controlIcons.e, 210, 8, 16, 16);
+        context.fillText("Swap", 228, 22);
+        
+        context.drawImage(controlIcons.r, 286, 8, 16, 16);
+        context.fillText("Reset", 304, 22);
+    }
+
     
     context.drawImage(controlIcons.z, 128, 8, 16, 16);
     context.fillText("Undo", 148, 22);
-    
-    context.drawImage(controlIcons.e, 210, 8, 16, 16);
-    context.fillText("Swap", 228, 22);
-    
-    context.drawImage(controlIcons.r, 286, 8, 16, 16);
-    context.fillText("Reset", 304, 22);
     context.restore();
 
 }
