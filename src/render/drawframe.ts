@@ -169,14 +169,14 @@ function drawGrid(level: LevelContent, timestamp: number) {
                     }
                     if (terrainType == "boulder-chasm") {
                         const above = level.groundGrid[row - 1][col];
-                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                     }
                     let terrainAnimation = GetTerrainAnimation(terrainType, { row, column: col });
                     if (terrainType === "water") {
                         const above = level.groundGrid[row - 1][col];
-                        if (above !== "water" && above !== "boulder-water") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             terrainAnimation = {
                                 sprite: waterTopEdgeBackgroundAnimation,
                                 direction: 1,
@@ -187,7 +187,7 @@ function drawGrid(level: LevelContent, timestamp: number) {
                     if (terrainType == "boulder-water") {
                         const above = level.groundGrid[row - 1][col];
                         let waterAnim = GetTerrainAnimation("water")!;
-                        if (above !== "water" && above !== "boulder-water") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             waterAnim = {
                                 sprite: waterTopEdgeBackgroundAnimation,
                                 direction: 1,
@@ -209,14 +209,14 @@ function drawGrid(level: LevelContent, timestamp: number) {
 
                     if (terrainType == "chasm") {
                         const above = level.groundGrid[row - 1][col];
-                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                             continue;
                         }
                     }
                     if (terrainType === "bridge") {
                         const above = level.groundGrid[row - 1][col];
-                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                         else {
