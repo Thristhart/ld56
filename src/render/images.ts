@@ -497,6 +497,7 @@ import iconwUrl from "~/assets/icon_w.png";
 import iconaUrl from "~/assets/icon_a.png";
 import iconsUrl from "~/assets/icon_s.png";
 import icondUrl from "~/assets/icon_d.png";
+import iconeUrl from "~/assets/icon_e.png";
 import iconzUrl from "~/assets/icon_z.png";
 import iconrUrl from "~/assets/icon_r.png";
 export const controlIcons = {
@@ -504,6 +505,7 @@ export const controlIcons = {
     a: new Image(),
     s: new Image(),
     d: new Image(),
+    e: new Image(),
     z: new Image(),
     r: new Image(),
 };
@@ -511,6 +513,7 @@ controlIcons.w.src = iconwUrl;
 controlIcons.a.src = iconaUrl;
 controlIcons.s.src = iconsUrl;
 controlIcons.d.src = icondUrl;
+controlIcons.e.src = iconeUrl;
 controlIcons.z.src = iconzUrl;
 controlIcons.r.src = iconrUrl;
 

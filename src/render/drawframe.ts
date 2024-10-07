@@ -463,7 +463,7 @@ function drawControls(levelState: LevelContent)
         return;
     }
     context.save();
-    context.translate((levelState.columns) * GRID_SQUARE_WIDTH/2 - 150, (levelState.rows) * GRID_SQUARE_HEIGHT - 16);
+    context.translate((levelState.columns) * GRID_SQUARE_WIDTH/2 - 180, (levelState.rows) * GRID_SQUARE_HEIGHT - 16);
     context.fillStyle = "white";
     context.font = "20px Varela Round";
 
@@ -476,8 +476,11 @@ function drawControls(levelState: LevelContent)
     context.drawImage(controlIcons.z, 128, 8, 16, 16);
     context.fillText("Undo", 148, 22);
     
-    context.drawImage(controlIcons.r, 226, 8, 16, 16);
-    context.fillText("Reset", 248, 22);
+    context.drawImage(controlIcons.e, 210, 8, 16, 16);
+    context.fillText("Swap", 228, 22);
+    
+    context.drawImage(controlIcons.r, 286, 8, 16, 16);
+    context.fillText("Reset", 304, 22);
     context.restore();
 
 }
