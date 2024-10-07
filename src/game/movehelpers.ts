@@ -202,7 +202,7 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
     }
 
     if (originTileType === 'button') {
-        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity.location);
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity, moveTargetLocation);
         if (buttonDeactivationResults.length > 0)
             actionResults.push(...buttonDeactivationResults);
     }
@@ -331,7 +331,7 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
     }
 
     if (originTileType === 'button') {
-        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity.location);
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity, moveTargetLocation);
         if (buttonDeactivationResults.length > 0)
             actionResults.push(...buttonDeactivationResults);
     }
@@ -457,7 +457,7 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
     }
 
     if (originTileType === 'button') {
-        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity.location);
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity, moveTargetLocation);
         if (buttonDeactivationResults.length > 0)
             actionResults.push(...buttonDeactivationResults);
     }
@@ -576,7 +576,7 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
     }
 
     if (originTileType === 'button') {
-        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity.location);
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, entity, moveTargetLocation);
         if (buttonDeactivationResults.length > 0)
             actionResults.push(...buttonDeactivationResults);
     }
@@ -700,7 +700,7 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
     }
 
     if (boulderOriginTileType === 'button') {
-        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, boulder.location);
+        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, boulder, boulderMoveTargetLocation);
         if (buttonDeactivationResults.length > 0)
             actionResults.push(...buttonDeactivationResults);
     }
@@ -708,9 +708,9 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
     return actionResults;
 }
 
-function GetButtonDeactivationResults(levelState: LevelContent, location: Location) {
+function GetButtonDeactivationResults(levelState: LevelContent, sourceEntity: EntityData, newLocation: Location) {
     const actionResults: ActionResult[] = [];
-    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, location);
+    const activationCircuitAtOrigin = GetCircuitActivationElementAtLocation(levelState, sourceEntity.location);
     if (!activationCircuitAtOrigin) {
         return [];
     }
@@ -753,6 +753,16 @@ function GetButtonDeactivationResults(levelState: LevelContent, location: Locati
                         });
                     }
                 }
+            }
+        }
+
+        if (newLocation.column === response.location.column && newLocation.row === response.location.row) {
+            if (sourceEntity.type !== 'bird' || tileType !== 'bridge') {
+                actionResults.push({
+                    type: "DeleteEntity",
+                    entityId: sourceEntity.id,
+                    entityLocation: newLocation
+                });
             }
         }
     }
