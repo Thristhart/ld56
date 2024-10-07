@@ -75,7 +75,7 @@ export interface EatInsectResult {
 }
 
 
-export type ActionResult = ( NoActionResult | MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult | SwitchFacingDirectionResult ) & { triggers?: string[] };
+export type ActionResult = (NoActionResult | MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult | SwitchFacingDirectionResult) & { triggers?: { message: string, entityType?: EntityData }[] };
 
 function applyActionResult(levelState: LevelContent, actionResult: ActionResult): LevelContent {
     switch (actionResult.type) {
@@ -249,17 +249,14 @@ export function applyAction(levelState: LevelContent, action: Action): ActionRes
     return { type: "NoAction" };
 }
 
-export function MakeResultArray(result: ActionResult | Array<ActionResult>)
-{
-    if(Array.isArray(result))
-    {
+export function MakeResultArray(result: ActionResult | Array<ActionResult>) {
+    if (Array.isArray(result)) {
         return result;
     }
     return [result];
 }
 
-export function IsActiveResult(result: Array<ActionResult>)
-{
+export function IsActiveResult(result: Array<ActionResult>) {
     return result.some(res => res.type !== "NoAction");
 }
 
@@ -288,9 +285,8 @@ export function fireAction(action: Action) {
         sounds.bump.play();
     }
     // either way, do triggers
-    for(const actionResult of result)
-    {
-        actionResult.triggers?.forEach(trigger => triggers.emit(trigger));
+    for (const actionResult of result) {
+        actionResult.triggers?.forEach(trigger => triggers.emit(trigger.message, trigger.entityType));
     }
     setCurrentLevelState(ComputeStateFromActionLog());
     if (lastActionResults) {
@@ -308,7 +304,7 @@ export function undo() {
         return;
     }
     setCurrentLevelState(ComputeStateFromActionLog());
-    const resultOfUndoneAction = MakeResultArray( applyAction(currentLevelState, undoneAction) );
+    const resultOfUndoneAction = MakeResultArray(applyAction(currentLevelState, undoneAction));
     if (IsActiveResult(resultOfUndoneAction)) {
         lastUndoActionResults = Array.isArray(resultOfUndoneAction) ? resultOfUndoneAction : [resultOfUndoneAction];
         lastUndoTimestamp = performance.now();
