@@ -146,12 +146,34 @@ const story: Array<StoryBeat> = [
         speaker: "turtle",
         message: "it's private. don't worry about it"
     },
-    
+    { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
+
     {
         type: "startlevel",
         level: "riverCrossing"
     },
+    {
+        type: "message",
+        speaker: "bird",
+        message: "What sort of lavish mansion do you suppose these witches live in?"
+    },
+    {
+        type: "message",
+        speaker: "frog",
+        message: "Surely if they are such great witches, they must have a great home!"
+    },
+    {
+        type: "message",
+        speaker: "bird",
+        message: "A palacious estate!"
+    },
+    {
+        type: "message",
+        speaker: "frog",
+        message: "A grand demense!"
+    },
+    { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
     {
         type: "startlevel",
