@@ -15,18 +15,18 @@ import musicUrl from "~/assets/audio/main theme.mp3";
 import frogEatUrl from "~/assets/audio/frog eat.mp3";
 
 export const sounds = {
-    boulderMove: new Howl({src: boulderMoveUrl}),
-    footstep: new Howl({src: footstepUrl}),
-    hardstep: new Howl({src: hardstepUrl}),
-    turtleSelect: new Howl({src: turtleSelectUrl}),
-    mouseSelect: new Howl({src: mouseSelectUrl}),
-    frogSelect: new Howl({src: frogSelectUrl}),
-    birdSelect: new Howl({src: birdSelectUrl}),
-    splash: new Howl({src: splashUrl}),
-    bump: new Howl({src: bumpUrl}),
-    turtleWaterEnter: new Howl({src: turtleWaterEnterUrl}),
-    turtleWaterMove: new Howl({src: turtleWaterMoveUrl}),
-    frogEat: new Howl({src: frogEatUrl}),
+    boulderMove: new Howl({ src: boulderMoveUrl }),
+    footstep: new Howl({ src: footstepUrl }),
+    hardstep: new Howl({ src: hardstepUrl }),
+    turtleSelect: new Howl({ src: turtleSelectUrl, volume: 0.8 }),
+    mouseSelect: new Howl({ src: mouseSelectUrl, volume: 0.8 }),
+    frogSelect: new Howl({ src: frogSelectUrl }),
+    birdSelect: new Howl({ src: birdSelectUrl, volume: 0.8 }),
+    splash: new Howl({ src: splashUrl }),
+    bump: new Howl({ src: bumpUrl }),
+    turtleWaterEnter: new Howl({ src: turtleWaterEnterUrl }),
+    turtleWaterMove: new Howl({ src: turtleWaterMoveUrl }),
+    frogEat: new Howl({ src: frogEatUrl }),
     music: new Howl({
         src: musicUrl,
         sprite: {
