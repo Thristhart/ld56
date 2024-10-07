@@ -48,7 +48,7 @@ export function drawDialog(context: CanvasRenderingContext2D) {
 
     drawSpeaker(currentBeat.speaker, context);
     context.drawImage(dialogBackgroundImage, 0, 200);
-    context.font = "40px Arial";
+    context.font = "40px Varela Round";
     context.fillStyle = "black";
     const speakerName = GetSpeakerDisplayName(currentBeat.speaker);
     context.fillRect(105, 195, context.measureText(speakerName).width + 10, 50);

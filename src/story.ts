@@ -69,6 +69,11 @@ const story: Array<StoryBeat> = [
     },
     {
         type: "message",
+        speaker: "mouse",
+        message: "Think of how much frosting we could get!"
+    },
+    {
+        type: "message",
         speaker: "turtle",
         message: "it sounds like a lot of work",
     },
@@ -98,6 +103,11 @@ const story: Array<StoryBeat> = [
         type: "startlevel",
         level: "intro"
     },
+    // characterization notes:
+    // mouse: precocious, cassie vibes
+    // turtle: chill, slow. all lowercase
+    // bird: hmmm yes, very proper. a bug? oh dear, not for me. morticia addams?
+    // frog: gomez addams to her morticia. yes dear absolutely I will eat these bugs for you my precious
 ]
 
 
