@@ -69,11 +69,6 @@ const story: Array<StoryBeat> = [
     },
     {
         type: "message",
-        speaker: "mouse",
-        message: "Think of how much frosting we could get!"
-    },
-    {
-        type: "message",
         speaker: "turtle",
         message: "it sounds like a lot of work",
     },
@@ -125,6 +120,31 @@ const story: Array<StoryBeat> = [
     {
         type: "startlevel",
         level: "boulderPond"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "so what's your greatest desire?"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "Think of how much frosting we could get!"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "guess I would have assumed cheese"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "What about you? What do you want?"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "it's private. don't worry about it"
     },
     
     { type: "waitforlevelcomplete" },
