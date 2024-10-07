@@ -172,7 +172,7 @@ function drawGrid(level: LevelContent, timestamp: number) {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                     }
-                    let terrainAnimation = GetTerrainAnimation(terrainType, {row, column: col});
+                    let terrainAnimation = GetTerrainAnimation(terrainType, { row, column: col });
                     if (terrainType === "water") {
                         const above = level.groundGrid[row - 1][col];
                         if (above !== "water" && above !== "boulder-water") {
@@ -197,14 +197,15 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         drawSprite(context, terrainAnimation!.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.sprite.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
+                    if (terrainType === "goal") {
+                        context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                    }
+
                     if (terrainAnimation) {
                         drawSprite(context, terrainAnimation.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.sprite.getFrame(timestamp - terrainAnimation.startTime), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
 
-                    if (terrainType === "goal") {
-                        context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
-                    }
                     if (terrainType == "chasm") {
                         const above = level.groundGrid[row - 1][col];
                         if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
@@ -250,7 +251,7 @@ function drawGrid(level: LevelContent, timestamp: number) {
                     }
                     else {
                         const color = GetTerrainColor(terrainType)
-                        if(color) {
+                        if (color) {
                             context.fillStyle = color;
                             context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }

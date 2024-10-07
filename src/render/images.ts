@@ -490,6 +490,25 @@ export const waterTopEdgeBackgroundAnimation: SpriteAnimation = {
     },
 }
 
+import goalPortalBackgroundSpriteUrl from "~/assets/goal_portal_animated.png";
+const goalPortalSpriteImage = new Image();
+goalPortalSpriteImage.src = goalPortalBackgroundSpriteUrl;
+const goalPortalBackgroundSprite: SpriteSheet = {
+    image: goalPortalSpriteImage,
+    spriteWidth: 32,
+    spriteHeight: 32,
+    width: 6,
+    height: 1,
+}
+
+const goalPortalBackgroundAnimation: SpriteAnimation = {
+    spritesheet: goalPortalBackgroundSprite,
+    getFrame(timestamp) {
+        return [Math.floor((timestamp % (goalPortalBackgroundSprite.width * 200)) / 200), 0];
+    },
+}
+
+
 export const treeImage = new Image();
 treeImage.src = treeImageUrl;
 
@@ -533,14 +552,14 @@ export function GetTerrainAnimation(terrain: TerrainType, location?: Location): 
             startTime: 0,
         };
         case 'boulder-chasm': {
-            if(lastActionResults?.some(result => result.type === "MergeBoulderIntoTerrain" && result.targetlocation.column === location?.column && result.targetlocation.row === location.row)) {
+            if (lastActionResults?.some(result => result.type === "MergeBoulderIntoTerrain" && result.targetlocation.column === location?.column && result.targetlocation.row === location.row)) {
                 return {
                     sprite: boulderChasmAnimation,
                     direction: 1,
                     startTime: lastActionTimestamp!,
                 };
             }
-            if(lastUndoActionResults?.some(result => result.type === "MergeBoulderIntoTerrain" && result.targetlocation.column === location?.column && result.targetlocation.row === location.row)) {
+            if (lastUndoActionResults?.some(result => result.type === "MergeBoulderIntoTerrain" && result.targetlocation.column === location?.column && result.targetlocation.row === location.row)) {
                 return {
                     sprite: boulderChasmAnimation,
                     direction: -1,
@@ -549,6 +568,11 @@ export function GetTerrainAnimation(terrain: TerrainType, location?: Location): 
             }
             return undefined;
         }
+        case 'goal': return {
+            sprite: goalPortalBackgroundAnimation,
+            direction: 1,
+            startTime: 0,
+        };
         default: return undefined;
     }
 }
