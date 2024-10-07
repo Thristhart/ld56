@@ -1,3 +1,4 @@
+import { startMusic } from "./audio";
 import { levels, startLevel } from "./game/levels";
 
 let storyIndex = -1;
@@ -40,6 +41,7 @@ const story: Array<StoryBeat> = [
         type: "startlevel",
         level: "flower1"
     },
+    { type: "startmusic" },
     {
         type: "message",
         speaker: "mouse",
@@ -122,8 +124,11 @@ export interface ClearDialog {
 export interface WaitForLevelComplete {
     readonly type: "waitforlevelcomplete";
 }
+export interface StartMusic {
+    readonly type: "startmusic"
+}
 
-export type StoryBeat = StoryMessage | LevelStart | ClearDialog | WaitForLevelComplete;
+export type StoryBeat = StoryMessage | LevelStart | ClearDialog | WaitForLevelComplete | StartMusic;
 
 const log: (StoryMessage | ClearDialog)[] = [];
 const speakers: [Speaker?, Speaker?] = [];
@@ -168,6 +173,10 @@ export function continueStory(levelComplete = false) {
             case "message":
                 log.push(nextBeat);
                 break;
+            case "startmusic":
+                startMusic();
+                continueStory();
+                break;
             case "cleardialog":
                 log.push(nextBeat);
                 continueStory();
@@ -184,12 +193,6 @@ export function continueStory(levelComplete = false) {
         // showingCredits.value = true;
     }
 };
-
-// function getDecoratorClass(name: string) {
-//     return getStoryBool(name) && name;
-// }
-
-export const getStoryDecoratorsClassName = () => "";
 
 if (import.meta.hot) {
     import.meta.hot.accept();

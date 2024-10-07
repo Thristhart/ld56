@@ -30,8 +30,13 @@ import { sounds } from '~/audio';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
-    if (!sounds.music.playing()) {
-        sounds.music.play();
+    try {
+        if (!sounds.music.playing()) {
+            sounds.music.play();
+        }
+    }
+    catch(e) {
+        
     }
     initialLevelState = level;
     currentLevelState = level;
