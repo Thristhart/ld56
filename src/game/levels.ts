@@ -28,6 +28,10 @@ import superBoulderAdventureTerrain from "../levels/frog_bird/super_boulder_adve
 import superBoulderAdventureEntities from "../levels/frog_bird/super_boulder_adventure/super_boulder_adventure.entities?raw";
 import superBoulderAdventureCircuit from "../levels/frog_bird/super_boulder_adventure/super_boulder_adventure.circuit?raw";
 
+import lastTurtleTerrain from "../levels/turtle_mouse/last_turtle/last_turtle.terrain?raw";
+import lastTurtleEntities from "../levels/turtle_mouse/last_turtle/last_turtle.entities?raw";
+import lastTurtleCircuit from "../levels/turtle_mouse/last_turtle/last_turtle.circuit?raw";
+
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
 
@@ -94,6 +98,11 @@ export const levels = {
         entities: superBoulderAdventureEntities,
         terrain: superBoulderAdventureTerrain,
         circuit: superBoulderAdventureCircuit,
+    },
+    lastTurtle: {
+        entities: lastTurtleEntities,
+        terrain: lastTurtleTerrain,
+        circuit: lastTurtleCircuit,
     },
 } as const satisfies Record<string, LevelDescription>;
 
