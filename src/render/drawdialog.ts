@@ -1,8 +1,24 @@
-import { getCurrentMessage, Speaker } from "~/story";
-import { crowWalkAnimation, dialogBackgroundImage, frogHopAnimation, mousePortraitImage, turtlePortraitImage } from "./images";
-import { camera, canvasScale, GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH } from "./drawframe";
-import { drawSprite } from "./spritesheet";
 import { currentLevelState } from "~/game/levels";
+import { getCurrentMessage, Speaker } from "~/story";
+import { GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH } from "./drawframe";
+import { crowWalkAnimation, dialogBackgroundImage, frogHopAnimation, mousePortraitImage, turtlePortraitImage } from "./images";
+import { drawSprite } from "./spritesheet";
+
+function GetSpeakerDisplayName(speaker: Speaker): string
+{
+    switch(speaker) {
+        case "turtle":
+            return "Tiramisu";
+        case "bird":
+            return "Cupcake";
+        case "frog":
+            return "Fudge";
+        case "mouse":
+            return "Muffin"
+        case "none":
+            return "";
+    }
+}
 
 const portraitSize = 300;
 export function drawDialog(context: CanvasRenderingContext2D) {
@@ -30,9 +46,10 @@ export function drawDialog(context: CanvasRenderingContext2D) {
     context.drawImage(dialogBackgroundImage, 0, 200);
     context.font = "40px Arial";
     context.fillStyle = "black";
-    context.fillRect(95, 200, 120, 40);
+    const speakerName = GetSpeakerDisplayName(currentBeat.speaker);
+    context.fillRect(105, 195, context.measureText(speakerName).width + 10, 50);
     context.fillStyle = "white";
-    context.fillText(currentBeat.speaker, 110, 233);
+    context.fillText(speakerName, 110, 233);
     context.fillStyle = "black";
     context.fillText(currentBeat.message, 100, 300);
 
