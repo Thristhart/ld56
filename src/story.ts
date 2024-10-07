@@ -101,7 +101,7 @@ const story: Array<StoryBeat> = [
     { type: "waitforlevelcomplete" },
     {
         type: "startlevel",
-        level: "intro"
+        level: "riverCrossing"
     },
     // characterization notes:
     // mouse: precocious, cassie vibes
