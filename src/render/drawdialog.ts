@@ -1,7 +1,7 @@
 import { currentLevelState } from "~/game/levels";
 import { getCurrentMessage, Speaker } from "~/story";
 import { GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH } from "./drawframe";
-import { crowWalkAnimation, dialogBackgroundImage, frogHopAnimation, mousePortraitImage, turtlePortraitImage } from "./images";
+import { crowWalkAnimation, dialogBackgroundImage, frogHopAnimation, mousePortraitImage, turtlePortraitImage, witch1IdleAnimation, witch2IdleAnimation } from "./images";
 import { drawSprite } from "./spritesheet";
 
 function GetSpeakerDisplayName(speaker: Speaker): string
@@ -91,5 +91,29 @@ function drawSpeaker(speaker: Speaker, context: CanvasRenderingContext2D) {
             false,
             { width: portraitSize, height: portraitSize },
         )
+    }
+    else if (speaker === 'witch1') {
+        drawSprite(
+            context,
+            witch1IdleAnimation.spritesheet,
+            230,
+            0,
+            witch1IdleAnimation.getFrame(performance.now()),
+            false,
+            { width: portraitSize * 2, height: portraitSize * 2 },
+        )
+        
+    }
+    else if (speaker === 'witch2') {
+        drawSprite(
+            context,
+            witch2IdleAnimation.spritesheet,
+            230,
+            0,
+            witch2IdleAnimation.getFrame(performance.now()),
+            false,
+            { width: portraitSize * 2, height: portraitSize * 2 },
+        )
+        
     }
 }
