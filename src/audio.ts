@@ -25,12 +25,23 @@ export const sounds = {
     bump: new Howl({src: bumpUrl}),
     turtleWaterEnter: new Howl({src: turtleWaterEnterUrl}),
     turtleWaterMove: new Howl({src: turtleWaterMoveUrl}),
-    music: new Howl({src: musicUrl})
+    music: new Howl({
+        src: musicUrl,
+        sprite: {
+            intro: [0, 28630],
+            loop: [28630, 232720, true]
+        }
+    })
 } as const satisfies { [key: string]: Howl };
 
 export function startMusic()
 {
-    sounds.music.play();
+    let introId = sounds.music.play("intro");
+    sounds.music.on("end", (soundId) => {
+        if(soundId === introId) {
+            sounds.music.play("loop");
+        }
+    })
 }
 
 startMusic();
