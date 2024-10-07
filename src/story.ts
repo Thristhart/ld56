@@ -179,6 +179,26 @@ const story: Array<StoryBeat> = [
         type: "startlevel",
         level: "superBoulderAdventure"
     },
+    {
+        type: "message",
+        speaker: "bird",
+        message: "Dear, you're doing such a good job with these puzzles."
+    },
+    {
+        type: "message",
+        speaker: "frog",
+        message: "Cupcake, your praise is all the motivation I need!"
+    },
+    {
+        type: "message",
+        speaker: "frog",
+        message: "I would solve a thousand more to hear you tell me that I have done well."
+    },
+    {
+        type: "message",
+        speaker: "bird",
+        message: "We can only hope there aren't that many!"
+    },
     { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
     {
