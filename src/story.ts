@@ -92,6 +92,11 @@ const story: Array<StoryBeat> = [
         speaker: "turtle",
         message: "alright, fine. it'll be something to do",
     },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "Yay! I think we just need to get to those gold portals."
+    },
     { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
 
@@ -266,7 +271,6 @@ export interface WaitForLevelComplete {
 export interface StartMusic {
     readonly type: "startmusic"
 }
-
 export type StoryBeat = StoryMessage | LevelStart | ClearDialog | WaitForLevelComplete | StartMusic;
 
 const log: (StoryMessage | ClearDialog)[] = [];
