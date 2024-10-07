@@ -24,6 +24,10 @@ import riverCrossingTerrain from "../levels/frog_bird/river_crossing/river_cross
 import riverCrossingEntities from "../levels/frog_bird/river_crossing/river_crossing.entities?raw";
 import riverCrossingCircuit from "../levels/frog_bird/river_crossing/river_crossing.circuit?raw";
 
+import superBoulderAdventureTerrain from "../levels/frog_bird/super_boulder_adventure/super_boulder_adventure.terrain?raw";
+import superBoulderAdventureEntities from "../levels/frog_bird/super_boulder_adventure/super_boulder_adventure.entities?raw";
+import superBoulderAdventureCircuit from "../levels/frog_bird/super_boulder_adventure/super_boulder_adventure.circuit?raw";
+
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
 import { sounds } from '~/audio';
@@ -94,7 +98,12 @@ export const levels = {
         entities: riverCrossingEntities,
         terrain: riverCrossingTerrain,
         circuit: riverCrossingCircuit,
-    }
+    },
+    superBoulderAdventure: {
+        entities: superBoulderAdventureEntities,
+        terrain: superBoulderAdventureTerrain,
+        circuit: superBoulderAdventureCircuit,
+    },
 } as const satisfies Record<string, LevelDescription>;
 
 export interface EntityData {
