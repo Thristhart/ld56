@@ -117,47 +117,71 @@ const story: Array<StoryBeat> = [
     // { type: "cleardialog" },
     // { type: "waitforlevelcomplete" },
 
-    // {
-    //     type: "startlevel",
-    //     level: "boulderPond"
-    // },
-    // {
-    //     type: "message",
-    //     speaker: "turtle",
-    //     message: "so what's your greatest desire?"
-    // },
-    // {
-    //     type: "message",
-    //     speaker: "mouse",
-    //     message: "Think of how much frosting we could get!"
-    // },
-    // {
-    //     type: "message",
-    //     speaker: "turtle",
-    //     message: "guess I would have assumed cheese"
-    // },
-    // {
-    //     type: "message",
-    //     speaker: "mouse",
-    //     message: "What about you? What do you want?"
-    // },
-    // {
-    //     type: "message",
-    //     speaker: "turtle",
-    //     message: "it's private. don't worry about it"
-    // },
-    
-    // { type: "waitforlevelcomplete" },
-    // {
-    //     type: "startlevel",
-    //     level: "riverCrossing"
-    // },
-    // { type: "waitforlevelcomplete" },
-    // {
-    //     type: "startlevel",
-    //     level: "superBoulderAdventure"
-    // },
+    {
+        type: "startlevel",
+        level: "boulderPond"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "so what's your greatest desire?"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "Think of how much frosting we could get!"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "guess I would have assumed cheese"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "What about you? What do you want?"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "it's private. don't worry about it"
+    },
+    { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
+
+    {
+        type: "startlevel",
+        level: "lastTurtle"
+        level: "riverCrossing"
+    },
+    {
+        type: "message",
+        speaker: "bird",
+        message: "What sort of lavish mansion do you suppose these witches live in?"
+    },
+    {
+        type: "message",
+        speaker: "frog",
+        message: "Surely if they are such great witches, they must have a great home!"
+    },
+    {
+        type: "message",
+        speaker: "bird",
+        message: "A palacious estate!"
+    },
+    {
+        type: "message",
+        speaker: "frog",
+        message: "A grand demense!"
+    },
+    { type: "cleardialog" },
+    { type: "waitforlevelcomplete" },
+    {
+        type: "startlevel",
+        level: "superBoulderAdventure"
+    },
+    { type: "waitforlevelcomplete" },
+
     {
         type: "startlevel",
         level: "lastTurtle"
