@@ -454,35 +454,40 @@ function drawEntities(levelState: LevelContent, timestamp: number) {
     }
 }
 
-function drawControls(levelState: LevelContent)
-{
+function drawControls(levelState: LevelContent) {
     const currentBeat = getCurrentMessage();
 
     if (currentBeat?.type !== "cleardialog") {
         return;
     }
     context.save();
-    context.translate((levelState.columns) * GRID_SQUARE_WIDTH/2 - 180, (levelState.rows) * GRID_SQUARE_HEIGHT - 16);
+    context.translate((levelState.columns) * GRID_SQUARE_WIDTH / 2 - 180, (levelState.rows) * GRID_SQUARE_HEIGHT - 16);
     context.fillStyle = "white";
     context.font = "20px Varela Round";
+    context.strokeStyle = 'black';
+    context.lineWidth = 2;
 
-    if(levelState.canContinueLevel) {
+    if (levelState.canContinueLevel) {
         context.drawImage(controlIcons.w, 16, 0, 16, 16);
         context.drawImage(controlIcons.a, 0, 16, 16, 16);
         context.drawImage(controlIcons.s, 16, 16, 16, 16);
         context.drawImage(controlIcons.d, 32, 16, 16, 16);
+        context.strokeText("Move", 52, 22);
         context.fillText("Move", 52, 22);
-        
-        
+
+
         context.drawImage(controlIcons.e, 210, 8, 16, 16);
+        context.strokeText("Swap", 228, 22);
         context.fillText("Swap", 228, 22);
-        
+
         context.drawImage(controlIcons.r, 286, 8, 16, 16);
+        context.strokeText("Reset", 304, 22);
         context.fillText("Reset", 304, 22);
     }
 
-    
+
     context.drawImage(controlIcons.z, 128, 8, 16, 16);
+    context.strokeText("Undo", 148, 22);
     context.fillText("Undo", 148, 22);
     context.restore();
 
