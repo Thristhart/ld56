@@ -4,6 +4,7 @@ import { currentLevelState, GetEntitiesAtLocation, GetTileAtLocation, LevelConte
 import { ActionResult, MoveEntityResult } from "./actions";
 import { IsCreatureEntity } from "./specifications";
 import { sounds } from "~/audio";
+import { GetHint } from "./hints";
 
 export const triggers = new EventEmitter();
 
@@ -43,9 +44,8 @@ triggers.once("turtleCannotMove", () => {
 })
 
 export function TriggerAudioFromResults(results: Array<ActionResult>) {
-    if(currentLevelState?.canContinueLevel)
-    {
-        if(!sounds.music.playing()) {
+    if (currentLevelState?.canContinueLevel) {
+        if (!sounds.music.playing()) {
             sounds.music.play();
         }
     }
@@ -61,22 +61,18 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
                 const prevTile = GetTileAtLocation(currentLevelState!, result.oldLocation);
                 const nextTile = GetTileAtLocation(currentLevelState!, result.newLocation);
                 const entitiesAtNextLocation = GetEntitiesAtLocation(currentLevelState!, result.newLocation);
-                if(nextTile === "boulder-water" || nextTile === "boulder-chasm" || entitiesAtNextLocation.some(ent => ent.type === "boulder" || (ent.type === "turtle" && result.entity.type !== "turtle")))
-                {
+                if (nextTile === "boulder-water" || nextTile === "boulder-chasm" || entitiesAtNextLocation.some(ent => ent.type === "boulder" || (ent.type === "turtle" && result.entity.type !== "turtle"))) {
                     sounds.hardstep.play();
                 }
-                else if( result.entity.type === "turtle" && nextTile === "water" )
-                {
-                    if( prevTile !== "water" )
-                    {
+                else if (result.entity.type === "turtle" && nextTile === "water") {
+                    if (prevTile !== "water") {
                         sounds.turtleWaterEnter.play();
                     }
                     else {
                         sounds.turtleWaterMove.play();
                     }
                 }
-                else
-                {
+                else {
                     sounds.footstep.play();
                 }
             }
@@ -106,8 +102,7 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
                 sounds.frogSelect.play();
             }
         }
-        else if(result.type === "EatInsect")
-        {
+        else if (result.type === "EatInsect") {
             sounds.frogEat.play();
         }
     }
@@ -155,6 +150,57 @@ triggers.on("killmouse", () => {
         type: "message",
         speaker: "mouse",
         message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
+
+triggers.on("hintbird", () => {
+    if (!currentLevelState) {
+        return;
+    }
+
+    const hint = GetHint(currentLevelState.levelName);
+    displayDialog({
+        type: "message",
+        speaker: "bird",
+        message: hint
+    })
+})
+
+
+triggers.on("hintfrog", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    const hint = GetHint(currentLevelState.levelName);
+    displayDialog({
+        type: "message",
+        speaker: "frog",
+        message: hint
+    })
+})
+
+triggers.on("hintturtle", () => {
+    if (!currentLevelState) {
+        return;
+    }
+    const hint = GetHint(currentLevelState.levelName);
+    displayDialog({
+        type: "message",
+        speaker: "turtle",
+        message: hint
+    })
+})
+
+triggers.on("hintmouse", () => {
+    if (!currentLevelState) {
+        return;
+    }
+
+    const hint = GetHint(currentLevelState.levelName);
+    displayDialog({
+        type: "message",
+        speaker: "mouse",
+        message: hint
     })
 })
 

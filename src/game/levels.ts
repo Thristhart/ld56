@@ -28,7 +28,7 @@ import { sounds } from '~/audio';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
-    if(!sounds.music.playing()) {
+    if (!sounds.music.playing()) {
         sounds.music.play();
     }
     initialLevelState = level;
@@ -116,6 +116,7 @@ export interface CircuitData {
 // first number is row
 // second number is column
 export interface LevelContent {
+    levelName: keyof typeof levels,
     rows: number;
     columns: number;
     readonly groundGrid: TerrainType[][];
@@ -135,6 +136,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
     const ground = level.terrain;
 
     const levelContent: LevelContent = {
+        levelName: levelname,
         rows: 0,
         columns: 0,
         groundGrid: [],

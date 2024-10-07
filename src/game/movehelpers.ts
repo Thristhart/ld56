@@ -133,6 +133,7 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
         }
     }
     else if (moveTargetHasCreature) {
+        triggers.emit(`hint${moveTargetHasCreature.type}`)
         // bail out, we can't move
         return [];
     }
@@ -208,6 +209,7 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
 
     const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
     if (moveTargetHasCreature) {
+        triggers.emit(`hint${moveTargetHasCreature.type}`)
         return [];
     }
 
@@ -355,6 +357,7 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
         }
     }
     else if (moveTargetHasCreature) {
+        triggers.emit(`hint${moveTargetHasCreature.type}`)
         // bail out, we can't move
         return [];
     }
@@ -452,6 +455,7 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
     }
     else if (moveTargetHasCreature) {
         // bail out, we can't move
+        triggers.emit(`hint${moveTargetHasCreature.type}`)
         return [];
     }
     else if (tileAtMoveTargetType === 'door') {
