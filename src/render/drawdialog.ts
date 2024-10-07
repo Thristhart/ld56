@@ -22,7 +22,6 @@ export function drawDialog(context: CanvasRenderingContext2D) {
         context.translate(0, levelHeight);
 
         const scale = (levelWidth - 32)/dialogBackgroundImage.width;
-        console.log(levelWidth, scale, dialogBackgroundImage.width / levelWidth);
         context.translate(16, -500 * scale);
         context.scale(scale, scale);
     }
