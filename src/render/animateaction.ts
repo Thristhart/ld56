@@ -1,7 +1,7 @@
 import { ActionResult } from "~/game/actions";
 import { currentLevelState, GetTileAtLocation } from "~/game/levels";
 import { isFlyingTerrain } from "~/game/specifications";
-import { boulderRollAnimation, crowLandAnimation, crowTakeoffAnimation, crowWalkAnimation, frogAttackForwardAnimation, frogAttackUpAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation, turtleWalkAnimation } from "./images";
+import { boulderRollAnimation, crowLandAnimation, crowTakeoffAnimation, crowWalkAnimation, frogAttackDownAnimation, frogAttackForwardAnimation, frogAttackUpAnimation, frogHopAnimation, turtleHideAnimation, turtleUnhideAnimation, turtleWalkAnimation } from "./images";
 import { SpriteAnimation, SpriteAnimationDetails } from "./spritesheet";
 
 export function lerp(a: number, b: number, t: number)
@@ -124,8 +124,17 @@ export function animateActionResult(actionResult: ActionResult, dt: number, dire
             };
             const lerped = lerp(-direction, 0, t);
             entityPositionModifications.set(actionResult.insectId, {row: diff.row * lerped, column: diff.column * lerped})
+            let animation = frogAttackForwardAnimation;
+            if( actionResult.eaterLocation.row > actionResult.insectLocation.row )
+            {
+                animation = frogAttackUpAnimation;
+            }
+            if(actionResult.eaterLocation.row < actionResult.insectLocation.row)
+            {
+                animation = frogAttackDownAnimation;
+            }
             entitySpriteAnimations.set(actionResult.eaterId, {
-                sprite: actionResult.eaterLocation.row > actionResult.insectLocation.row ? frogAttackUpAnimation : frogAttackForwardAnimation,
+                sprite: animation,
             })
         }
     }

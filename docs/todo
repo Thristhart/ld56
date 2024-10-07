@@ -1,7 +1,5 @@
 tasks:
 
-# New goal design
-
 # Intro Sequence (of some sort)
 
 - Menu
@@ -24,7 +22,5 @@ tasks:
 - Maybe cutscenes?
 
 # Name the game
-
-# Name the characters (probably)
 
 # design/implement/test/redesign and reimplement more and better levels.

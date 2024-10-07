@@ -181,6 +181,20 @@ const fromAttackUpSprite: SpriteSheet = {
 }
 export const frogAttackUpAnimation = standardSpriteAnimation(fromAttackUpSprite, 24);
 
+import frogAttackDownUrl from "~/assets/frog_attackdown_strip6.png";
+const frogAttackDownImage = new Image();
+frogAttackDownImage.src = frogAttackDownUrl;
+const fromAttackDownSprite: SpriteSheet = {
+    image: frogAttackDownImage,
+    spriteWidth: 50,
+    spriteHeight: 50,
+    width: 6,
+    height: 1,
+    xOffset: 5,
+    yOffset: -6
+}
+export const frogAttackDownAnimation = standardSpriteAnimation(fromAttackDownSprite, 24);
+
 import fliesUrl from "~/assets/mosquito_strip2.png";
 const fliesImage = new Image();
 fliesImage.src = fliesUrl;
@@ -293,6 +307,40 @@ const boulderChasmSprite: SpriteSheet = {
     height: 1
 };
 export const boulderChasmAnimation = standardSpriteAnimation(boulderChasmSprite, 33);
+
+import witch1IdleUrl from "~/assets/witch1_idle.png";
+const witch1Image = new Image();
+witch1Image.src = witch1IdleUrl;
+const witch1IdleSprite: SpriteSheet = {
+    image: witch1Image,
+    spriteWidth: 128,
+    spriteHeight: 128,
+    width: 8,
+    height: 1,
+};
+export const witch1IdleAnimation: SpriteAnimation = {
+    spritesheet: witch1IdleSprite,
+    getFrame(timestamp) {
+        return [Math.floor((timestamp % (witch1IdleSprite.width * 144)) / 144), 0];
+    },
+}
+
+import witch2IdleUrl from "~/assets/witch2_idle.png";
+const witch2Image = new Image();
+witch2Image.src = witch2IdleUrl;
+const witch2IdleSprite: SpriteSheet = {
+    image: witch2Image,
+    spriteWidth: 128,
+    spriteHeight: 128,
+    width: 6,
+    height: 1,
+};
+export const witch2IdleAnimation: SpriteAnimation = {
+    spritesheet: witch2IdleSprite,
+    getFrame(timestamp) {
+        return [Math.floor((timestamp % (witch2IdleSprite.width * 144)) / 144), 0];
+    },
+}
 
 export const mousePortraitImage = new Image();
 mousePortraitImage.src = mousePortraitUrl;

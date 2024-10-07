@@ -6,6 +6,8 @@ import circuitTestingEntities from '../levels/testing/circuittest.entities?raw';
 import circuitTestingTerrain from '../levels/testing/circuittest.terrain?raw';
 import circuitTestingCircuit from '../levels/testing/circuittest.circuit?raw';
 
+import cutsceneTerrain from '../levels/cutscene.terrain?raw';
+
 import introEntities from '../levels/intro.entities?raw';
 import introTerrain from '../levels/intro.terrain?raw';
 import introCircuit from '../levels/intro.circuit?raw';
@@ -28,8 +30,13 @@ import { sounds } from '~/audio';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
-    if(!sounds.music.playing()) {
-        sounds.music.play();
+    try {
+        if (!sounds.music.playing()) {
+            sounds.music.play();
+        }
+    }
+    catch(e) {
+        
     }
     initialLevelState = level;
     currentLevelState = level;
@@ -41,9 +48,9 @@ export function endLevel() {
 }
 
 interface LevelDescription {
-    entities: string;
     terrain: string;
-    circuit: string;
+    entities?: string;
+    circuit?: string;
 }
 
 export let initialLevelState: LevelContent | undefined;
@@ -53,6 +60,11 @@ export function setCurrentLevelState(newState: LevelContent | undefined) {
 export let currentLevelState: LevelContent | undefined;
 
 export const levels = {
+    cutscene: {
+        terrain: cutsceneTerrain,
+        entities: undefined,
+        circuit: undefined,
+    },
     testing: {
         entities: testingEntities,
         terrain: testingTerrain,
@@ -116,6 +128,7 @@ export interface CircuitData {
 // first number is row
 // second number is column
 export interface LevelContent {
+    levelName: keyof typeof levels,
     rows: number;
     columns: number;
     readonly groundGrid: TerrainType[][];
@@ -135,6 +148,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
     const ground = level.terrain;
 
     const levelContent: LevelContent = {
+        levelName: levelname,
         rows: 0,
         columns: 0,
         groundGrid: [],
@@ -164,7 +178,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
     }
 
     // parse and set initial entities
-    const entityRows = level.entities.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);
+    const entityRows = level.entities?.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g) ?? [];
     for (const entityRowIndex in entityRows) {
         const entityTiles = entityRows[entityRowIndex].split('');
         if (levelContent.columns !== entityTiles.length) {
@@ -195,7 +209,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
 
 
     // parse initial circuits
-    const circuitRows = level.circuit.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);
+    const circuitRows = level.circuit?.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g) ?? [];
     for (const circuitRowIndex in circuitRows) {
         const circuits = circuitRows[circuitRowIndex].split('');
         if (levelContent.columns !== circuits.length) {
