@@ -8,10 +8,6 @@ import circuitTestingCircuit from '../levels/testing/circuittest.circuit?raw';
 
 import cutsceneTerrain from '../levels/cutscene.terrain?raw';
 
-import introEntities from '../levels/intro.entities?raw';
-import introTerrain from '../levels/intro.terrain?raw';
-import introCircuit from '../levels/intro.circuit?raw';
-
 import flower1Terrain from '../levels/turtle_mouse/flower_1/flower_1.terrain?raw';
 import flower1Entities from '../levels/turtle_mouse/flower_1/flower_1.entities?raw';
 import flower1Circuit from '../levels/turtle_mouse/flower_1/flower_1.circuit?raw';
@@ -23,6 +19,10 @@ import flower2Circuit from '../levels/frog_bird/flower_2/flower_2.circuit?raw';
 import boulderPondTerrain from '../levels/turtle_mouse/boulder_pond/boulder_pond.terrain?raw';
 import boulderPondEntities from '../levels/turtle_mouse/boulder_pond/boulder_pond.entities?raw';
 import boulderPondCircuit from '../levels/turtle_mouse/boulder_pond/boulder_pond.circuit?raw';
+
+import riverCrossingTerrain from "../levels/frog_bird/river_crossing/river_crossing.terrain?raw";
+import riverCrossingEntities from "../levels/frog_bird/river_crossing/river_crossing.entities?raw";
+import riverCrossingCircuit from "../levels/frog_bird/river_crossing/river_crossing.circuit?raw";
 
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
@@ -36,7 +36,7 @@ export function startLevel(levelname: keyof typeof levels) {
         }
     }
     catch(e) {
-        
+
     }
     initialLevelState = level;
     currentLevelState = level;
@@ -75,11 +75,6 @@ export const levels = {
         terrain: circuitTestingTerrain,
         circuit: circuitTestingCircuit,
     },
-    intro: {
-        entities: introEntities,
-        terrain: introTerrain,
-        circuit: introCircuit
-    },
     flower1: {
         entities: flower1Entities,
         terrain: flower1Terrain,
@@ -94,6 +89,11 @@ export const levels = {
         entities: boulderPondEntities,
         terrain: boulderPondTerrain,
         circuit: boulderPondCircuit,
+    },
+    riverCrossing: {
+        entities: riverCrossingEntities,
+        terrain: riverCrossingTerrain,
+        circuit: riverCrossingCircuit,
     }
 } as const satisfies Record<string, LevelDescription>;
 

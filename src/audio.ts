@@ -13,6 +13,7 @@ import turtleWaterEnterUrl from "~/assets/audio/turtle water enter.mp3";
 import turtleWaterMoveUrl from "~/assets/audio/turtle water move.mp3";
 import musicUrl from "~/assets/audio/main theme.mp3";
 import frogEatUrl from "~/assets/audio/frog eat.mp3";
+import buttonUrl from "~/assets/audio/bunton.mp3";
 
 export const sounds = {
     boulderMove: new Howl({ src: boulderMoveUrl }),
@@ -27,6 +28,7 @@ export const sounds = {
     turtleWaterEnter: new Howl({ src: turtleWaterEnterUrl }),
     turtleWaterMove: new Howl({ src: turtleWaterMoveUrl }),
     frogEat: new Howl({ src: frogEatUrl }),
+    button: new Howl({ src: buttonUrl }),
     music: new Howl({
         src: musicUrl,
         sprite: {
