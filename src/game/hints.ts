@@ -157,19 +157,24 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
         count: 0, hints: [
             {
                 type: 'message',
-                message: 'This bridge, my dear — absolutely essential!',
-                speaker: 'frog',
+                message: "If the boulder was on the button we could escape this starting room.",
+                speaker: 'turtle',
             },
             {
                 type: 'message',
-                message: 'Ah, this boulder shall make a delightful companion for our journey',
-                speaker: 'frog',
+                message: 'I can push one of the boulders over the bridge if you stand on that button, TURTLENAMEHERE.',
+                speaker: 'rat',
             },
             {
                 type: 'message',
-                message: 'Would you be so kind as to clear the way for me, darling?',
-                speaker: 'bird',
+                message: 'If I get you in that to the left then you could put the boulder on my back. Then I can carry it somewhere more usful',
+                speaker: 'turtle',
             },
+            {
+                type: 'message',
+                message: 'If two of these buttons have boulders and you stand on the last button I can pull out the last boulder, you just need to open the door blocking the tunnel.',
+                speaker: 'rat',
+            }
         ]
     }
 }
