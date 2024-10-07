@@ -1,6 +1,7 @@
 import { continueStory, isShowingMessage } from "~/story";
 import { clearActions, ComputeStateFromActionLog, fireAction, undo } from "./actions";
 import { currentLevelState, setCurrentLevelState } from "./levels";
+import { sounds } from "~/audio";
 
 const canvas = document.querySelector("canvas")!;
 
@@ -85,6 +86,14 @@ function onInput(input: Input) {
         case "r": {
             clearActions();
             setCurrentLevelState(ComputeStateFromActionLog());
+            try {
+                if (!sounds.music.playing()) {
+                    sounds.music.play();
+                }
+            }
+            catch(e) {
+        
+            }
             break;
         }
     }

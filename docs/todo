@@ -11,16 +11,41 @@ tasks:
 
 # Animal Bumping = Talk
 
-- Ow/New York/Hints
 - Explain the hint system without using the words "hint" or "system".
 
 # dialog between levels
 
-# exposititory?? - Explain the story to the player.
-
-- Intro dialogue
-- Maybe cutscenes?
-
 # Name the game
 
 # design/implement/test/redesign and reimplement more and better levels.
+
+
+# dialog todo list
+characterization notes:
+mouse: precocious, cassie vibes
+turtle: chill, slow. all lowercase
+bird: hmmm yes, very proper. a bug? oh dear, not for me. morticia addams?
+frog: gomez addams to her morticia. yes dear absolutely I will eat these bugs for you my precious
+
+- flower 2 intro dialog
+    introduce the characterization of bird/frog. of course we will be the best familiars
+- flower 2 hints
+- boulder pond intro dialog
+    talk about what your hearts greatest desire is
+- boulder pond hints
+- river crossing intro dialog
+    what sort of lavish mansion do you suppose these witches live in?
+- river crossing hints
+- super boulder adventure intro dialog
+    what kind of creatures do you think we'll meet?
+- super boulder adventure hints
+- last bird/frog level intro dialog
+    dear you have done such a good job with these puzzles. yes, we're the greatest
+- everyone together dialog
+    witches: you four are the final candidates. you're all so cute how can I choose just one? you know what why not all of you. tell me, what is your desire?
+    everyone's desires are pretty simple, witches grant them. turtle just wants friends, to grant it they all hang out (game end)
+# dynamic dialog todo list
+- bird won't go through insects
+    - frog is happy to eat em
+- frog ate delicious insects
+- do a pass on all the "oh no i died" dialogs

@@ -1,7 +1,7 @@
 import { currentLevelState } from "~/game/levels";
 import { getCurrentMessage, Speaker } from "~/story";
 import { GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH } from "./drawframe";
-import { crowWalkAnimation, dialogBackgroundImage, frogHopAnimation, mousePortraitImage, turtlePortraitImage, witch1IdleAnimation, witch2IdleAnimation } from "./images";
+import { controlIcons, crowWalkAnimation, dialogBackgroundImage, frogHopAnimation, mousePortraitImage, turtlePortraitImage, witch1IdleAnimation, witch2IdleAnimation } from "./images";
 import { drawSprite } from "./spritesheet";
 
 function GetSpeakerDisplayName(speaker: Speaker): string
@@ -56,12 +56,12 @@ export function drawDialog(context: CanvasRenderingContext2D) {
     context.fillText(speakerName, 110, 233);
     context.fillStyle = "black";
     context.fillText(currentBeat.message, 100, 300);
+    context.drawImage(controlIcons.leftclick, 1340, 370, 32, 32);
 
     context.restore();
 }
 
 function drawSpeaker(speaker: Speaker, context: CanvasRenderingContext2D) {
-
     if (speaker === 'turtle') {
         context.drawImage(turtlePortraitImage, 70, 0, portraitSize, portraitSize);
     }
@@ -102,7 +102,6 @@ function drawSpeaker(speaker: Speaker, context: CanvasRenderingContext2D) {
             false,
             { width: portraitSize * 2, height: portraitSize * 2 },
         )
-        
     }
     else if (speaker === 'witch2') {
         drawSprite(
@@ -114,6 +113,5 @@ function drawSpeaker(speaker: Speaker, context: CanvasRenderingContext2D) {
             false,
             { width: portraitSize * 2, height: portraitSize * 2 },
         )
-        
     }
 }

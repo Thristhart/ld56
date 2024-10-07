@@ -98,10 +98,28 @@ const story: Array<StoryBeat> = [
         message: "alright, fine. it'll be something to do",
     },
     { type: "cleardialog" },
+    { type: "cleardialog" },
+    { type: "waitforlevelcomplete" },
+    {
+        type: "startlevel",
+        level: "flower2"
+    },
+    
+    { type: "waitforlevelcomplete" },
+    {
+        type: "startlevel",
+        level: "boulderPond"
+    },
+    
     { type: "waitforlevelcomplete" },
     {
         type: "startlevel",
         level: "riverCrossing"
+    },
+    { type: "waitforlevelcomplete" },
+    {
+        type: "startlevel",
+        level: "superBoulderAdventure"
     },
     // characterization notes:
     // mouse: precocious, cassie vibes

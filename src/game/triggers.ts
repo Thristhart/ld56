@@ -64,9 +64,11 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
         if (!sounds.music.playing()) {
             sounds.music.play();
         }
+        sounds.musicDeath.stop();
     }
     else {
         sounds.music.pause();
+        sounds.musicDeath.play();
     }
     for (const result of results) {
         if (result.type === "MoveEntity") {

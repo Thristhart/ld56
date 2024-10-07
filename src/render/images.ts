@@ -500,6 +500,7 @@ import icondUrl from "~/assets/icon_d.png";
 import iconeUrl from "~/assets/icon_e.png";
 import iconzUrl from "~/assets/icon_z.png";
 import iconrUrl from "~/assets/icon_r.png";
+import iconLeftClickUrl from "~/assets/icon_leftclick.png";
 export const controlIcons = {
     w: new Image(),
     a: new Image(),
@@ -508,6 +509,7 @@ export const controlIcons = {
     e: new Image(),
     z: new Image(),
     r: new Image(),
+    leftclick: new Image(),
 };
 controlIcons.w.src = iconwUrl;
 controlIcons.a.src = iconaUrl;
@@ -516,6 +518,7 @@ controlIcons.d.src = icondUrl;
 controlIcons.e.src = iconeUrl;
 controlIcons.z.src = iconzUrl;
 controlIcons.r.src = iconrUrl;
+controlIcons.leftclick.src = iconLeftClickUrl;
 
 const waterBackgroundSprite: SpriteSheet = {
     image: waterBackgroundSpriteImage,
