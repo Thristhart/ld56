@@ -19,6 +19,10 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
             },
         ]
     },
+    endcutscene: {
+        count: 0,
+        hints: [],
+    },
     circuittesting: {
         count: 0, hints: [
             {
