@@ -9,26 +9,86 @@ const story: Array<StoryBeat> = [
     {
         type: "message",
         speaker: "witch1",
-        message: "hello??"
+        message: "Attention, tiny creatures of the forest!"
+    },
+    {
+        type: "message",
+        speaker: "witch1",
+        message: "I am Thistle, the great witch!"
+    },
+    {
+        type: "message",
+        speaker: "witch2",
+        message: "And I am the great witch Wisteria!"
+    },
+    {
+        type: "message",
+        speaker: "witch1",
+        message: "We are speaking to your minds to summon you... for a challenge!"
+    },
+    {
+        type: "message",
+        speaker: "witch2",
+        message: "We each require a familiar. The tiny creature who passes our trials..."
+    },
+    {
+        type: "message",
+        speaker: "witch1",
+        message: "...will be rewarded with their heart's greatest desire!"
     },
     {
         type: "startlevel",
-        level: "flower2"
+        level: "flower1"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "!!!"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "Tiramisu!"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "WE HAVE TO GO!"
     },
     {
         type: "message",
         speaker: "turtle",
-        message: "hello??"
+        message: "what?",
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "OUR HEART'S GREATEST DESIRE?"
     },
     {
         type: "message",
         speaker: "turtle",
-        message: "hi world",
+        message: "it sounds like a lot of work",
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "Come on, Tiramisu! It'll be an adventure!"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "You can be Thistle's familiar and I'll be Wisteria's familiar!"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "And we'll be friends forever!"
     },
     {
         type: "message",
         speaker: "turtle",
-        message: "it's me",
+        message: "alright, fine. it'll be something to do",
     },
     { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
