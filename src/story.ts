@@ -65,7 +65,12 @@ const story: Array<StoryBeat> = [
     {
         type: "message",
         speaker: "mouse",
-        message: "OUR HEART'S GREATEST DESIRE? Think of how much frosting we could get!"
+        message: "OUR HEART'S GREATEST DESIRE?"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "Think of how much frosting we could get!"
     },
     {
         type: "message",
