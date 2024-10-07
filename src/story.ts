@@ -151,7 +151,6 @@ const story: Array<StoryBeat> = [
 
     {
         type: "startlevel",
-        level: "lastTurtle"
         level: "riverCrossing"
     },
     {
