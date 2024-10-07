@@ -12,6 +12,7 @@ import bumpUrl from "~/assets/audio/bump.mp3";
 import turtleWaterEnterUrl from "~/assets/audio/turtle water enter.mp3";
 import turtleWaterMoveUrl from "~/assets/audio/turtle water move.mp3";
 import musicUrl from "~/assets/audio/main theme.mp3";
+import frogEatUrl from "~/assets/audio/frog eat.mp3";
 
 export const sounds = {
     boulderMove: new Howl({src: boulderMoveUrl}),
@@ -25,13 +26,14 @@ export const sounds = {
     bump: new Howl({src: bumpUrl}),
     turtleWaterEnter: new Howl({src: turtleWaterEnterUrl}),
     turtleWaterMove: new Howl({src: turtleWaterMoveUrl}),
+    frogEat: new Howl({src: frogEatUrl}),
     music: new Howl({
         src: musicUrl,
         sprite: {
             intro: [0, 28630],
             loop: [28630, 204090, true]
         }
-    })
+    }),
 } as const satisfies { [key: string]: Howl };
 
 export function startMusic()
