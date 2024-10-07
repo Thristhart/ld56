@@ -107,7 +107,7 @@ const story: Array<StoryBeat> = [
     {
         type: "message",
         speaker: "frog",
-        message: "Yes, Cupcake! You would divine look perched on a witch's staff."
+        message: "Yes, Cupcake! You would look divine perched on a witch's staff."
     },
     {
         type: "message",
