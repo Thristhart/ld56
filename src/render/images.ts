@@ -181,6 +181,20 @@ const fromAttackUpSprite: SpriteSheet = {
 }
 export const frogAttackUpAnimation = standardSpriteAnimation(fromAttackUpSprite, 24);
 
+import frogAttackDownUrl from "~/assets/frog_attackdown_strip6.png";
+const frogAttackDownImage = new Image();
+frogAttackDownImage.src = frogAttackDownUrl;
+const fromAttackDownSprite: SpriteSheet = {
+    image: frogAttackDownImage,
+    spriteWidth: 50,
+    spriteHeight: 50,
+    width: 6,
+    height: 1,
+    xOffset: 5,
+    yOffset: -6
+}
+export const frogAttackDownAnimation = standardSpriteAnimation(fromAttackDownSprite, 24);
+
 import fliesUrl from "~/assets/mosquito_strip2.png";
 const fliesImage = new Image();
 fliesImage.src = fliesUrl;

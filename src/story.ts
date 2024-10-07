@@ -4,7 +4,21 @@ let storyIndex = -1;
 const story: Array<StoryBeat> = [
     {
         type: "startlevel",
+        level: "cutscene"
+    },
+    {
+        type: "message",
+        speaker: "witch1",
+        message: "hello??"
+    },
+    {
+        type: "startlevel",
         level: "flower2"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "hello??"
     },
     {
         type: "message",
@@ -30,7 +44,7 @@ if (import.meta.env.DEV) {
     window.DEBUG_STORY = story;
 }
 
-export type Speaker = "none" | "turtle" | "frog" | "bird" | "mouse";
+export type Speaker = "none" | "turtle" | "frog" | "bird" | "mouse" | "witch1" | "witch2";
 
 export interface StoryMessage {
     readonly type: "message";

@@ -41,9 +41,9 @@ export function endLevel() {
 }
 
 interface LevelDescription {
-    entities: string;
     terrain: string;
-    circuit: string;
+    entities?: string;
+    circuit?: string;
 }
 
 export let initialLevelState: LevelContent | undefined;
@@ -53,6 +53,11 @@ export function setCurrentLevelState(newState: LevelContent | undefined) {
 export let currentLevelState: LevelContent | undefined;
 
 export const levels = {
+    cutscene: {
+        terrain: testingTerrain,
+        entities: undefined,
+        circuit: undefined,
+    },
     testing: {
         entities: testingEntities,
         terrain: testingTerrain,
@@ -166,7 +171,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
     }
 
     // parse and set initial entities
-    const entityRows = level.entities.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);
+    const entityRows = level.entities?.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g) ?? [];
     for (const entityRowIndex in entityRows) {
         const entityTiles = entityRows[entityRowIndex].split('');
         if (levelContent.columns !== entityTiles.length) {
@@ -197,7 +202,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
 
 
     // parse initial circuits
-    const circuitRows = level.circuit.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g);
+    const circuitRows = level.circuit?.replace(/ |\t/g, "").trim().split(/\r?\n|\r|\n/g) ?? [];
     for (const circuitRowIndex in circuitRows) {
         const circuits = circuitRows[circuitRowIndex].split('');
         if (levelContent.columns !== circuits.length) {

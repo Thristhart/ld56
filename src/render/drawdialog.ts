@@ -14,7 +14,11 @@ function GetSpeakerDisplayName(speaker: Speaker): string
         case "frog":
             return "Fudge";
         case "mouse":
-            return "Muffin"
+            return "Muffin";
+        case "witch1":
+            return "Thistle";
+        case "witch2":
+            return "Wisteria";
         case "none":
             return "";
     }
