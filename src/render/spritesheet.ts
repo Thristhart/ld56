@@ -19,6 +19,7 @@ export interface SpriteAnimationDetails {
     startTime: number;
     onComplete?: () => void;
     renderDimensions?: {width: number; height: number};
+    flip?: boolean;
 }
 
 export function drawSprite(
