@@ -29,7 +29,7 @@ export const sounds = {
         src: musicUrl,
         sprite: {
             intro: [0, 28630],
-            loop: [28630, 232720, true]
+            loop: [28630, 204090, true]
         }
     })
 } as const satisfies { [key: string]: Howl };
