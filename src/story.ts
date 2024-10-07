@@ -179,6 +179,31 @@ const story: Array<StoryBeat> = [
         type: "startlevel",
         level: "superBoulderAdventure"
     },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "What kind of animals do you think we'll meet?"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "oh, all sorts I'm sure. lots of creatures could be a familiar"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "I hope they're tough competition!"
+    },
+    {
+        type: "message",
+        speaker: "turtle",
+        message: "wouldn't it be better if they're easy for us to beat?"
+    },
+    {
+        type: "message",
+        speaker: "mouse",
+        message: "Where's the fun in that?!"
+    },
     // characterization notes:
     // mouse: precocious, cassie vibes
     // turtle: chill, slow. all lowercase
