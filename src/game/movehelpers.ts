@@ -1,4 +1,4 @@
-import { ActionResult } from "./actions";
+import { ActionResult, IsActiveResult } from "./actions";
 import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation, CircuitData, ActivationElement } from "./levels";
 import { creatures, CreatureType, IsCreatureEntity } from "./specifications";
 import { triggers } from "./triggers";
@@ -60,11 +60,11 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
     const entitiesAtMoveTarget = GetEntitiesAtLocation(levelState, moveTarget);
     const entityMoveResults = GetEntityMoveResults(levelState, entity, direction);
 
-    if (entityMoveResults.length > 0) {
+    if (entityMoveResults.length > 0 && IsActiveResult(entityMoveResults)) {
         const boulder = entitiesAtMoveTarget.find((entity) => entity.type === 'boulder');
         if (boulder) {
             const boulderMoveResults = GetBoulderMovementActionResults(levelState, boulder, direction);
-            if (!boulderMoveResults.length) {
+            if (!boulderMoveResults.length || !IsActiveResult(boulderMoveResults)) {
                 const newFacing = GetFacingNewDirection(entity.facing, direction)
                 if (newFacing) {
                     return [{
@@ -87,7 +87,7 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
 
     const newFacing = GetFacingNewDirection(entity.facing, direction)
     if (newFacing) {
-        return [{
+        return [...entityMoveResults, {
             type: "SwitchFacingDirection",
             entityid: entity.id,
             oldFacing: entity.facing,
@@ -96,7 +96,7 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
         }]
     }
     else {
-        return [];
+        return entityMoveResults;
     }
 }
 
@@ -129,7 +129,9 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
         }
         else {
             // bail out, we can't move
-            return [];
+            return [
+                { type: "NoAction", triggers: ["mouseCantSwim"] }
+            ] as Array<ActionResult>;
         }
     }
     else if (moveTargetHasCreature) {

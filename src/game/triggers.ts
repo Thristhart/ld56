@@ -12,9 +12,25 @@ triggers.once("turtleOnWater", () => {
     displayDialog({
         type: "message",
         speaker: "turtle",
-        message: "i'm in da water"
+        message: "hop on Muffin, I can carry you"
     })
 })
+
+triggers.once("mouseCantSwim", () => {
+    displayDialog(
+        {
+            type: "message",
+            speaker: "mouse",
+            message: "I can't swim!"
+        },
+        {
+            type: "message",
+            speaker: "turtle",
+            message: "don't worry, I can"
+        }
+    )
+})
+
 
 triggers.on("creatureOnGoal", () => {
     if (!currentLevelState) {
