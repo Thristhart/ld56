@@ -3,8 +3,9 @@ import { currentLevelState, EntityData, GetCircuitActivationElementAtLocation, G
 import { animateActionResult } from "./animateaction";
 import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_CURRENT_CREATURE_HIGHLIGHT_STOP, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { chasmTopEdgeImage, fliesAnimation, GetBridgeImagesForCircuit, GetButtonImagesForCircuit, GetDoorAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
+import { chasmTopEdgeImage, controlIcons, fliesAnimation, GetBridgeImagesForCircuit, GetButtonImagesForCircuit, GetDoorAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
+import { getCurrentMessage } from "~/story";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -158,8 +159,7 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         const doorAnimation = GetDoorAnimation(circuitResponse?.circuit.circuitId);
                         if (isWall(col, row - 1)) {
                             const frame = circuitResponse?.isActive ? [0, 0] as const : doorAnimation.getFrame(timestamp);
-                            const offset = circuitResponse?.isActive ? 6 : 12;
-                            drawSprite(context, doorAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - offset, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 6, frame, false, { width: 48, height: 64 });
+                            drawSprite(context, doorAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - 10, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 6, frame, false, { width: 48, height: 64 });
                         }
                         else {
                             const frame = circuitResponse?.isActive ? doorAnimation.getFrame(timestamp) : [0, 0] as const;
@@ -169,14 +169,14 @@ function drawGrid(level: LevelContent, timestamp: number) {
                     }
                     if (terrainType == "boulder-chasm") {
                         const above = level.groundGrid[row - 1][col];
-                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                     }
                     let terrainAnimation = GetTerrainAnimation(terrainType, { row, column: col });
                     if (terrainType === "water") {
                         const above = level.groundGrid[row - 1][col];
-                        if (above !== "water" && above !== "boulder-water") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             terrainAnimation = {
                                 sprite: waterTopEdgeBackgroundAnimation,
                                 direction: 1,
@@ -187,15 +187,15 @@ function drawGrid(level: LevelContent, timestamp: number) {
                     if (terrainType == "boulder-water") {
                         const above = level.groundGrid[row - 1][col];
                         let waterAnim = GetTerrainAnimation("water")!;
-                        if (above !== "water" && above !== "boulder-water") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             waterAnim = {
                                 sprite: waterTopEdgeBackgroundAnimation,
                                 direction: 1,
                                 startTime: 0
                             }
                         }
-                        drawSprite(context, waterAnim.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.sprite.getFrame(timestamp), false, terrainAnimation?.renderDimensions ?? { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
-                        drawSprite(context, terrainAnimation!.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.sprite.getFrame(timestamp), false, terrainAnimation?.renderDimensions ?? { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, waterAnim.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.sprite.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation!.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.sprite.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
                     if (terrainType === "goal") {
@@ -203,20 +203,20 @@ function drawGrid(level: LevelContent, timestamp: number) {
                     }
 
                     if (terrainAnimation) {
-                        drawSprite(context, terrainAnimation.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.sprite.getFrame(timestamp - terrainAnimation.startTime), false, terrainAnimation?.renderDimensions ?? { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.sprite.getFrame(timestamp - terrainAnimation.startTime), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
 
                     if (terrainType == "chasm") {
                         const above = level.groundGrid[row - 1][col];
-                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                             continue;
                         }
                     }
                     if (terrainType === "bridge") {
                         const above = level.groundGrid[row - 1][col];
-                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm" && above !== "water" && above !== "boulder-water") {
                             context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         }
                         else {
@@ -237,8 +237,8 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         continue;
                     }
                     if (terrainType === 'button') {
-                        context.drawImage(GetTerrainBackground("ground")!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         const circuit = GetCircuitActivationElementAtLocation(level, { row, column: col });
+                        context.drawImage(GetTerrainBackground('ground')!, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                         const buttonImages = GetButtonImagesForCircuit(circuit?.circuit.circuitId);
                         const buttonImage = circuit?.element.isActive ? buttonImages.down : buttonImages.up
                         context.drawImage(buttonImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
@@ -300,12 +300,6 @@ function fitLevelToCamera() {
 
 function sortEntities(a: EntityData, b: EntityData) {
 
-    if(a.type === "altar") {
-        return -1;
-    }
-    if(b.type === "altar") {
-        return 1;
-    }
     // otherwise turtle should be most-bottom
     if (a.type === "turtle") {
         return -1;
@@ -445,7 +439,7 @@ function drawEntities(levelState: LevelContent, timestamp: number) {
                 entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
                 entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
                 spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
-                entity.facing === (spriteDetails.flip ? "right" : "left"),
+                entity.facing === "left",
                 spriteDetails.renderDimensions,
             )
         }
@@ -460,6 +454,40 @@ function drawEntities(levelState: LevelContent, timestamp: number) {
     }
 }
 
+function drawControls(levelState: LevelContent)
+{
+    const currentBeat = getCurrentMessage();
+
+    if (currentBeat?.type !== "cleardialog") {
+        return;
+    }
+    context.save();
+    context.translate((levelState.columns) * GRID_SQUARE_WIDTH/2 - 180, (levelState.rows) * GRID_SQUARE_HEIGHT - 16);
+    context.fillStyle = "white";
+    context.font = "20px Varela Round";
+
+    if(levelState.canContinueLevel) {
+        context.drawImage(controlIcons.w, 16, 0, 16, 16);
+        context.drawImage(controlIcons.a, 0, 16, 16, 16);
+        context.drawImage(controlIcons.s, 16, 16, 16, 16);
+        context.drawImage(controlIcons.d, 32, 16, 16, 16);
+        context.fillText("Move", 52, 22);
+        
+        
+        context.drawImage(controlIcons.e, 210, 8, 16, 16);
+        context.fillText("Swap", 228, 22);
+        
+        context.drawImage(controlIcons.r, 286, 8, 16, 16);
+        context.fillText("Reset", 304, 22);
+    }
+
+    
+    context.drawImage(controlIcons.z, 128, 8, 16, 16);
+    context.fillText("Undo", 148, 22);
+    context.restore();
+
+}
+
 export function drawFrame(timestamp: number) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -472,15 +500,16 @@ export function drawFrame(timestamp: number) {
     context.translate(Math.round(canvas.width / 2 - camera.x * camera.scale), Math.round(canvas.height / 2 - camera.y * camera.scale));
     context.scale(camera.scale, camera.scale);
 
+
     if (currentLevelState) {
         drawGrid(currentLevelState, timestamp);
         drawEntities(currentLevelState, timestamp);
+        drawControls(currentLevelState);
     }
     // render story bits
     drawDialog(context);
 
     context.restore();
-
 }
 
 
