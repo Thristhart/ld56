@@ -3,8 +3,9 @@ import { currentLevelState, EntityData, GetCircuitActivationElementAtLocation, G
 import { animateActionResult } from "./animateaction";
 import { COLOR_CURRENT_CREATURE_HIGHLIGHT, COLOR_CURRENT_CREATURE_HIGHLIGHT_STOP, GetTerrainColor } from "./colors";
 import { drawDialog } from "./drawdialog";
-import { chasmTopEdgeImage, fliesAnimation, GetBridgeImagesForCircuit, GetButtonImagesForCircuit, GetDoorAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
+import { chasmTopEdgeImage, controlIcons, fliesAnimation, GetBridgeImagesForCircuit, GetButtonImagesForCircuit, GetDoorAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
+import { getCurrentMessage } from "~/story";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -454,6 +455,33 @@ function drawEntities(levelState: LevelContent, timestamp: number) {
     }
 }
 
+function drawControls(levelState: LevelContent)
+{
+    const currentBeat = getCurrentMessage();
+
+    if (currentBeat?.type !== "cleardialog") {
+        return;
+    }
+    context.save();
+    context.translate((levelState.columns) * GRID_SQUARE_WIDTH/2 - 150, (levelState.rows) * GRID_SQUARE_HEIGHT - 16);
+    context.fillStyle = "white";
+    context.font = "20px Varela Round";
+
+    context.drawImage(controlIcons.w, 16, 0, 16, 16);
+    context.drawImage(controlIcons.a, 0, 16, 16, 16);
+    context.drawImage(controlIcons.s, 16, 16, 16, 16);
+    context.drawImage(controlIcons.d, 32, 16, 16, 16);
+    context.fillText("Move", 52, 22);
+    
+    context.drawImage(controlIcons.z, 128, 8, 16, 16);
+    context.fillText("Undo", 148, 22);
+    
+    context.drawImage(controlIcons.r, 226, 8, 16, 16);
+    context.fillText("Reset", 248, 22);
+    context.restore();
+
+}
+
 export function drawFrame(timestamp: number) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -466,15 +494,16 @@ export function drawFrame(timestamp: number) {
     context.translate(Math.round(canvas.width / 2 - camera.x * camera.scale), Math.round(canvas.height / 2 - camera.y * camera.scale));
     context.scale(camera.scale, camera.scale);
 
+
     if (currentLevelState) {
         drawGrid(currentLevelState, timestamp);
         drawEntities(currentLevelState, timestamp);
+        drawControls(currentLevelState);
     }
     // render story bits
     drawDialog(context);
 
     context.restore();
-
 }
 
 
