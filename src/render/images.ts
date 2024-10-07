@@ -1,33 +1,22 @@
 import turtlePortraitUrl from "~/assets/turtle_portrait.png";
 import turtleHideUrl from "~/assets/turtle_hide_strip8.png";
 import turtleUnhideUrl from "~/assets/turtle_unhide_strip5.png";
+
 import mousePortraitUrl from "~/assets/mouse_portrait.png";
-import goalPortraitUrl from "~/assets/goal_portrait.png";
 import boulderRollUrl from "~/assets/new_boulder_roll.png";
 
 import grassBackgroundUrl from "~/assets/grass_background.png";
 import tunnelBackgroundUrl from "~/assets/tunnel_background.png";
 import dialogBackgroundUrl from "~/assets/dialog_panel.png";
 import waterBackgroundSpriteUrl from "~/assets/water_animated.png";
-import waterBoulderBackgroundSpriteUrl from "~/assets/water_boulder_animated-sheet.png";
+import waterBoulderBackgroundSpriteUrl from "~/assets/water_boulder_animated_sheet.png";
 import waterTopEdgeBackgroundSpriteUrl from "~/assets/water_top_edge_animated.png";
-import buttonBackgroundUrl from "~/assets/button_background.png";
 import chasmTopEdgeUrl from "~/assets/chasm_top_edge.png";
-import bridgeOpenHorizontalUrl from "~/assets/bridge_open_horizontal.png";
-import bridgeClosedHorizontalUrl from "~/assets/bridge_closed_horizontal.png";
-import bridgeOpenVerticalUrl from "~/assets/bridge_open_vertical.png";
-import bridgeClosedVerticalUrl from "~/assets/bridge_closed_vertical.png";
-
-import doorOpenBackgroundUrl from "~/assets/door_open_background.png";
-import doorClosedBackgroundUrl from "~/assets/door_closed_background.png";
-import bridgeOpenBackgroundUrl from "~/assets/bridge_open_background.png";
-import bridgeClosedBackgroundUrl from "~/assets/bridge_closed_background.png";
-import wallBackgroundUrl from "~/assets/tree_wall.png";
-import wall9GridUrl from "~/assets/wall_9grid.png";
-import rockwallUrl from "~/assets/rockwall.png";
-import doorSpriteUrl from "~/assets/door_strip6.png";
 
 import treeImageUrl from "~/assets/tree.png";
+import wallBackgroundUrl from "~/assets/tree_wall.png";
+
+import wall9GridUrl from "~/assets/wall_9grid.png";
 
 import { currentLevelState, EntityData, GetTileAtLocation, Location } from "~/game/levels";
 import { SpriteAnimation, SpriteAnimationDetails, SpriteSheet } from "./spritesheet";
@@ -237,17 +226,6 @@ const boulderRollSprite: SpriteSheet = {
 }
 export const boulderRollAnimation = standardSpriteAnimation(boulderRollSprite, 24);
 
-const doorSpriteImage = new Image();
-doorSpriteImage.src = doorSpriteUrl;
-const doorSprite: SpriteSheet = {
-    image: doorSpriteImage,
-    spriteWidth: 96,
-    spriteHeight: 128,
-    width: 6,
-    height: 1
-};
-export const doorOpenAnimation = standardSpriteAnimation(doorSprite, 33);
-
 import doorSpriteBlueUrl from "~/assets/door_strip6_blue.png";
 const doorSpriteBlueImage = new Image();
 doorSpriteBlueImage.src = doorSpriteBlueUrl;
@@ -295,6 +273,18 @@ const doorSpritePurple: SpriteSheet = {
     height: 1
 };
 export const doorOpenPurpleAnimation = standardSpriteAnimation(doorSpritePurple, 33);
+
+import doorSpriteWhiteUrl from "~/assets/door_strip6_white.png";
+const doorSpriteWhiteImage = new Image();
+doorSpriteWhiteImage.src = doorSpriteWhiteUrl;
+const doorSpriteWhite: SpriteSheet = {
+    image: doorSpriteWhiteImage,
+    spriteWidth: 96,
+    spriteHeight: 128,
+    width: 6,
+    height: 1
+};
+export const doorOpenWhiteAnimation = standardSpriteAnimation(doorSpriteWhite, 33);
 
 import boulderChasmUrl from "~/assets/boulder_chasm_animated.png";
 const boulderChasmImage = new Image();
@@ -345,9 +335,6 @@ export const witch2IdleAnimation: SpriteAnimation = {
 export const mousePortraitImage = new Image();
 mousePortraitImage.src = mousePortraitUrl;
 
-export const goalPortraitImage = new Image();
-goalPortraitImage.src = goalPortraitUrl;
-
 
 // Background Images
 export const grassBackgroundImage = new Image();
@@ -368,20 +355,6 @@ waterBoulderBackgroundSpriteImage.src = waterBoulderBackgroundSpriteUrl;
 const waterTopEdgeBackgroundSpriteImage = new Image();
 waterTopEdgeBackgroundSpriteImage.src = waterTopEdgeBackgroundSpriteUrl;
 
-export const buttonBackgroundImage = new Image();
-buttonBackgroundImage.src = buttonBackgroundUrl;
-
-export const doorOpenBackgroundImage = new Image();
-doorOpenBackgroundImage.src = doorOpenBackgroundUrl;
-
-export const doorClosedBackgroundImage = new Image();
-doorClosedBackgroundImage.src = doorClosedBackgroundUrl;
-
-export const bridgeOpenBackgroundImage = new Image();
-bridgeOpenBackgroundImage.src = bridgeOpenBackgroundUrl;
-
-export const bridgeClosedBackgroundImage = new Image();
-bridgeClosedBackgroundImage.src = bridgeClosedBackgroundUrl;
 
 export const treeWallBackgroundImage = new Image();
 treeWallBackgroundImage.src = wallBackgroundUrl;
@@ -389,21 +362,8 @@ treeWallBackgroundImage.src = wallBackgroundUrl;
 export const wall9GridImage = new Image();
 wall9GridImage.src = wall9GridUrl;
 
-export const rockWallImage = new Image();
-rockWallImage.src = rockwallUrl;
-
 export const chasmTopEdgeImage = new Image();
 chasmTopEdgeImage.src = chasmTopEdgeUrl;
-
-export const bridgeOpenHorizontalImage = new Image();
-bridgeOpenHorizontalImage.src = bridgeOpenHorizontalUrl;
-export const bridgeClosedHorizontalImage = new Image();
-bridgeClosedHorizontalImage.src = bridgeClosedHorizontalUrl;
-
-export const bridgeOpenVerticalImage = new Image();
-bridgeOpenVerticalImage.src = bridgeOpenVerticalUrl;
-export const bridgeClosedVerticalImage = new Image();
-bridgeClosedVerticalImage.src = bridgeClosedVerticalUrl;
 
 import bridgeOpenBlueHorizontalUrl from "~/assets/bridge_open_horizontal_blue.png";
 import bridgeClosedBlueHorizontalUrl from "~/assets/bridge_closed_horizontal_blue.png";
@@ -461,6 +421,22 @@ bridgeOpenYellowVerticalImage.src = bridgeOpenYellowVerticalUrl;
 export const bridgeClosedYellowVerticalImage = new Image();
 bridgeClosedYellowVerticalImage.src = bridgeClosedYellowVerticalUrl;
 
+import bridgeOpenWhiteHorizontalUrl from "~/assets/bridge_open_horizontal_white.png";
+import bridgeClosedWhiteHorizontalUrl from "~/assets/bridge_closed_horizontal_white.png";
+export const bridgeOpenWhiteHorizontalImage = new Image();
+bridgeOpenWhiteHorizontalImage.src = bridgeOpenWhiteHorizontalUrl;
+export const bridgeClosedWhiteHorizontalImage = new Image();
+bridgeClosedWhiteHorizontalImage.src = bridgeClosedWhiteHorizontalUrl;
+
+import bridgeOpenWhiteVerticalUrl from "~/assets/bridge_open_vertical_white.png";
+import bridgeClosedWhiteVerticalUrl from "~/assets/bridge_closed_vertical_white.png";
+export const bridgeOpenWhiteVerticalImage = new Image();
+bridgeOpenWhiteVerticalImage.src = bridgeOpenWhiteVerticalUrl;
+export const bridgeClosedWhiteVerticalImage = new Image();
+bridgeClosedWhiteVerticalImage.src = bridgeClosedWhiteVerticalUrl;
+
+
+// BUTTONS
 import buttonBlueBackgroundUrl from "~/assets/button_background_blue.png";
 export const buttonBlueBackgroundImage = new Image();
 buttonBlueBackgroundImage.src = buttonBlueBackgroundUrl;
@@ -476,6 +452,10 @@ buttonPurpleBackgroundImage.src = buttonPurpleBackgroundUrl;
 import buttonYellowBackgroundUrl from "~/assets/button_background_yellow.png";
 export const buttonYellowBackgroundImage = new Image();
 buttonYellowBackgroundImage.src = buttonYellowBackgroundUrl;
+
+import buttonWhiteBackgroundUrl from "~/assets/button_background_white.png";
+export const buttonWhiteBackgroundImage = new Image();
+buttonWhiteBackgroundImage.src = buttonWhiteBackgroundUrl;
 
 import buttonBlueDownBackgroundUrl from "~/assets/button_background_blue_down.png";
 export const buttonBlueDownBackgroundImage = new Image();
@@ -493,6 +473,12 @@ import buttonYellowDownBackgroundUrl from "~/assets/button_background_yellow_dow
 export const buttonYellowDownBackgroundImage = new Image();
 buttonYellowDownBackgroundImage.src = buttonYellowDownBackgroundUrl;
 
+import buttonWhiteDownBackgroundUrl from "~/assets/button_background_white_down.png";
+export const buttonWhiteDownBackgroundImage = new Image();
+buttonWhiteDownBackgroundImage.src = buttonWhiteDownBackgroundUrl;
+
+
+// ICONS
 import iconwUrl from "~/assets/icon_w.png";
 import iconaUrl from "~/assets/icon_a.png";
 import iconsUrl from "~/assets/icon_s.png";
@@ -596,20 +582,10 @@ export function GetEntityPortrait(entity: EntityType) {
     }
 }
 
-export function GetTerrainBackground(terrain: TerrainType, activeElementState?: boolean) {
-    if (activeElementState) {
-        if (terrain === 'bridge')
-            return bridgeOpenBackgroundImage;
-        if (terrain === 'door')
-            return doorOpenBackgroundImage;
-    }
-
+export function GetTerrainBackground(terrain: TerrainType) {
     switch (terrain) {
         case 'ground': return grassBackgroundImage;
         case 'tunnel': return tunnelBackgroundImage;
-        case 'button': return buttonBackgroundImage;
-        case 'wall': return rockWallImage;
-        case 'goal': return goalPortraitImage;
         default: return undefined;
     }
 }
@@ -685,12 +661,14 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
 // red for 2 
 // blue for 3 
 // purple for 4
+// white for 5
 
 export function GetDoorAnimation(circuitId: number | undefined) {
     switch (circuitId) {
         case 1: return doorOpenRedAnimation;
         case 2: return doorOpenBlueAnimation;
         case 3: return doorOpenPurpleAnimation;
+        case 4: return doorOpenWhiteAnimation;
         default: return doorOpenYellowAnimation;
     }
 }
@@ -700,6 +678,7 @@ export function GetBridgeImagesForCircuit(circuitId: number | undefined) {
         case 1: return { horizontalOpen: bridgeOpenRedHorizontalImage, horizontalClosed: bridgeClosedRedHorizontalImage, verticalOpen: bridgeOpenRedVerticalImage, verticalClosed: bridgeClosedRedVerticalImage };
         case 2: return { horizontalOpen: bridgeOpenBlueHorizontalImage, horizontalClosed: bridgeClosedBlueHorizontalImage, verticalOpen: bridgeOpenBlueVerticalImage, verticalClosed: bridgeClosedBlueVerticalImage };
         case 3: return { horizontalOpen: bridgeOpenPurpleHorizontalImage, horizontalClosed: bridgeClosedPurpleHorizontalImage, verticalOpen: bridgeOpenPurpleVerticalImage, verticalClosed: bridgeClosedPurpleVerticalImage };
+        case 4: return { horizontalOpen: bridgeOpenWhiteHorizontalImage, horizontalClosed: bridgeClosedWhiteHorizontalImage, verticalOpen: bridgeOpenWhiteVerticalImage, verticalClosed: bridgeClosedWhiteVerticalImage };
         default: return { horizontalOpen: bridgeOpenYellowHorizontalImage, horizontalClosed: bridgeClosedYellowHorizontalImage, verticalOpen: bridgeOpenYellowVerticalImage, verticalClosed: bridgeClosedYellowVerticalImage };
     }
 }
@@ -709,6 +688,7 @@ export function GetButtonImagesForCircuit(circuitId: number | undefined) {
         case 1: return { down: buttonRedDownBackgroundImage, up: buttonRedBackgroundImage };
         case 2: return { down: buttonBlueDownBackgroundImage, up: buttonBlueBackgroundImage };
         case 3: return { down: buttonPurpleDownBackgroundImage, up: buttonPurpleBackgroundImage };
+        case 4: return { down: buttonWhiteDownBackgroundImage, up: buttonWhiteBackgroundImage };
         default: return { down: buttonYellowDownBackgroundImage, up: buttonYellowBackgroundImage };
     }
 }
