@@ -158,7 +158,8 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         const doorAnimation = GetDoorAnimation(circuitResponse?.circuit.circuitId);
                         if (isWall(col, row - 1)) {
                             const frame = circuitResponse?.isActive ? [0, 0] as const : doorAnimation.getFrame(timestamp);
-                            drawSprite(context, doorAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - 10, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 6, frame, false, { width: 48, height: 64 });
+                            const offset = circuitResponse?.isActive ? 6 : 12;
+                            drawSprite(context, doorAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2 - offset, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 - 6, frame, false, { width: 48, height: 64 });
                         }
                         else {
                             const frame = circuitResponse?.isActive ? doorAnimation.getFrame(timestamp) : [0, 0] as const;
