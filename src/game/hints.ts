@@ -50,11 +50,11 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: string[] }
         count: 0, hints: [
             'Buttons and Doors are color matched.',
             'You can fly! (And should)',
-            'You\'re only going to need to eat 10 insects. (2 sets, convey that however you want)',
+            'You\'re only going to need to eat twice, darling)',
             'You\'re going to need every boulder.',
         ]
     },
-    superBoulderAdventure:{
+    superBoulderAdventure: {
         count: 0, hints: [
             '[Frog] won\'t be able to get to our destination without this bridge here.',
             'We\'re going to need to get this boulder all the way over there.',
