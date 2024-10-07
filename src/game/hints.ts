@@ -157,22 +157,22 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
         count: 0, hints: [
             {
                 type: 'message',
-                message: "if the boulder was on the button I think we could get out of the first room",
+                message: "if that rock was on the button I bet we could get out of the first room",
                 speaker: 'turtle',
             },
             {
                 type: 'message',
-                message: 'See that button, Tiramisu? Stand on it and I can push the boulder over the bridge!',
+                message: 'I can push that boulder over the bridge. Just stand on the button!',
                 speaker: 'mouse',
             },
             {
                 type: 'message',
-                message: 'if you put that boulder on my back then I can carry it somewhere useful',
+                message: 'if you put that rock on my back then I can carry it somewhere useful',
                 speaker: 'turtle',
             },
             {
                 type: 'message',
-                message: 'If two of these buttons have boulders, and you stand on the last button, I can pull out the last boulder!',
+                message: 'If three of these buttons are pushed, I can pull out the last boulder!',
                 speaker: 'mouse',
             }
         ]
