@@ -244,9 +244,7 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         continue;
                     }
 
-                    const activeElement = GetCircuitResponseElementAtLocation(level, { row: row, column: col })
-                    const activeElementState = activeElement && activeElement.isActive;
-                    const terrainBackground = GetTerrainBackground(terrainType, !!activeElementState)
+                    const terrainBackground = GetTerrainBackground(terrainType)
                     if (terrainBackground) {
                         context.drawImage(terrainBackground, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                     }
