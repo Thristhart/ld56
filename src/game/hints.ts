@@ -47,7 +47,7 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
             },
             {
                 type: 'message',
-                message: 'I can\'t follow you in that tunnel.',
+                message: 'can\'t follow you in that tunnel.',
                 speaker: 'turtle',
             },
             {

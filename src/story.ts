@@ -139,7 +139,7 @@ const story: Array<StoryBeat> = [
     {
         type: "message",
         speaker: "turtle",
-        message: "guess I would have assumed cheese"
+        message: "huh, I would have assumed cheese"
     },
     {
         type: "message",
