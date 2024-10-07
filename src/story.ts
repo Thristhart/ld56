@@ -5,9 +5,8 @@ let storyIndex = -1;
 const story: Array<StoryBeat> = [
     {
         type: "startlevel",
-        level: "lastTurtle"
+        level: "cutscene"
     },
-    { type: "waitforlevelcomplete" },
     {
         type: "message",
         speaker: "witch1",
