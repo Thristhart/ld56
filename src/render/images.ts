@@ -521,6 +521,7 @@ import icondUrl from "~/assets/icon_d.png";
 import iconeUrl from "~/assets/icon_e.png";
 import iconzUrl from "~/assets/icon_z.png";
 import iconrUrl from "~/assets/icon_r.png";
+import iconmUrl from "~/assets/icon_m.png";
 import iconLeftClickUrl from "~/assets/icon_leftclick.png";
 export const controlIcons = {
     w: new Image(),
@@ -530,6 +531,7 @@ export const controlIcons = {
     e: new Image(),
     z: new Image(),
     r: new Image(),
+    m: new Image(),
     leftclick: new Image(),
 };
 controlIcons.w.src = iconwUrl;
@@ -539,6 +541,7 @@ controlIcons.d.src = icondUrl;
 controlIcons.e.src = iconeUrl;
 controlIcons.z.src = iconzUrl;
 controlIcons.r.src = iconrUrl;
+controlIcons.m.src = iconmUrl;
 controlIcons.leftclick.src = iconLeftClickUrl;
 
 const waterBackgroundSprite: SpriteSheet = {
