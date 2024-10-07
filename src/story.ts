@@ -179,6 +179,12 @@ const story: Array<StoryBeat> = [
         type: "startlevel",
         level: "superBoulderAdventure"
     },
+    { type: "cleardialog" },
+    { type: "waitforlevelcomplete" },
+    {
+        type: "startlevel",
+        level: "lastTurtle"
+    },
     {
         type: "message",
         speaker: "mouse",
@@ -204,6 +210,8 @@ const story: Array<StoryBeat> = [
         speaker: "mouse",
         message: "Where's the fun in that?!"
     },
+    { type: "cleardialog" },
+    { type: "waitforlevelcomplete" },
     // characterization notes:
     // mouse: precocious, cassie vibes
     // turtle: chill, slow. all lowercase
