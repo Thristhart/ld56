@@ -330,7 +330,7 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
             eaterLocation: entity.location,
         }))
     }
-    
+
     if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
         return [];
     }
@@ -660,7 +660,7 @@ function GetButtonDeactivationResults(levelState: LevelContent, location: Locati
     // is any other activation element on? if so then bail out
     for (const activation of circuit.activationElements) {
         if (activation.id !== element.id && activation.isActive) {
-            return [];
+            return actionResults;
         }
     }
 
