@@ -1,5 +1,5 @@
 import { ActionResult, IsActiveResult } from "./actions";
-import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation, CircuitData, ActivationElement } from "./levels";
+import { EntityData, Location, LevelContent, GetTileAtLocation, GetEntitiesAtLocation, GetCircuitActivationElementAtLocation, GetCircuitResponseElementAtLocation } from "./levels";
 import { creatures, CreatureType, IsCreatureEntity } from "./specifications";
 import { triggers } from "./triggers";
 
@@ -111,10 +111,15 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
 
     const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
 
-    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall') {
+    if (tileAtMoveTargetType === 'wall') {
         return [];
     }
 
+    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm') {
+        return [
+            { type: "NoAction", triggers: [{ message: 'noMoveChasm', entityType: 'mouse' }] }
+        ] as Array<ActionResult>;
+    }
     if (tileAtMoveTargetType === 'water') {
         const turtleInWater = entitiesAtMoveTarget.filter((x) => x.type === 'turtle')
         if (turtleInWater.length) {
@@ -131,14 +136,14 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
         else {
             // bail out, we can't move
             return [
-                { type: "NoAction", triggers: ["mouseCantSwim"] }
+                { type: "NoAction", triggers: [{ message: 'cannotSwim', entityType: 'mouse' }] }
             ] as Array<ActionResult>;
         }
     }
     else if (moveTargetHasCreature) {
         // bail out, we can't move
         return [
-            { type: "NoAction", triggers: [`hint${moveTargetHasCreature.type}`] }
+            { type: "NoAction", triggers: [{ message: 'hint', entityType: moveTargetHasCreature.type }] }
         ] as Array<ActionResult>;
     }
     else if (tileAtMoveTargetType === 'bridge' || tileAtMoveTargetType === 'door') {
@@ -156,7 +161,9 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
         }
         else {
             // bail out, we can't move
-            return []
+            return [
+                { type: "NoAction", triggers: [{ message: tileAtMoveTargetType === 'bridge' ? 'noMoveBridge' : 'noMoveDoor', entityType: 'mouse' }] }
+            ] as Array<ActionResult>;
         }
     }
     else if (tileAtMoveTargetType === 'button') {
@@ -214,12 +221,24 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
     const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
     if (moveTargetHasCreature) {
         return [
-            { type: "NoAction", triggers: [`hint${moveTargetHasCreature.type}`] }
+            { type: "NoAction", triggers: [{ message: 'hint', entityType: moveTargetHasCreature.type }] }
         ] as Array<ActionResult>;
     }
 
-    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
+    if (tileAtMoveTargetType === 'wall') {
         return [];
+    }
+
+    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm') {
+        return [
+            { type: "NoAction", triggers: [{ message: 'noMoveChasm', entityType: 'turtle' }] }
+        ] as Array<ActionResult>;
+    }
+
+    if (tileAtMoveTargetType === 'tunnel') {
+        return [
+            { type: "NoAction", triggers: [{ message: 'noMoveTunnel', entityType: 'turtle' }] }
+        ] as Array<ActionResult>;
     }
 
     // turtle can only carry creatures and boulder while in water
@@ -271,7 +290,9 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
         }
         else {
             // bail out, we can't move
-            return []
+            return [
+                { type: "NoAction", triggers: [{ message: tileAtMoveTargetType === 'bridge' ? 'noMoveBridge' : 'noMoveDoor', entityType: 'turtle' }] }
+            ] as Array<ActionResult>;
         }
     }
     else if (tileAtMoveTargetType === 'button') {
@@ -338,8 +359,20 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
         }))
     }
 
-    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm' || tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
+    if (tileAtMoveTargetType === 'wall') {
         return [];
+    }
+
+    if (tileAtMoveTargetType === 'chasm' || tileAtMoveTargetType === 'boulder-chasm') {
+        return [
+            { type: "NoAction", triggers: [{ message: 'noMoveChasm', entityType: 'frog' }] }
+        ] as Array<ActionResult>;
+    }
+
+    if (tileAtMoveTargetType === 'tunnel') {
+        return [
+            { type: "NoAction", triggers: [{ message: 'noMoveTunnel', entityType: 'frog' }] }
+        ] as Array<ActionResult>;
     }
 
 
@@ -358,12 +391,14 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
         }
         else {
             // bail out, we can't move
-            return [];
+            return [
+                { type: "NoAction", triggers: [{ message: 'cannotSwim', entityType: 'frog' }] }
+            ] as Array<ActionResult>;
         }
     }
     else if (moveTargetHasCreature) {
         return [
-            { type: "NoAction", triggers: [`hint${moveTargetHasCreature.type}`] }
+            { type: "NoAction", triggers: [{ message: 'noMoveTunnel', entityType: moveTargetHasCreature.type }] }
         ] as Array<ActionResult>;
     }
     else if (tileAtMoveTargetType === 'bridge' || tileAtMoveTargetType === 'door') {
@@ -381,7 +416,9 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
         }
         else {
             // bail out, we can't move
-            return []
+            return [
+                { type: "NoAction", triggers: [{ message: tileAtMoveTargetType === 'bridge' ? 'noMoveBridge' : 'noMoveDoor', entityType: 'frog' }] }
+            ] as Array<ActionResult>;
         }
     }
     else if (tileAtMoveTargetType === 'button') {
@@ -438,13 +475,32 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
 
     const moveTargetHasCreature = entitiesAtMoveTarget.find((entity) => creatures.includes(entity.type as CreatureType))
 
-    if (tileAtMoveTargetType === 'wall' || tileAtMoveTargetType === 'tunnel') {
-        return [];
+    if (tileAtMoveTargetType === 'wall') {
+        // bail out, we can't move
+        return [
+            { type: "NoAction" }
+        ] as Array<ActionResult>;
     }
 
-    if (entitiesAtMoveTarget.find(entity => entity.type === "boulder" || entity.type === "insect")) {
-        // bird can't move boulders or enter tiles with insects
-        return [];
+    if (tileAtMoveTargetType === 'tunnel') {
+        // bail out we can't move
+        return [
+            { type: "NoAction", triggers: [{ message: 'noMoveTunnel', entityType: 'bird' }] }
+        ] as Array<ActionResult>;
+    }
+
+    if (entitiesAtMoveTarget.find(entity => entity.type === "boulder")) {
+        // bird can't move boulders
+        return [
+            { type: "NoAction", triggers: [{ message: 'noMoveBoulder', entityType: 'bird' }] }
+        ] as Array<ActionResult>;
+    }
+
+    if (entitiesAtMoveTarget.find(entity => entity.type === "insect")) {
+        // bird can't enter tiles with insects
+        return [
+            { type: "NoAction", triggers: [{ message: 'noMoveInsect', entityType: 'bird' }] }
+        ] as Array<ActionResult>;
     }
 
     if (tileAtMoveTargetType === 'water') {
@@ -461,7 +517,7 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
     else if (moveTargetHasCreature) {
         // bail out, we can't move
         return [
-            { type: "NoAction", triggers: [`hint${moveTargetHasCreature.type}`] }
+            { type: "NoAction", triggers: [{ message: 'hint', entityType: moveTargetHasCreature.type }] }
         ] as Array<ActionResult>;
     }
     else if (tileAtMoveTargetType === 'door') {
@@ -478,8 +534,10 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
             )
         }
         else {
-            // bail out, we can't move
-            return []
+            // can't move through a door
+            return [
+                { type: "NoAction", triggers: [{ message: 'noMoveDoor', entityType: 'bird' }] }
+            ] as Array<ActionResult>;
         }
     }
     else if (tileAtMoveTargetType === 'button') {
@@ -667,7 +725,7 @@ function GetButtonDeactivationResults(levelState: LevelContent, location: Locati
             newState: false
         })
 
-    // is any other activation element on? if so then bail out
+    // is any other activation element on? if so then we don't have to check circuit closed consequences
     for (const activation of circuit.activationElements) {
         if (activation.id !== element.id && activation.isActive) {
             return actionResults;

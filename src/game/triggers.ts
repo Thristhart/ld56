@@ -8,30 +8,6 @@ import { GetHint } from "./hints";
 
 export const triggers = new EventEmitter();
 
-triggers.once("turtleOnWater", () => {
-    displayDialog({
-        type: "message",
-        speaker: "turtle",
-        message: "hop on Muffin, I can carry you"
-    })
-})
-
-triggers.once("mouseCantSwim", () => {
-    displayDialog(
-        {
-            type: "message",
-            speaker: "mouse",
-            message: "I can't swim!"
-        },
-        {
-            type: "message",
-            speaker: "turtle",
-            message: "don't worry, I can"
-        }
-    )
-})
-
-
 triggers.on("creatureOnGoal", () => {
     if (!currentLevelState) {
         return;
@@ -130,99 +106,148 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
 }
 
 
-triggers.on("killturtle", () => {
+triggers.on("killEntity", (entityType) => {
     if (!currentLevelState) {
         return;
     }
+    displayDialog({
+        type: "message",
+        speaker: entityType,
+        message: "YOU LET ME DIE!!. Press Z to undo"
+    })
+})
+
+triggers.on("hint", (entityType) => {
+    if (!currentLevelState) {
+        return;
+    }
+
+    const hint = GetHint(currentLevelState.levelName);
+    displayDialog({
+        type: "message",
+        speaker: entityType,
+        message: hint
+    })
+})
+
+triggers.once("turtleOnWater", () => {
     displayDialog({
         type: "message",
         speaker: "turtle",
-        message: "YOU LET ME DIE!!. Press Z to undo"
+        message: "hop on Muffin, I can carry you"
     })
 })
 
-triggers.on("killbird", () => {
-    if (!currentLevelState) {
-        return;
+triggers.on("cannotSwim", (entityType) => {
+    if (entityType === 'mouse') {
+        displayDialog(
+            {
+                type: "message",
+                speaker: "mouse",
+                message: "I can't swim!"
+            },
+            {
+                type: "message",
+                speaker: "turtle",
+                message: "don't worry, I can"
+            }
+        )
     }
-    displayDialog({
-        type: "message",
-        speaker: "bird",
-        message: "YOU LET ME DIE!!. Press Z to undo"
-    })
+    else if (entityType === 'crow') {
+        displayDialog(
+            {
+                type: "message",
+                speaker: 'bird',
+                message: "I wouldn't want to get my feather's wet"
+            }
+        )
+    }
+    else if (entityType === 'frog') {
+        displayDialog(
+            {
+                type: "message",
+                speaker: 'frog',
+                message: "Cupcake hates it when I come home wet"
+            }
+        )
+    }
 })
 
-triggers.on("killfrog", () => {
-    if (!currentLevelState) {
-        return;
+triggers.on("noMoveInsect", (entityType) => {
+    if (entityType === 'bird') {
+        displayDialog(
+            {
+                type: "message",
+                speaker: "bird",
+                message: "How disguisting, they'll ruin my feathers"
+            },
+            {
+                type: "message",
+                speaker: "frog",
+                message: "<appropriately romantic line here>"
+            }
+        )
     }
-    displayDialog({
-        type: "message",
-        speaker: "frog",
-        message: "YOU LET ME DIE!!. Press Z to undo"
-    })
+    else if (entityType === 'mouse') {
+        displayDialog(
+            {
+                type: "message",
+                speaker: 'mouse',
+                message: "EEP! How gross!"
+            }
+        )
+    }
 })
 
-triggers.on("killmouse", () => {
-    if (!currentLevelState) {
-        return;
-    }
-    displayDialog({
-        type: "message",
-        speaker: "mouse",
-        message: "YOU LET ME DIE!!. Press Z to undo"
-    })
+triggers.on("noMoveTunnel", (entityType) => {
+    displayDialog(
+        {
+            type: "message",
+            speaker: entityType,
+            message: "I can't squeeze in there"
+        }
+    )
 })
 
-triggers.on("hintbird", () => {
-    if (!currentLevelState) {
-        return;
-    }
-
-    const hint = GetHint(currentLevelState.levelName);
-    displayDialog({
-        type: "message",
-        speaker: "bird",
-        message: hint
-    })
+triggers.on("noMoveDoor", (entityType) => {
+    displayDialog(
+        {
+            type: "message",
+            speaker: entityType,
+            message: "Hmm, that doesn't seem open"
+        }
+    )
 })
 
 
-triggers.on("hintfrog", () => {
-    if (!currentLevelState) {
-        return;
-    }
-    const hint = GetHint(currentLevelState.levelName);
-    displayDialog({
-        type: "message",
-        speaker: "frog",
-        message: hint
-    })
+triggers.on("noMoveBridge", (entityType) => {
+    displayDialog(
+        {
+            type: "message",
+            speaker: entityType,
+            message: "I can't seem to get over there"
+        }
+    )
 })
 
-triggers.on("hintturtle", () => {
-    if (!currentLevelState) {
-        return;
-    }
-    const hint = GetHint(currentLevelState.levelName);
-    displayDialog({
-        type: "message",
-        speaker: "turtle",
-        message: hint
-    })
+triggers.on("noMoveBoulder", (entityType) => {
+    displayDialog(
+        {
+            type: "message",
+            speaker: entityType,
+            message: "That's too heavy for me to push"
+        }
+    )
 })
 
-triggers.on("hintmouse", () => {
-    if (!currentLevelState) {
-        return;
-    }
-
-    const hint = GetHint(currentLevelState.levelName);
-    displayDialog({
-        type: "message",
-        speaker: "mouse",
-        message: hint
-    })
+triggers.on("noMoveChasm", (entityType) => {
+    displayDialog(
+        {
+            type: "message",
+            speaker: entityType,
+            message: "Wouldn't want to jump down there"
+        }
+    )
 })
 
 export function checkForTriggersAfterAnimation(levelState: LevelContent, actionResult: ActionResult) {
