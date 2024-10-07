@@ -43,6 +43,15 @@ triggers.once("turtleCannotMove", () => {
 })
 
 export function TriggerAudioFromResults(results: Array<ActionResult>) {
+    if(currentLevelState?.canContinueLevel)
+    {
+        if(!sounds.music.playing()) {
+            sounds.music.play();
+        }
+    }
+    else {
+        sounds.music.pause();
+    }
     for (const result of results) {
         if (result.type === "MoveEntity") {
             if (result.entity.type === "boulder") {

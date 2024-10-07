@@ -24,9 +24,13 @@ import boulderPondCircuit from '../levels/turtle_mouse/boulder_pond/boulder_pond
 
 import { clearActions } from './actions';
 import { EntityType, GetEntityType, GetTerrainType, IsCreatureEntity, TerrainType } from './specifications';
+import { sounds } from '~/audio';
 
 export function startLevel(levelname: keyof typeof levels) {
     const level = constructLevelContent(levelname)
+    if(!sounds.music.playing()) {
+        sounds.music.play();
+    }
     initialLevelState = level;
     currentLevelState = level;
     clearActions();
