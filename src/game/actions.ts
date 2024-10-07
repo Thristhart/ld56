@@ -64,6 +64,7 @@ export interface ModifyCircuitStateResult {
     elementId: number
     oldState: boolean;
     newState: boolean;
+    circuitFlipped: boolean;
 }
 
 export interface EatInsectResult {

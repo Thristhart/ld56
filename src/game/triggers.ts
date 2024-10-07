@@ -99,7 +99,7 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
         else if (result.type === "EatInsect") {
             sounds.frogEat.play();
         }
-        else if (result.type === "ModifyCircuitState") {
+        else if (result.type === "ModifyCircuitState" && result.circuitFlipped) {
             sounds.button.play();
         }
     }

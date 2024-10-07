@@ -178,13 +178,22 @@ export function GetMouseMoveResults(levelState: LevelContent, entity: EntityData
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
         if (activationCircuitAtMoveTarget) {
+            // is any other activation element already on?
+            let circuitActivated = true;
+            for (const activation of activationCircuitAtMoveTarget.circuit.activationElements) {
+                if (activation.id !== activationCircuitAtMoveTarget.element.id && activation.isActive) {
+                    circuitActivated = false;
+                }
+            }
+
             actionResults.push(
                 {
                     type: 'ModifyCircuitState',
                     circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
                     elementId: activationCircuitAtMoveTarget.element.id,
                     oldState: activationCircuitAtMoveTarget.element.isActive,
-                    newState: true
+                    newState: true,
+                    circuitFlipped: circuitActivated,
                 }
             )
         }
@@ -307,13 +316,22 @@ export function GetTurtleMoveResults(levelState: LevelContent, entity: EntityDat
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
         if (activationCircuitAtMoveTarget) {
+            // is any other activation element already on?
+            let circuitActivated = true;
+            for (const activation of activationCircuitAtMoveTarget.circuit.activationElements) {
+                if (activation.id !== activationCircuitAtMoveTarget.element.id && activation.isActive) {
+                    circuitActivated = false;
+                }
+            }
+
             actionResults.push(
                 {
                     type: 'ModifyCircuitState',
                     circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
                     elementId: activationCircuitAtMoveTarget.element.id,
                     oldState: activationCircuitAtMoveTarget.element.isActive,
-                    newState: true
+                    newState: true,
+                    circuitFlipped: circuitActivated,
                 }
             )
         }
@@ -433,13 +451,22 @@ export function GetFrogMoveResults(levelState: LevelContent, entity: EntityData,
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
         if (activationCircuitAtMoveTarget) {
+            // is any other activation element already on?
+            let circuitActivated = true;
+            for (const activation of activationCircuitAtMoveTarget.circuit.activationElements) {
+                if (activation.id !== activationCircuitAtMoveTarget.element.id && activation.isActive) {
+                    circuitActivated = false;
+                }
+            }
+
             actionResults.push(
                 {
                     type: 'ModifyCircuitState',
                     circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
                     elementId: activationCircuitAtMoveTarget.element.id,
                     oldState: activationCircuitAtMoveTarget.element.isActive,
-                    newState: true
+                    newState: true,
+                    circuitFlipped: circuitActivated,
                 }
             )
         }
@@ -552,13 +579,22 @@ export function GetBirdMoveResults(levelState: LevelContent, entity: EntityData,
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, moveTargetLocation);
         if (activationCircuitAtMoveTarget) {
+            // is any other activation element already on?
+            let circuitActivated = true;
+            for (const activation of activationCircuitAtMoveTarget.circuit.activationElements) {
+                if (activation.id !== activationCircuitAtMoveTarget.element.id && activation.isActive) {
+                    circuitActivated = false;
+                }
+            }
+
             actionResults.push(
                 {
                     type: 'ModifyCircuitState',
                     circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
                     elementId: activationCircuitAtMoveTarget.element.id,
                     oldState: activationCircuitAtMoveTarget.element.isActive,
-                    newState: true
+                    newState: true,
+                    circuitFlipped: circuitActivated,
                 }
             )
         }
@@ -676,13 +712,22 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
         )
         const activationCircuitAtMoveTarget = GetCircuitActivationElementAtLocation(levelState, boulderMoveTargetLocation);
         if (activationCircuitAtMoveTarget) {
+            // is any other activation element already on?
+            let circuitActivated = true;
+            for (const activation of activationCircuitAtMoveTarget.circuit.activationElements) {
+                if (activation.id !== activationCircuitAtMoveTarget.element.id && activation.isActive) {
+                    circuitActivated = false;
+                }
+            }
+
             actionResults.push(
                 {
                     type: 'ModifyCircuitState',
                     circuitId: activationCircuitAtMoveTarget.circuit.circuitId,
                     elementId: activationCircuitAtMoveTarget.element.id,
                     oldState: activationCircuitAtMoveTarget.element.isActive,
-                    newState: true
+                    newState: true,
+                    circuitFlipped: circuitActivated,
                 }
             )
         }
@@ -699,12 +744,6 @@ export function GetBoulderMovementActionResults(levelState: LevelContent, boulde
         )
     }
 
-    if (boulderOriginTileType === 'button') {
-        const buttonDeactivationResults = GetButtonDeactivationResults(levelState, boulder, boulderMoveTargetLocation);
-        if (buttonDeactivationResults.length > 0)
-            actionResults.push(...buttonDeactivationResults);
-    }
-
     return actionResults;
 }
 
@@ -716,20 +755,26 @@ function GetButtonDeactivationResults(levelState: LevelContent, sourceEntity: En
     }
 
     const { circuit, element } = activationCircuitAtOrigin;
+    let circuitDeactivated = true;
+    // is any other activation element on? if so then we don't have to check circuit closed consequences
+    for (const activation of circuit.activationElements) {
+        if (activation.id !== element.id && activation.isActive) {
+            circuitDeactivated = false;
+        }
+    }
+
     actionResults.push(
         {
             type: 'ModifyCircuitState',
             circuitId: activationCircuitAtOrigin.circuit.circuitId,
             elementId: activationCircuitAtOrigin.element.id,
             oldState: activationCircuitAtOrigin.element.isActive,
-            newState: false
+            newState: false,
+            circuitFlipped: circuitDeactivated
         })
 
-    // is any other activation element on? if so then we don't have to check circuit closed consequences
-    for (const activation of circuit.activationElements) {
-        if (activation.id !== element.id && activation.isActive) {
-            return actionResults;
-        }
+    if (!circuitDeactivated) {
+        return actionResults;
     }
 
     for (const response of circuit.responsiveElements) {
