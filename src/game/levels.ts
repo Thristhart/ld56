@@ -183,7 +183,7 @@ function constructLevelContent(levelname: keyof typeof levels) {
                             column: parseInt(entityTileIndex)
                         },
                         id: entityID,
-                        facing: "right"
+                        facing: (entityTile === "bird" || entityTile === "frog") ? "left" : "right"
                     }
                 )
                 if (!levelContent.currentEntityId && IsCreatureEntity(entityTile)) {
