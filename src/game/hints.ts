@@ -1,67 +1,179 @@
+import { StoryMessage } from "~/story";
 import { levels } from "./levels";
 
-const levelHints: Record<keyof typeof levels, { count: number, hints: string[] }> = {
+const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessage[] }> = {
     cutscene: {
         count: 0, hints: []
     },
     testing: {
         count: 0, hints: [
-            'hint one',
-            'hint two',
-            'hint three',
-            'hint four',
-            'hint five'
+            {
+                type: 'message',
+                message: 'hint1',
+                speaker: 'turtle',
+            },
+            {
+                type: 'message',
+                message: 'hint2',
+                speaker: 'frog',
+            },
         ]
     },
     circuittesting: {
         count: 0, hints: [
-            'hint one',
-            'hint two',
-            'hint three',
-            'hint four',
-            'hint five'
+            {
+                type: 'message',
+                message: 'hint1',
+                speaker: 'turtle',
+            },
+            {
+                type: 'message',
+                message: 'hint2',
+                speaker: 'frog',
+            },
         ]
     },
     flower1: {
         count: 0, hints: [
-            'Hop on!',
-            'I can\'t follow you in that tunnel.',
-            'Look it\'s a block moving puzzle, you know those, right?',
-            'Isolate the middle and then remove it? Something like that?',
-            'Buttons open doors?'
+            {
+                type: 'message',
+                message: 'ow, did you need a hint?',
+                speaker: 'turtle',
+            },
+            {
+                type: 'message',
+                message: 'hop on!',
+                speaker: 'turtle',
+            },
+            {
+                type: 'message',
+                message: 'i can\'t follow you in that tunnel.',
+                speaker: 'turtle',
+            },
+            {
+                type: 'message',
+                message: 'Look it\'s a block moving puzzle, you know those, right?',
+                speaker: 'mouse',
+            },
+            {
+                type: 'message',
+                message: 'isolate the middle and then remove it? something like that?',
+                speaker: 'turtle',
+            },
+            {
+                type: 'message',
+                message: 'Buttons open doors?',
+                speaker: 'mouse',
+            },
         ]
     },
     flower2: {
         count: 0, hints: [
-            '[Bird] can reach that button.',
-            '[Frog] likes to eat bugs.',
-            'Let\'s both get to the left together.',
+            {
+                type: 'message',
+                message: 'My sweet sunshine, will you get that button for me?',
+                speaker: 'frog',
+            },
+            {
+                type: 'message',
+                message: 'Darling, extinguish those pests!',
+                speaker: 'bird',
+            },
+            {
+                type: 'message',
+                message: 'Together my love, to the goal!',
+                speaker: 'frog',
+            }
         ]
     },
     boulderPond: {
         count: 0, hints: [
-            'We\'re going to have to split up for a second.',
-            'We\'ll have to approach this red button from the left.',
-            '[Turtle] can carry rocks in the water.',
-            'You\'ll need to approach the blue button from directly below it.',
+            {
+                type: 'message',
+                message: 'we\'re going to have to split up for a second.',
+                speaker: 'turtle',
+            },
+            {
+                type: 'message',
+                message: 'Lets try approaching this button from the left.',
+                speaker: 'mouse',
+            },
+            {
+                type: 'message',
+                message: 'i can try carrying rocks in the water.',
+                speaker: 'turtle',
+            },
+            {
+                type: 'message',
+                message: 'Can we approach the blue button from directly below?',
+                speaker: 'mouse',
+            },
         ]
     },
     riverCrossing: {
         count: 0, hints: [
-            'Buttons and Doors are color matched.',
-            'You can fly! (And should)',
-            'You\'re only going to need to eat twice, darling)',
-            'You\'re going to need every boulder.',
+            {
+                type: 'message',
+                message: 'Buttons, Doors, and Bridges, matched in harmony.',
+                speaker: 'bird',
+            },
+            {
+                type: 'message',
+                message: 'You fly so beautifully my dark angel',
+                speaker: 'frog',
+            },
+            {
+                type: 'message',
+                message: 'Don\t overindulge my dearest, two snacks should be plenty',
+                speaker: 'bird',
+            },
+            {
+                type: 'message',
+                message: 'I shall command every boulder! In your name!',
+                speaker: 'frog',
+            },
         ]
     },
     superBoulderAdventure: {
         count: 0, hints: [
-            '[Frog] won\'t be able to get to our destination without this bridge here.',
-            'We\'re going to need to get this boulder all the way over there.',
-            'Oh, could [Frog] clear the way for me up there?',
+            {
+                type: 'message',
+                message: 'This bridge, my dear — absolutely essential!',
+                speaker: 'frog',
+            },
+            {
+                type: 'message',
+                message: 'Ah, this boulder shall make a delightful companion for our journey',
+                speaker: 'frog',
+            },
+            {
+                type: 'message',
+                message: 'Would you be so kind as to clear the way for me, darling?',
+                speaker: 'bird',
+            },
+        ]
+    },
+    lastTurtle: {
+        count: 0, hints: [
+            {
+                type: 'message',
+                message: 'This bridge, my dear — absolutely essential!',
+                speaker: 'frog',
+            },
+            {
+                type: 'message',
+                message: 'Ah, this boulder shall make a delightful companion for our journey',
+                speaker: 'frog',
+            },
+            {
+                type: 'message',
+                message: 'Would you be so kind as to clear the way for me, darling?',
+                speaker: 'bird',
+            },
         ]
     }
 }
+
 export function GetHint(levelname: keyof typeof levels) {
     const levelHint = levelHints[levelname];
     const hintCount = (levelHint.count) % levelHint.hints.length;

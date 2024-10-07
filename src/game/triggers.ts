@@ -125,8 +125,8 @@ triggers.on("hint", (entityType) => {
     const hint = GetHint(currentLevelState.levelName);
     displayDialog({
         type: "message",
-        speaker: entityType,
-        message: hint
+        speaker: hint.speaker,
+        message: hint.message
     })
 })
 
