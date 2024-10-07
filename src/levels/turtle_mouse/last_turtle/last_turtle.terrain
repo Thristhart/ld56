@@ -1,18 +1,15 @@
-X	X	X	X	X	X	X	X	X	X	X	X	X	X	X
-X	C	C	C	,	,	X	,	,	,	X	X	G	G	X
-X	C	C	C	,	,	X	,	B	,	D	T	,	,	X
-X	C	C	C	C	,	X	,	,	,	X	X	,	X	X
-X	C	,	,	C	C	X	,	,	,	,	X	D	X	X
-X	,	,	,	,	H	,	,	,	B	,	X	D	X	X
-X	,	,	,	,	C	X	,	,	,	,	X	D	X	X
-X	,	,	,	,	X	X	X	X	,	,	,	,	,	X
-X	T	X	X	,	,	W	W	,	,	,	,	,	,	X
-X	,	,	,	,	,	W	W	,	,	,	,	B	,	X
-X	X	X	X	,	,	W	W	,	,	,	,	,	,	X
-X	X	X	B	,	,	W	W	,	,	,	,	,	W	X
-X	X	X	X	X	X	W	W	,	,	,	W	,	W	X
-X	,	,	,	,	X	W	W	W	,	,	W	W	W	X
-X	,	B	,	,	D	W	W	W	W	,	W	W	W	X
-X	,	,	X	,	X	W	W	X	W	,	,	W	X	X
-X	,	,	T	,	X	W	W	X	X	X	,	X	X	X
-X	X	X	X	X	X	X	X	X	X	X	X	X	X	X
+XXXXXXXXXXXXXXXXXX
+XXXWWWW,,,,XXXX,GX
+XXWWW,,,B,,DDD,,GX
+X,,WWW,,,,,XXXXTXX
+XX,,,,,,,,,,,,XDXX
+XXWW,,,,,,,,B,,,,X
+XXXWW,,,,,X,,,,B,X
+XWWWWWWWWWX,,,,,,X
+XWWWWWWWWWXX,XXXXX
+XXXDXX,,,,XCHC,,,X
+X,,,,X,,,,,,,CC,,X
+XTX,,XBX,X,,,,CCCX
+X,,B,XXX,X,,,,CCCX
+X,,,,XXX,T,,,CCCCX
+XXXXXXXXXXXXXXXXXX
