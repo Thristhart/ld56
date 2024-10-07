@@ -106,6 +106,10 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
                 sounds.frogSelect.play();
             }
         }
+        else if(result.type === "EatInsect")
+        {
+            sounds.frogEat.play();
+        }
     }
 }
 
