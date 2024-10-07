@@ -157,23 +157,23 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: StoryMessa
         count: 0, hints: [
             {
                 type: 'message',
-                message: "If the boulder was on the button we could escape this starting room.",
+                message: "if the boulder was on the button I think we could get out of the first room",
                 speaker: 'turtle',
             },
             {
                 type: 'message',
-                message: 'I can push one of the boulders over the bridge if you stand on that button, TURTLENAMEHERE.',
-                speaker: 'rat',
+                message: 'See that button, Tiramisu? Stand on it and I can push the boulder over the bridge!',
+                speaker: 'mouse',
             },
             {
                 type: 'message',
-                message: 'If I get you in that to the left then you could put the boulder on my back. Then I can carry it somewhere more usful',
+                message: 'if you put that boulder on my back then I can carry it somewhere useful',
                 speaker: 'turtle',
             },
             {
                 type: 'message',
-                message: 'If two of these buttons have boulders and you stand on the last button I can pull out the last boulder, you just need to open the door blocking the tunnel.',
-                speaker: 'rat',
+                message: 'If two of these buttons have boulders, and you stand on the last button, I can pull out the last boulder!',
+                speaker: 'mouse',
             }
         ]
     }
