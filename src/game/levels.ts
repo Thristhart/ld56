@@ -6,6 +6,8 @@ import circuitTestingEntities from '../levels/testing/circuittest.entities?raw';
 import circuitTestingTerrain from '../levels/testing/circuittest.terrain?raw';
 import circuitTestingCircuit from '../levels/testing/circuittest.circuit?raw';
 
+import cutsceneTerrain from '../levels/cutscene.terrain?raw';
+
 import introEntities from '../levels/intro.entities?raw';
 import introTerrain from '../levels/intro.terrain?raw';
 import introCircuit from '../levels/intro.circuit?raw';
@@ -54,7 +56,7 @@ export let currentLevelState: LevelContent | undefined;
 
 export const levels = {
     cutscene: {
-        terrain: testingTerrain,
+        terrain: cutsceneTerrain,
         entities: undefined,
         circuit: undefined,
     },
