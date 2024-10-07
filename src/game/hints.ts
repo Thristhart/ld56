@@ -1,6 +1,9 @@
 import { levels } from "./levels";
 
 const levelHints: Record<keyof typeof levels, { count: number, hints: string[] }> = {
+    cutscene: {
+        count: 0, hints: []
+    },
     testing: {
         count: 0, hints: [
             'hint one',
