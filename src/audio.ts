@@ -14,31 +14,30 @@ import turtleWaterMoveUrl from "~/assets/audio/turtle water move.mp3";
 import musicUrl from "~/assets/audio/main theme.mp3";
 
 export const sounds = {
-    boulderMove: new Howl({src: boulderMoveUrl}),
-    footstep: new Howl({src: footstepUrl}),
-    hardstep: new Howl({src: hardstepUrl}),
-    turtleSelect: new Howl({src: turtleSelectUrl}),
-    mouseSelect: new Howl({src: mouseSelectUrl}),
-    frogSelect: new Howl({src: frogSelectUrl}),
-    birdSelect: new Howl({src: birdSelectUrl}),
-    splash: new Howl({src: splashUrl}),
-    bump: new Howl({src: bumpUrl}),
-    turtleWaterEnter: new Howl({src: turtleWaterEnterUrl}),
-    turtleWaterMove: new Howl({src: turtleWaterMoveUrl}),
+    boulderMove: new Howl({ src: boulderMoveUrl }),
+    footstep: new Howl({ src: footstepUrl }),
+    hardstep: new Howl({ src: hardstepUrl }),
+    turtleSelect: new Howl({ src: turtleSelectUrl }),
+    mouseSelect: new Howl({ src: mouseSelectUrl }),
+    frogSelect: new Howl({ src: frogSelectUrl }),
+    birdSelect: new Howl({ src: birdSelectUrl }),
+    splash: new Howl({ src: splashUrl }),
+    bump: new Howl({ src: bumpUrl }),
+    turtleWaterEnter: new Howl({ src: turtleWaterEnterUrl }),
+    turtleWaterMove: new Howl({ src: turtleWaterMoveUrl }),
     music: new Howl({
         src: musicUrl,
         sprite: {
-            intro: [0, 28630],
-            loop: [28630, 204090, true]
+            intro: [0, 29109],
+            loop: [29109, 204090, true]
         }
     })
 } as const satisfies { [key: string]: Howl };
 
-export function startMusic()
-{
+export function startMusic() {
     let introId = sounds.music.play("intro");
     sounds.music.on("end", (soundId) => {
-        if(soundId === introId) {
+        if (soundId === introId) {
             sounds.music.play("loop");
         }
     })
