@@ -75,6 +75,7 @@ export function GetEntityMovementActions(levelState: LevelContent, entity: Entit
                         entity: entity,
                     }]
                 }
+                return [];
             }
             else {
                 return [...entityMoveResults, ...boulderMoveResults];
