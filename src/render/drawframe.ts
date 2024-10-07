@@ -166,25 +166,39 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         }
                         continue;
                     }
-                    let terrainAnimation = GetTerrainAnimation(terrainType);
+                    if (terrainType == "boulder-chasm") {
+                        const above = level.groundGrid[row - 1][col];
+                        if (above !== "chasm" && above !== "bridge" && above !== "boulder-chasm") {
+                            context.drawImage(chasmTopEdgeImage, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
+                    }
+                    let terrainAnimation = GetTerrainAnimation(terrainType, {row, column: col});
                     if (terrainType === "water") {
                         const above = level.groundGrid[row - 1][col];
                         if (above !== "water" && above !== "boulder-water") {
-                            terrainAnimation = waterTopEdgeBackgroundAnimation;
+                            terrainAnimation = {
+                                sprite: waterTopEdgeBackgroundAnimation,
+                                direction: 1,
+                                startTime: 0
+                            }
                         }
                     }
                     if (terrainType == "boulder-water") {
                         const above = level.groundGrid[row - 1][col];
                         let waterAnim = GetTerrainAnimation("water")!;
                         if (above !== "water" && above !== "boulder-water") {
-                            waterAnim = waterTopEdgeBackgroundAnimation
+                            waterAnim = {
+                                sprite: waterTopEdgeBackgroundAnimation,
+                                direction: 1,
+                                startTime: 0
+                            }
                         }
-                        drawSprite(context, waterAnim.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
-                        drawSprite(context, terrainAnimation!.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, waterAnim.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.sprite.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation!.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.sprite.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
                     if (terrainAnimation) {
-                        drawSprite(context, terrainAnimation.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.sprite.getFrame(timestamp - terrainAnimation.startTime), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
 
@@ -235,8 +249,11 @@ function drawGrid(level: LevelContent, timestamp: number) {
                         context.drawImage(terrainBackground, col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
                     }
                     else {
-                        context.fillStyle = GetTerrainColor(terrainType);
-                        context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        const color = GetTerrainColor(terrainType)
+                        if(color) {
+                            context.fillStyle = color;
+                            context.fillRect(col * GRID_SQUARE_WIDTH, row * GRID_SQUARE_HEIGHT, GRID_SQUARE_WIDTH, GRID_SQUARE_HEIGHT);
+                        }
                     }
                 }
             }

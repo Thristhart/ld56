@@ -29,10 +29,11 @@ import doorSpriteUrl from "~/assets/door_strip6.png";
 
 import treeImageUrl from "~/assets/tree.png";
 
-import { currentLevelState, EntityData, GetTileAtLocation } from "~/game/levels";
+import { currentLevelState, EntityData, GetTileAtLocation, Location } from "~/game/levels";
 import { SpriteAnimation, SpriteAnimationDetails, SpriteSheet } from "./spritesheet";
 import { lerp } from "./animateaction";
 import { EntityType, isFlyingTerrain, TerrainType } from "~/game/specifications";
+import { lastActionResults, lastActionTimestamp, lastUndoActionResults, lastUndoTimestamp } from "~/game/actions";
 
 export const turtlePortraitImage = new Image();
 turtlePortraitImage.src = turtlePortraitUrl;
@@ -281,6 +282,18 @@ const doorSpritePurple: SpriteSheet = {
 };
 export const doorOpenPurpleAnimation = standardSpriteAnimation(doorSpritePurple, 33);
 
+import boulderChasmUrl from "~/assets/boulder_chasm_animated.png";
+const boulderChasmImage = new Image();
+boulderChasmImage.src = boulderChasmUrl;
+const boulderChasmSprite: SpriteSheet = {
+    image: boulderChasmImage,
+    spriteWidth: 32,
+    spriteHeight: 32,
+    width: 8,
+    height: 1
+};
+export const boulderChasmAnimation = standardSpriteAnimation(boulderChasmSprite, 33);
+
 export const mousePortraitImage = new Image();
 mousePortraitImage.src = mousePortraitUrl;
 
@@ -507,10 +520,35 @@ export function GetTerrainBackground(terrain: TerrainType, activeElementState?: 
     }
 }
 
-export function GetTerrainAnimation(terrain: TerrainType) {
+export function GetTerrainAnimation(terrain: TerrainType, location?: Location): SpriteAnimationDetails | undefined {
     switch (terrain) {
-        case 'water': return waterBackgroundAnimation;
-        case 'boulder-water': return waterBoulderBackgroundAnimation;
+        case 'water': return {
+            sprite: waterBackgroundAnimation,
+            direction: 1,
+            startTime: 0,
+        };
+        case 'boulder-water': return {
+            sprite: waterBoulderBackgroundAnimation,
+            direction: 1,
+            startTime: 0,
+        };
+        case 'boulder-chasm': {
+            if(lastActionResults?.some(result => result.type === "MergeBoulderIntoTerrain" && result.targetlocation.column === location?.column && result.targetlocation.row === location.row)) {
+                return {
+                    sprite: boulderChasmAnimation,
+                    direction: 1,
+                    startTime: lastActionTimestamp!,
+                };
+            }
+            if(lastUndoActionResults?.some(result => result.type === "MergeBoulderIntoTerrain" && result.targetlocation.column === location?.column && result.targetlocation.row === location.row)) {
+                return {
+                    sprite: boulderChasmAnimation,
+                    direction: -1,
+                    startTime: lastUndoTimestamp!,
+                };
+            }
+            return undefined;
+        }
         default: return undefined;
     }
 }
