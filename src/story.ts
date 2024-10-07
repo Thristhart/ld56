@@ -98,14 +98,30 @@ const story: Array<StoryBeat> = [
         message: "alright, fine. it'll be something to do",
     },
     { type: "cleardialog" },
-    { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
+
     {
         type: "startlevel",
         level: "flower2"
     },
-    
+    {
+        type: "message",
+        speaker: "bird",
+        message: "Fudge, darling, this opportunity is simply made for us."
+    },
+    {
+        type: "message",
+        speaker: "frog",
+        message: "Yes, Cupcake! You would divine look perched on a witch's staff."
+    },
+    {
+        type: "message",
+        speaker: "bird",
+        message: "And you would make a perfect potions assistant."
+    },
+    { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
+
     {
         type: "startlevel",
         level: "boulderPond"
