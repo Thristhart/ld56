@@ -22,6 +22,6 @@ export function GetTerrainColor(terrainType: TerrainType) {
         case 'wall': return COLOR_GRID_SQUARE_FILL_WALL;
         case 'chasm': return COLOR_GRID_SQUARE_FILL_CHASM;
         case 'tunnel': return COLOR_GRID_SQUARE_FILL_TUNNEL;
-        default: return COLOR_GRID_SQUARE_FILL_WALL
+        default: return undefined;
     }
 }

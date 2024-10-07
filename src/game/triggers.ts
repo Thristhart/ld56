@@ -72,7 +72,7 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
                 }
             }
         }
-        else if (result.type === "MergeBoulderIntoTerrain") {
+        else if (result.type === "MergeBoulderIntoTerrain" && result.newTerrainType === "boulder-water") {
             sounds.splash.play();
         }
         else if (result.type === "SwitchEntity") {
