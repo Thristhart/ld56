@@ -477,6 +477,41 @@ import buttonWhiteDownBackgroundUrl from "~/assets/button_background_white_down.
 export const buttonWhiteDownBackgroundImage = new Image();
 buttonWhiteDownBackgroundImage.src = buttonWhiteDownBackgroundUrl;
 
+import altarUrl from "~/assets/altar.png";
+export const altarImage = new Image();
+altarImage.src = altarUrl;
+const altarSprite: SpriteSheet = {
+    image: altarImage,
+    spriteWidth: 288,
+    spriteHeight: 256,
+    width: 1,
+    height: 1,
+};
+export const altarAnimation: SpriteAnimation = {
+    spritesheet: altarSprite,
+    getFrame(timestamp) {
+        return [0, 0];
+    },
+}
+
+import cabinUrl from "~/assets/cabin.png";
+export const cabinImage = new Image();
+cabinImage.src = cabinUrl;
+const cabinSprite: SpriteSheet = {
+    image: cabinImage,
+    spriteWidth: 480,
+    spriteHeight: 384,
+    width: 1,
+    height: 1,
+};
+export const cabinAnimation: SpriteAnimation = {
+    spritesheet: cabinSprite,
+    getFrame(timestamp) {
+        return [0, 0];
+    },
+}
+
+
 
 // ICONS
 import iconwUrl from "~/assets/icon_w.png";
@@ -653,6 +688,51 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
     }
     if (entity.type === "turtle") {
         return { sprite: turtleWalkAnimation, direction: -1, startTime: 0 };
+    }
+    if(entity.type === "altar") {
+        return {
+            sprite: altarAnimation,
+            direction: 1,
+            startTime: 0,
+            renderDimensions: {
+                width: altarAnimation.spritesheet.spriteWidth / 2,
+                height: altarAnimation.spritesheet.spriteHeight / 2,
+            }
+        };
+    }
+    if(entity.type === "cabin") {
+        return {
+            sprite: cabinAnimation,
+            direction: 1,
+            startTime: 0,
+            renderDimensions: {
+                width: cabinAnimation.spritesheet.spriteWidth / 2,
+                height: cabinAnimation.spritesheet.spriteHeight / 2,
+            }
+        };
+    }
+    if(entity.type === "witch1") {
+        return {
+            sprite: witch1IdleAnimation,
+            direction: 1,
+            startTime: 0,
+            renderDimensions: {
+                width: witch1IdleAnimation.spritesheet.spriteWidth / 1.7,
+                height: witch1IdleAnimation.spritesheet.spriteHeight / 1.7,
+            }
+        };
+    }
+    if(entity.type === "witch2") {
+        return {
+            sprite: witch2IdleAnimation,
+            direction: 1,
+            startTime: 0,
+            renderDimensions: {
+                width: witch2IdleAnimation.spritesheet.spriteWidth / 1.7,
+                height: witch2IdleAnimation.spritesheet.spriteHeight / 1.7,
+            },
+            flip: true,
+        };
     }
     return undefined;
 }

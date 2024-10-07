@@ -7,6 +7,7 @@ import circuitTestingTerrain from '../levels/testing/circuittest.terrain?raw';
 import circuitTestingCircuit from '../levels/testing/circuittest.circuit?raw';
 
 import cutsceneTerrain from '../levels/cutscene.terrain?raw';
+import cutsceneEntities from '../levels/cutscene.entities?raw';
 
 import flower1Terrain from '../levels/turtle_mouse/flower_1/flower_1.terrain?raw';
 import flower1Entities from '../levels/turtle_mouse/flower_1/flower_1.entities?raw';
@@ -61,7 +62,7 @@ export let currentLevelState: LevelContent | undefined;
 export const levels = {
     cutscene: {
         terrain: cutsceneTerrain,
-        entities: undefined,
+        entities: cutsceneEntities,
         circuit: undefined,
     },
     testing: {

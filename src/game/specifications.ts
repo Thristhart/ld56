@@ -3,9 +3,9 @@ export type BoulderTypes = 'boulder-chasm' | 'boulder-water';
 export type TerrainType = BoulderTypes | CircuitType | 'ground' | 'water' | 'wall' | 'chasm' | 'tunnel' | 'goal';
 export const creatures = ['mouse', 'turtle', 'bird', 'frog'] as const;
 export type CreatureType = typeof creatures[number];
-export type EntityType = CreatureType | 'empty' | 'boulder' | 'insect';
+export type EntityType = CreatureType | 'empty' | 'boulder' | 'insect' | 'altar' | 'cabin' | 'witch1' | 'witch2';
 
-export function GetEntityType(entityCode: string) {
+export function GetEntityType(entityCode: string): EntityType | 'empty' {
     const strippedCode = entityCode.trim();
     switch (strippedCode) {
         case 'M': return 'mouse';
@@ -14,6 +14,10 @@ export function GetEntityType(entityCode: string) {
         case 'F': return 'frog';
         case 'R': return 'boulder';
         case 'I': return 'insect';
+        case 'A': return 'altar';
+        case 'C': return 'cabin';
+        case 'G': return 'witch1';
+        case 'W': return 'witch2';
         default: return 'empty';
     }
 }

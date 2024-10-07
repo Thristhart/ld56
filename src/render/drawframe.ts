@@ -193,8 +193,8 @@ function drawGrid(level: LevelContent, timestamp: number) {
                                 startTime: 0
                             }
                         }
-                        drawSprite(context, waterAnim.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.sprite.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
-                        drawSprite(context, terrainAnimation!.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.sprite.getFrame(timestamp), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, waterAnim.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, waterAnim.sprite.getFrame(timestamp), false, terrainAnimation?.renderDimensions ?? { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation!.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2 + 10, terrainAnimation!.sprite.getFrame(timestamp), false, terrainAnimation?.renderDimensions ?? { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
                     if (terrainType === "goal") {
@@ -202,7 +202,7 @@ function drawGrid(level: LevelContent, timestamp: number) {
                     }
 
                     if (terrainAnimation) {
-                        drawSprite(context, terrainAnimation.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.sprite.getFrame(timestamp - terrainAnimation.startTime), false, { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
+                        drawSprite(context, terrainAnimation.sprite.spritesheet, col * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2, row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2, terrainAnimation.sprite.getFrame(timestamp - terrainAnimation.startTime), false, terrainAnimation?.renderDimensions ?? { width: GRID_SQUARE_WIDTH, height: GRID_SQUARE_HEIGHT });
                         continue;
                     }
 
@@ -299,6 +299,12 @@ function fitLevelToCamera() {
 
 function sortEntities(a: EntityData, b: EntityData) {
 
+    if(a.type === "altar") {
+        return -1;
+    }
+    if(b.type === "altar") {
+        return 1;
+    }
     // otherwise turtle should be most-bottom
     if (a.type === "turtle") {
         return -1;
@@ -438,7 +444,7 @@ function drawEntities(levelState: LevelContent, timestamp: number) {
                 entityLocation.column * GRID_SQUARE_WIDTH + GRID_SQUARE_WIDTH / 2,
                 entityLocation.row * GRID_SQUARE_HEIGHT + GRID_SQUARE_HEIGHT / 2,
                 spriteDetails.sprite.getFrame(performance.now() - spriteDetails.startTime, spriteDetails),
-                entity.facing === "left",
+                entity.facing === (spriteDetails.flip ? "right" : "left"),
                 spriteDetails.renderDimensions,
             )
         }
