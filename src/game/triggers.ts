@@ -31,7 +31,7 @@ triggers.once("turtleCannotMove", () => {
     displayDialog({
         type: "message",
         speaker: "turtle",
-        message: "you're large and that's ground."
+        message: "too heavy to get out of the water"
     })
 })
 
@@ -110,10 +110,23 @@ triggers.on("killEntity", (entityType) => {
     if (!currentLevelState) {
         return;
     }
+    let message = "";
+    if(entityType === "frog") {
+        message = "My darling... I have perished!"
+    }
+    if(entityType === "turtle") {
+        message = "oh, no. rip me"
+    }
+    if(entityType === "bird") {
+        message = "I am ruined!"
+    }
+    if(entityType === "mouse") {
+        message = "I DIED!!"
+    }
     displayDialog({
         type: "message",
         speaker: entityType,
-        message: "YOU LET ME DIE!!. Press Z to undo"
+        message
     })
 })
 
@@ -150,15 +163,6 @@ triggers.on("cannotSwim", (entityType) => {
                 type: "message",
                 speaker: "turtle",
                 message: "don't worry, I can"
-            }
-        )
-    }
-    else if (entityType === 'crow') {
-        displayDialog(
-            {
-                type: "message",
-                speaker: 'bird',
-                message: "I wouldn't want to get my feather's wet"
             }
         )
     }
