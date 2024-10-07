@@ -17,6 +17,9 @@ export interface SwitchCreatureAction {
 
 export type Action = MoveCreatureAction | SwitchCreatureAction;
 
+export interface NoActionResult {
+    type: "NoAction";
+}
 
 export interface MoveEntityResult {
     type: "MoveEntity";
@@ -72,7 +75,7 @@ export interface EatInsectResult {
 }
 
 
-export type ActionResult = MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult | SwitchFacingDirectionResult;
+export type ActionResult = ( NoActionResult | MoveEntityResult | SwitchEntityResult | MergeBoulderIntoTerrainResult | ModifyCircuitStateResult | EatInsectResult | DeleteEntityResult | SwitchFacingDirectionResult ) & { triggers?: string[] };
 
 function applyActionResult(levelState: LevelContent, actionResult: ActionResult): LevelContent {
     switch (actionResult.type) {
@@ -198,17 +201,17 @@ export function ComputeStateFromActionLog() {
     return levelState;
 }
 
-export function applyAction(levelState: LevelContent, action: Action): ActionResult | Array<ActionResult> | undefined {
+export function applyAction(levelState: LevelContent, action: Action): ActionResult | Array<ActionResult> {
     switch (action.type) {
         case "MoveCreature": {
             const entityId = levelState.currentEntityId;
             if (!entityId) {
-                return undefined;
+                return { type: "NoAction" };
             }
 
             const creatureEntity = levelState.entities.find(entity => entity.id === entityId);
             if (!creatureEntity) {
-                return undefined;
+                return { type: "NoAction" };
             }
             const moveActions = GetEntityMovementActions(levelState, creatureEntity, action.direction)
             return moveActions;
@@ -217,11 +220,11 @@ export function applyAction(levelState: LevelContent, action: Action): ActionRes
             const currentEntityId = levelState.currentEntityId;
             const oldEntity = levelState.entities.find(entity => entity.id === currentEntityId);
             if (!oldEntity)
-                return undefined;
+                return { type: "NoAction" };
 
             const currentCreatureArrayId = creatures.findIndex((creature) => oldEntity.type === creature)
             if (currentCreatureArrayId < 0)
-                return undefined;
+                return { type: "NoAction" };
 
             let creatureArrayId = (currentCreatureArrayId + 1) % (creatures.length);
             while (creatureArrayId !== currentCreatureArrayId) {
@@ -240,10 +243,24 @@ export function applyAction(levelState: LevelContent, action: Action): ActionRes
                     creatureArrayId = (creatureArrayId + 1) % (creatures.length);
                 }
             }
-            return undefined;
+            return { type: "NoAction" };
         }
     }
-    return undefined;
+    return { type: "NoAction" };
+}
+
+export function MakeResultArray(result: ActionResult | Array<ActionResult>)
+{
+    if(Array.isArray(result))
+    {
+        return result;
+    }
+    return [result];
+}
+
+export function IsActiveResult(result: Array<ActionResult>)
+{
+    return result.some(res => res.type !== "NoAction");
 }
 
 export let lastActionResults: Array<ActionResult> | undefined;
@@ -252,8 +269,8 @@ export function fireAction(action: Action) {
     if (!currentLevelState) {
         return;
     }
-    const result = applyAction(currentLevelState, action);
-    if (result && !(Array.isArray(result) && result.length === 0)) {
+    const result = MakeResultArray(applyAction(currentLevelState, action));
+    if (IsActiveResult(result)) {
         lastActionResults = Array.isArray(result) ? result : [result];
         if (lastActionResults.length === 1 && lastActionResults[0].type === "SwitchFacingDirection") {
             sounds.bump.play();
@@ -269,6 +286,11 @@ export function fireAction(action: Action) {
     else {
         clearActionAnimations();
         sounds.bump.play();
+    }
+    // either way, do triggers
+    for(const actionResult of result)
+    {
+        actionResult.triggers?.forEach(trigger => triggers.emit(trigger));
     }
     setCurrentLevelState(ComputeStateFromActionLog());
     if (lastActionResults) {
@@ -286,8 +308,8 @@ export function undo() {
         return;
     }
     setCurrentLevelState(ComputeStateFromActionLog());
-    const resultOfUndoneAction = applyAction(currentLevelState, undoneAction);
-    if (resultOfUndoneAction) {
+    const resultOfUndoneAction = MakeResultArray( applyAction(currentLevelState, undoneAction) );
+    if (IsActiveResult(resultOfUndoneAction)) {
         lastUndoActionResults = Array.isArray(resultOfUndoneAction) ? resultOfUndoneAction : [resultOfUndoneAction];
         lastUndoTimestamp = performance.now();
         TriggerAudioFromResults(lastUndoActionResults);

@@ -22,7 +22,7 @@ const levelHints: Record<keyof typeof levels, { count: number, hints: string[] }
             'hint five'
         ]
     },
-    intro: {
+    riverCrossing: {
         count: 0, hints: [
             'hint one',
             'hint two',
