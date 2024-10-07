@@ -192,7 +192,7 @@ const story: Array<StoryBeat> = [
     {
         type: "message",
         speaker: "frog",
-        message: "I would solve a thousand more to hear you tell me that I have done well."
+        message: "I would solve a thousand to hear you tell me that I have done well."
     },
     {
         type: "message",
