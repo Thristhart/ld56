@@ -39,6 +39,7 @@ export const sounds = {
     }),
     musicDeath: new Howl({
         src: musicDeathUrl,
+        loop: true,
     }),
 } as const satisfies { [key: string]: Howl };
 
