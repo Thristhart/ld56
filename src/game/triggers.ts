@@ -184,7 +184,7 @@ triggers.on("noMoveInsect", (entityType) => {
             {
                 type: "message",
                 speaker: "frog",
-                message: "<appropriately romantic line here>"
+                message: "Let me deal with them my love."
             }
         )
     }
