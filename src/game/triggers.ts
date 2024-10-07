@@ -3,7 +3,7 @@ import { continueStory, displayDialog } from "~/story";
 import { currentLevelState, GetEntitiesAtLocation, GetTileAtLocation, LevelContent } from "./levels";
 import { ActionResult, MoveEntityResult } from "./actions";
 import { IsCreatureEntity } from "./specifications";
-import { sounds } from "~/audio";
+import { muted, sounds } from "~/audio";
 import { GetHint } from "./hints";
 
 export const triggers = new EventEmitter();
@@ -37,41 +37,49 @@ triggers.once("turtleCannotMove", () => {
 
 export function TriggerAudioFromResults(results: Array<ActionResult>) {
     if (currentLevelState?.canContinueLevel) {
-        if (!sounds.music.playing()) {
+        if (!sounds.music.playing() && !muted) {
             sounds.music.play();
         }
-        sounds.musicDeath.stop();
+        if (!muted)
+            sounds.musicDeath.stop();
     }
     else {
-        sounds.music.pause();
-        sounds.musicDeath.play();
+        if (!muted) {
+            sounds.music.pause();
+            sounds.musicDeath.play();
+        }
     }
     for (const result of results) {
         if (result.type === "MoveEntity") {
             if (result.entity.type === "boulder") {
-                sounds.boulderMove.play();
+                if (!muted)
+                    sounds.boulderMove.play();
             }
             if (IsCreatureEntity(result.entity.type)) {
                 const prevTile = GetTileAtLocation(currentLevelState!, result.oldLocation);
                 const nextTile = GetTileAtLocation(currentLevelState!, result.newLocation);
                 const entitiesAtNextLocation = GetEntitiesAtLocation(currentLevelState!, result.newLocation);
                 if (nextTile === "boulder-water" || nextTile === "boulder-chasm" || entitiesAtNextLocation.some(ent => ent.type === "boulder" || (ent.type === "turtle" && result.entity.type !== "turtle"))) {
-                    sounds.hardstep.play();
+                    if (!muted)
+                        sounds.hardstep.play();
                 }
                 else if (result.entity.type === "turtle" && nextTile === "water") {
                     if (prevTile !== "water") {
-                        sounds.turtleWaterEnter.play();
+                        if (!muted)
+                            sounds.turtleWaterEnter.play();
                     }
                     else {
-                        sounds.turtleWaterMove.play();
+                        if (!muted)
+                            sounds.turtleWaterMove.play();
                     }
                 }
                 else {
-                    sounds.footstep.play();
+                    if (!muted)
+                        sounds.footstep.play();
                 }
             }
         }
-        else if (result.type === "MergeBoulderIntoTerrain" && result.newTerrainType === "boulder-water") {
+        else if (result.type === "MergeBoulderIntoTerrain" && result.newTerrainType === "boulder-water" && !muted) {
             sounds.splash.play();
         }
         else if (result.type === "SwitchEntity") {
@@ -79,27 +87,27 @@ export function TriggerAudioFromResults(results: Array<ActionResult>) {
             if (!entity) {
                 return;
             }
-            if (entity.type === "mouse") {
+            if (entity.type === "mouse" && !muted) {
                 sounds.mouseSelect.stop();
                 sounds.mouseSelect.play();
             }
-            if (entity.type === "turtle") {
+            if (entity.type === "turtle" && !muted) {
                 sounds.turtleSelect.stop();
                 sounds.turtleSelect.play();
             }
-            if (entity.type === "bird") {
+            if (entity.type === "bird" && !muted) {
                 sounds.birdSelect.stop();
                 sounds.birdSelect.play();
             }
-            if (entity.type === "frog") {
+            if (entity.type === "frog" && !muted) {
                 sounds.frogSelect.stop();
                 sounds.frogSelect.play();
             }
         }
-        else if (result.type === "EatInsect") {
+        else if (result.type === "EatInsect" && !muted) {
             sounds.frogEat.play();
         }
-        else if (result.type === "ModifyCircuitState" && result.circuitFlipped) {
+        else if (result.type === "ModifyCircuitState" && result.circuitFlipped && !muted) {
             sounds.button.play();
         }
     }
@@ -111,16 +119,16 @@ triggers.on("killEntity", (entityType) => {
         return;
     }
     let message = "";
-    if(entityType === "frog") {
+    if (entityType === "frog") {
         message = "My darling... I have perished!"
     }
-    if(entityType === "turtle") {
+    if (entityType === "turtle") {
         message = "oh, no. rip me"
     }
-    if(entityType === "bird") {
+    if (entityType === "bird") {
         message = "I am ruined!"
     }
-    if(entityType === "mouse") {
+    if (entityType === "mouse") {
         message = "I DIED!!"
     }
     displayDialog({

@@ -692,7 +692,7 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
     if (entity.type === "turtle") {
         return { sprite: turtleWalkAnimation, direction: -1, startTime: 0 };
     }
-    if(entity.type === "altar") {
+    if (entity.type === "altar") {
         return {
             sprite: altarAnimation,
             direction: 1,
@@ -703,7 +703,7 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
             }
         };
     }
-    if(entity.type === "cabin") {
+    if (entity.type === "cabin") {
         return {
             sprite: cabinAnimation,
             direction: 1,
@@ -714,7 +714,7 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
             }
         };
     }
-    if(entity.type === "witch1") {
+    if (entity.type === "witch1") {
         return {
             sprite: witch1IdleAnimation,
             direction: 1,
@@ -725,7 +725,7 @@ export function GetSpriteForEntity(entity: EntityData): SpriteAnimationDetails |
             }
         };
     }
-    if(entity.type === "witch2") {
+    if (entity.type === "witch2") {
         return {
             sprite: witch2IdleAnimation,
             direction: 1,

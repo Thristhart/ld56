@@ -1,11 +1,11 @@
 import { continueStory, isShowingMessage } from "~/story";
 import { clearActions, ComputeStateFromActionLog, fireAction, undo } from "./actions";
 import { currentLevelState, setCurrentLevelState } from "./levels";
-import { sounds } from "~/audio";
+import { muted, setMuted, sounds, startMusic } from "~/audio";
 
 const canvas = document.querySelector("canvas")!;
 
-const inputs = ["w", "a", "s", "d", "e", "z", " ", "r"] as const;
+const inputs = ["w", "a", "s", "d", "e", "z", " ", "r", "m"] as const;
 
 function isSupportedInput(input: string): input is Input {
     return inputs.includes(input as Input);
@@ -91,10 +91,20 @@ function onInput(input: Input) {
                     sounds.music.play();
                 }
             }
-            catch(e) {
-        
+            catch (e) {
+
             }
             break;
+        }
+        case "m": {
+            if (muted && !sounds.music.playing()) {
+                startMusic();
+                setMuted(false);
+            }
+            else if (!muted && sounds.music.playing()) {
+                sounds.music.stop();
+                setMuted(true);
+            }
         }
     }
 }

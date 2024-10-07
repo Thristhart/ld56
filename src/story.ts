@@ -1,4 +1,4 @@
-import { sounds, startMusic } from "./audio";
+import { muted, sounds, startMusic } from "./audio";
 import { levels, startLevel } from "./game/levels";
 
 let storyIndex = -1;
@@ -237,7 +237,7 @@ const story: Array<StoryBeat> = [
     },
     { type: "cleardialog" },
     { type: "waitforlevelcomplete" },
-    
+
     {
         type: "startlevel",
         level: "endcutscene"
@@ -386,12 +386,16 @@ export function continueStory(levelComplete = false) {
                 log.push(nextBeat);
                 break;
             case "startmusic":
-                startMusic();
+                if (!muted) {
+                    startMusic();
+                }
                 continueStory();
                 break;
             case "startendmusic":
-                sounds.music.stop();
-                sounds.endMusic.play();
+                if (!muted) {
+                    sounds.music.stop();
+                    sounds.endMusic.play();
+                }
                 continueStory();
                 break;
             case "cleardialog":

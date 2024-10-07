@@ -6,6 +6,7 @@ import { drawDialog } from "./drawdialog";
 import { chasmTopEdgeImage, controlIcons, fliesAnimation, GetBridgeImagesForCircuit, GetButtonImagesForCircuit, GetDoorAnimation, GetEntityPortrait, GetSpriteForEntity, GetTerrainAnimation, GetTerrainBackground, treeImage, treeWallBackgroundImage, tunnelBackgroundImage, wall9GridImage, waterTopEdgeBackgroundAnimation } from "./images";
 import { drawSprite, SpriteAnimationDetails } from "./spritesheet";
 import { getCurrentMessage } from "~/story";
+import { muted } from "~/audio";
 
 const canvas = document.querySelector("canvas")!;
 const context = canvas.getContext("2d")!;
@@ -300,10 +301,10 @@ function fitLevelToCamera() {
 
 function sortEntities(a: EntityData, b: EntityData) {
 
-    if(a.type === "altar") {
+    if (a.type === "altar") {
         return -1;
     }
-    if(b.type === "altar") {
+    if (b.type === "altar") {
         return 1;
     }
     // otherwise turtle should be most-bottom
@@ -469,7 +470,7 @@ function drawControls(levelState: LevelContent) {
     context.save();
     context.translate((levelState.columns) * GRID_SQUARE_WIDTH / 2 - 180, (levelState.rows) * GRID_SQUARE_HEIGHT - 16);
     context.fillStyle = "white";
-    context.font = "20px Varela Round";
+    context.font = "14px Varela Round";
     context.strokeStyle = 'black';
     context.lineWidth = 2;
 
@@ -478,23 +479,27 @@ function drawControls(levelState: LevelContent) {
         context.drawImage(controlIcons.a, 0, 16, 16, 16);
         context.drawImage(controlIcons.s, 16, 16, 16, 16);
         context.drawImage(controlIcons.d, 32, 16, 16, 16);
-        context.strokeText("Move", 52, 22);
-        context.fillText("Move", 52, 22);
+        context.strokeText("Move", 49, 22);
+        context.fillText("Move", 49, 22);
 
 
-        context.drawImage(controlIcons.e, 210, 8, 16, 16);
-        context.strokeText("Swap", 228, 22);
-        context.fillText("Swap", 228, 22);
+        context.drawImage(controlIcons.e, 155, 8, 16, 16);
+        context.strokeText("Swap", 170, 22);
+        context.fillText("Swap", 170, 22);
 
-        context.drawImage(controlIcons.r, 286, 8, 16, 16);
-        context.strokeText("Reset", 304, 22);
-        context.fillText("Reset", 304, 22);
+        context.drawImage(controlIcons.r, 215, 8, 16, 16);
+        context.strokeText("Reset", 230, 22);
+        context.fillText("Reset", 230, 22);
+
+        const audioState = muted ? "Audio On" : "Audio Off";
+        context.drawImage(controlIcons.m, 275, 8, 16, 16);
+        context.strokeText(audioState, 290, 22);
+        context.fillText(audioState, 290, 22);
     }
 
-
-    context.drawImage(controlIcons.z, 128, 8, 16, 16);
-    context.strokeText("Undo", 148, 22);
-    context.fillText("Undo", 148, 22);
+    context.drawImage(controlIcons.z, 95, 8, 16, 16);
+    context.strokeText("Undo", 110, 22);
+    context.fillText("Undo", 110, 22);
     context.restore();
 
 }

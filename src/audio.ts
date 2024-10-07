@@ -17,6 +17,11 @@ import frogEatUrl from "~/assets/audio/frog eat.mp3";
 import buttonUrl from "~/assets/audio/bunton.mp3";
 import endMusicUrl from "~/assets/audio/mystical grove.mp3";
 
+export let muted = false;
+export function setMuted(isMuted: boolean) {
+    muted = isMuted;
+}
+
 export const sounds = {
     boulderMove: new Howl({ src: boulderMoveUrl }),
     footstep: new Howl({ src: footstepUrl }),
